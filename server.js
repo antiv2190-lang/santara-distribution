@@ -9,8 +9,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(__dirname));
 // ---------- Base de données ----------
 const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
