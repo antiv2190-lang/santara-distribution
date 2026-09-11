@@ -1,4 +1,5 @@
-import { Zap, Linkedin, Twitter, Facebook } from "lucide-react";
+import { Linkedin, Twitter, Facebook } from "lucide-react";
+import { Logo } from "./Logo";
 
 const columns = [
   {
@@ -21,13 +22,8 @@ export function Footer() {
       <div className="container-des">
         <div className="grid gap-12 lg:grid-cols-[1.2fr_2fr]">
           <div>
-            <a href="#top" className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-solar-400 to-solar-600">
-                <Zap className="h-[18px] w-[18px] text-ink-950" strokeWidth={2.5} />
-              </span>
-              <span className="font-display text-[15px] font-semibold tracking-tight text-mist-50">
-                DES <span className="text-mist-300 font-normal">| Diawara Énergies</span>
-              </span>
+            <a href="#top">
+              <Logo />
             </a>
             <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed text-mist-400">
               Infrastructures énergétiques de premier plan pour la région AES — solaire,

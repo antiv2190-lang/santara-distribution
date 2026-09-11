@@ -65,7 +65,7 @@ export function ContactSection() {
                 </span>
                 <div>
                   <p className="text-[13.5px] font-medium text-mist-100">Ligne directe</p>
-                  <p className="text-[13px] text-mist-300">+223 00 00 00 00</p>
+                  <p className="text-[13px] text-mist-300">+223 75 15 70 07</p>
                 </div>
               </div>
             </div>
@@ -119,7 +119,7 @@ export function ContactSection() {
                         <input required name="email" type="email" placeholder="vous@institution.com" className="input-des" />
                       </Field>
                       <Field label="Téléphone">
-                        <input name="phone" type="tel" placeholder="+223 00 00 00 00" className="input-des" />
+                        <input name="phone" type="tel" placeholder="+223 75 15 70 07" className="input-des" />
                       </Field>
                     </div>
 

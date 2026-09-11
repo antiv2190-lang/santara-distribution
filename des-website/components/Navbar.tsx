@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { Logo } from "./Logo";
 
 const links = [
   { href: "#solutions", label: "Solutions" },
@@ -40,13 +41,8 @@ export function Navbar() {
             scrolled ? "panel shadow-glow" : "border border-transparent"
           }`}
         >
-          <a href="#top" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-solar-400 to-solar-600 shadow-glow-solar">
-              <Zap className="h-[18px] w-[18px] text-ink-950" strokeWidth={2.5} />
-            </span>
-            <span className="font-display text-[15px] font-semibold tracking-tight text-mist-50">
-              DES <span className="text-mist-300 font-normal">| Diawara Énergies</span>
-            </span>
+          <a href="#top">
+            <Logo />
           </a>
 
           <nav className="hidden items-center gap-8 lg:flex">
