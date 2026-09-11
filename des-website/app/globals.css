@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #04070c;
+  color: #f4f6f9;
+}
+
+::selection {
+  background: rgba(238, 159, 46, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #070c15;
+}
+::-webkit-scrollbar-thumb {
+  background: #1b2a47;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #263c66;
+}
+
+.container-des {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container-des {
+    padding-inline: 2rem;
+  }
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.gradient-text {
+  background: linear-gradient(92deg, #fbd08a 0%, #ee9f2e 45%, #f5b84c 75%, #fbd08a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.input-des {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem 1rem;
+  font-size: 13.5px;
+  color: #f4f6f9;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.input-des::placeholder {
+  color: #5b6b84;
+}
+.input-des:focus {
+  outline: none;
+  border-color: rgba(238, 159, 46, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+select.input-des {
+  color-scheme: dark;
+}
+
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
