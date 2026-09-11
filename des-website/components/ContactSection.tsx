@@ -46,7 +46,7 @@ export function ContactSection() {
                 <div>
                   <p className="text-[13.5px] font-medium text-mist-100">Siège social</p>
                   <p className="text-[13px] text-mist-300">
-                    Zone ACI 2000, Bamako, Mali
+                    Porte 304, Rue 54, Lafiabougou, Bamako, Mali
                   </p>
                 </div>
               </div>
