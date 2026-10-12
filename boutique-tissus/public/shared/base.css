@@ -1,0 +1,39 @@
+/* Base commune : reset, boutons, feuille de dialogue. Les couleurs de la boutique
+   (--primary, --accent, --on-primary, --on-accent) sont injectées par le serveur. */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45;
+  --bg:#faf7f2;--ink:#1d1a16;--muted:#6f675c;--line:#e7dfd1;--card:#fff;--ok:#1f9d55;--danger:#c0392b;--wa:#25d366}
+h1,h2,h3{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif;font-weight:700;line-height:1.15;margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0}
+img{display:block;max-width:100%}
+a{color:inherit}
+.hidden{display:none!important}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;border-radius:14px;padding:14px 20px;font-weight:700;font-size:1.05rem;
+  text-decoration:none;background:var(--primary);color:var(--on-primary);min-height:52px;transition:transform .08s,opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.block{display:flex;width:100%}
+.btn.accent{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.green{background:var(--ok);color:#fff}
+.btn.red{background:var(--danger);color:#fff}
+.btn.wa{background:var(--wa);color:#073b1d}
+.spinner{width:22px;height:22px;border:3px solid rgba(128,128,128,.3);border-top-color:currentColor;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111;color:#fff;padding:14px 22px;
+  border-radius:999px;font-weight:600;z-index:100;max-width:90vw;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.3);animation:pop .2s}
+.toast.err{background:var(--danger)}
+@keyframes pop{from{opacity:0;transform:translate(-50%,10px)}}
+.sheet-back{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));
+  max-height:92vh;overflow:auto;animation:up .22s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet h2{font-size:1.6rem;margin-bottom:12px}
+.sheet .btn{margin-top:10px}
+.field{display:block;margin:10px 0}
+.field span{display:block;font-weight:600;margin-bottom:4px;color:var(--muted);font-size:.9rem}
+.field input,.field textarea,.field select{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;background:#fff;font-size:1.05rem}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
