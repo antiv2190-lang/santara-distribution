@@ -19,8 +19,8 @@ ville, ses produits et sa propre connexion propriétaire.
 ```bash
 cd boutique-tissus
 npm install
-npm run seed      # crée la boutique de démonstration « demo » (tél. 70 00 00 00, code 1234)
-npm start         # http://localhost:3000/demo   et   http://localhost:3000/demo/admin
+npm run seed      # crée « Nogoya Boutique » (tél. +223 76 23 27 21, code 1234)
+npm start         # http://localhost:3000/nogoya   et   http://localhost:3000/nogoya/admin
 ```
 Sans Supabase, l'application tourne en **mode démo** (données dans `.data/`). Sans clé IA, les produits reçoivent le nom
 « Nouveau tissu » (à corriger dans « À vérifier ») ; la photo est quand même améliorée.
@@ -57,8 +57,7 @@ Ouvrez `https://votre-site/super-admin` → **➕ Nouvelle boutique** : nom, vil
 (au mètre / à la pièce / au lot), couleurs (palettes prêtes : or & noir, vert & or…), logo, téléphone + code du propriétaire.
 À la fin, un bouton **envoie par WhatsApp** au propriétaire son lien et son code.
 
-**Pour cette boutique** (infos du cahier des charges à compléter, elles n'étaient pas renseignées) :
-nom `[NOM DE LA BOUTIQUE]`, WhatsApp `[+223 XX XX XX XX]`, ville Bamako, vente `[mètre / pièce / lot]`, couleurs `[ex. or et noir]` — à saisir dans ce formulaire.
+**Pour cette boutique** : nom `Nogoya Boutique`, WhatsApp `+223 76 23 27 21`, ville Bamako. Restent à choisir dans le formulaire : le mode de vente (mètre / pièce / lot, « mètre » par défaut) et les couleurs (or et noir par défaut).
 
 ### 4. Installer sur le téléphone du propriétaire
 Il ouvre `https://votre-site/<boutique>/admin` dans Chrome → **⋮ → Ajouter à l'écran d'accueil** (ou le bouton « 📲 Installer » dans l'appli).
