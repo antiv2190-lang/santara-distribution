@@ -26,6 +26,7 @@ function adminProduct(p) {
   return {
     ...publicProduct(p),
     ai_status: p.ai_status, ai_error: p.ai_error, reviewed: !!p.reviewed,
+    ai_done: !!p.enhanced_path, // la photo a-t-elle été embellie ?
     // Pendant le traitement, le propriétaire voit sa photo d'origine.
     thumb: store.fileUrl(p.thumb_path) || store.fileUrl(p.enhanced_path) || store.fileUrl(p.original_path),
   };
@@ -34,7 +35,7 @@ function adminProduct(p) {
 function superShop(s, productCount) {
   return {
     ...publicShop(s), id: s.id, admin_phone: s.admin_phone, active: s.active,
-    require_review: s.require_review, features: s.features, product_count: productCount, created_at: s.created_at,
+    require_review: s.require_review, ai_auto: s.ai_auto !== false, features: s.features, product_count: productCount, created_at: s.created_at,
   };
 }
 

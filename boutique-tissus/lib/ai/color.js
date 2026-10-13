@@ -29,4 +29,4 @@ async function colorSignature(input, region) {
 // Écart de couleur (hors luminosité), en unités Lab : < 2 = invisible, > 5 = nettement visible.
 const colorDrift = (x, y) => Math.hypot(x.a - y.a, x.b - y.b);
 
-module.exports = { colorSignature, colorDrift };
+module.exports = { colorSignature, colorDrift, srgbToLab };

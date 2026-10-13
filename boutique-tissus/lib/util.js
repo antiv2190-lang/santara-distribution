@@ -6,7 +6,7 @@ const RESERVED_SLUGS = new Set([
   'robots.txt', 'manifest.webmanifest', 's', 'p', 'img', 'assets', 'public',
 ]);
 
-const CATEGORIES = ['basin', 'broderie', 'wax', 'bazin', 'autre'];
+const CATEGORIES = ['dentelle', 'basin', 'broderie', 'wax', 'bazin', 'autre'];
 const SALE_UNITS = ['metre', 'piece', 'lot'];
 
 const isSlug = (s) => typeof s === 'string' && /^[a-z0-9](?:[a-z0-9-]{0,28}[a-z0-9])?$/.test(s) && !RESERVED_SLUGS.has(s);

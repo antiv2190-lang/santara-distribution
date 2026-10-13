@@ -53,6 +53,7 @@ function readShopFields(b, partial) {
   if (!partial || 'color_primary' in b) { out.color_primary = b.color_primary; if (!util.isHexColor(out.color_primary)) err('Couleur principale invalide.'); }
   if (!partial || 'color_accent' in b) { out.color_accent = b.color_accent; if (!util.isHexColor(out.color_accent)) err("Couleur d'accent invalide."); }
   if ('require_review' in b) out.require_review = !!b.require_review;
+  if ('ai_auto' in b) out.ai_auto = !!b.ai_auto;
   if ('active' in b) out.active = !!b.active;
   return out;
 }

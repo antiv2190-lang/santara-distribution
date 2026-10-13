@@ -23,6 +23,12 @@ module.exports = {
     key: env.ANTHROPIC_API_KEY || '',
     model: env.AI_MODEL || 'claude-opus-5-5',
   },
+  // Connexion par code reçu sur le téléphone (voir lib/otp.js)
+  otp: {
+    provider: (env.OTP_PROVIDER || (isProd ? '' : 'console')).toLowerCase(), // console | twilio-sms | twilio-whatsapp | webhook
+    twilioSid: env.TWILIO_ACCOUNT_SID || '', twilioToken: env.TWILIO_AUTH_TOKEN || '', twilioFrom: env.TWILIO_FROM || '',
+    webhookUrl: env.OTP_WEBHOOK_URL || '', webhookToken: env.OTP_WEBHOOK_TOKEN || '',
+  },
   imageProvider: (env.IMAGE_PROVIDER || 'local').toLowerCase(),
   removebgKey: env.REMOVEBG_API_KEY || '',
   dataDir: env.DATA_DIR || path.join(__dirname, '..', '.data'),

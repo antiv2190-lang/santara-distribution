@@ -24,6 +24,7 @@ create table if not exists shops (
   admin_phone     text not null,                   -- identifiant de connexion du propriétaire
   admin_pin_hash  text not null,                   -- code secret (haché, jamais en clair)
   require_review  boolean not null default false,  -- true = un produit n'est public qu'après validation
+  ai_auto         boolean not null default true,   -- true = l'IA traite chaque photo automatiquement (modifiable par le propriétaire)
   active          boolean not null default true,
   -- Interrupteurs des phases 2 et 3 (TOUS désactivés pour l'instant)
   features        jsonb not null default
@@ -40,7 +41,7 @@ create table if not exists products (
   client_id      text,                              -- identifiant généré par le téléphone (évite les doublons si renvoi)
   name           text,                              -- rempli par l'IA, corrigeable
   category       text not null default 'autre'
-                 check (category in ('basin','broderie','wax','bazin','autre')),
+                 check (category in ('dentelle','basin','broderie','wax','bazin','autre')),
   description    text,
   price          integer not null check (price >= 0), -- en FCFA
   original_path  text not null,                     -- photo d'origine (toujours conservée)
@@ -124,3 +125,11 @@ alter table social_posts    enable row level security;
 insert into storage.buckets (id, name, public)
 values ('tissus', 'tissus', true)
 on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------
+-- 7) MISE À JOUR d'une base créée avec une version précédente (sans danger si déjà à jour)
+-- ---------------------------------------------------------------------
+alter table shops add column if not exists ai_auto boolean not null default true;
+alter table products drop constraint if exists products_category_check;
+alter table products add constraint products_category_check
+  check (category in ('dentelle','basin','broderie','wax','bazin','autre'));

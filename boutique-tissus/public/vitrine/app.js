@@ -1,4 +1,4 @@
-// Vitrine client : accueil (grille + filtres + recherche) et fiche produit.
+// Vitrine client : accueil (collection, rubriques, recherche) et fiche produit (zoom, commande WhatsApp, partage).
 // Les données de la boutique (nom, couleurs, WhatsApp...) viennent de window.__BOOT__.
 (() => {
   const { h, fmt, api, toast, sheet, waIcon, UNIT, CAT } = T;
@@ -6,6 +6,7 @@
   const app = document.getElementById('app');
   const unit = UNIT[shop.sale_unit] || '';
   const PAGE = 24;
+  const isNew = (p) => Date.now() - new Date(p.created_at).getTime() < 14 * 864e5;
 
   // ---------- WhatsApp ----------
   const waLink = (text) => `https://wa.me/${shop.whatsapp}?text=${encodeURIComponent(text)}`;
@@ -24,22 +25,28 @@
       logo(),
       h('a', { class: 'brand', href: base, onclick: (e) => { e.preventDefault(); go(base); } },
         h('h1', {}, shop.name),
-        h('small', {}, [shop.city, shop.tagline].filter(Boolean).join(' · ')))));
+        h('small', {}, shop.city || '', shop.tagline ? h('span', { class: 'tg' }, (shop.city ? ' · ' : '') + shop.tagline) : null)),
+      h('a', { class: 'top-wa', href: waLink('Bonjour, j\'ai une question sur vos tissus.'), target: '_blank', rel: 'noopener', 'aria-label': 'WhatsApp' }, waIcon(20), h('span', {}, 'WhatsApp'))));
   }
   function fab(text) {
     return h('a', { class: 'fab', href: waLink(text || 'Bonjour, j\'ai une question sur vos tissus.'), target: '_blank', rel: 'noopener', 'aria-label': 'Écrire sur WhatsApp' }, waIcon(32));
   }
   function footer() {
     return h('footer', { class: 'foot' },
-      h('strong', {}, shop.name), shop.city ? ` — ${shop.city}` : '',
+      h('div', { class: 'foot-name' }, shop.name), shop.city ? h('div', {}, shop.city) : null,
       h('div', {}, h('a', { href: `https://wa.me/${shop.whatsapp}`, target: '_blank', rel: 'noopener' }, `WhatsApp : +${shop.whatsapp}`)));
   }
   const priceNode = (p) => h('div', { class: 'pr' }, `${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null);
+  function card(p) {
+    return h('a', { class: 'card', href: `${base}/p/${p.id}`, onclick: (e) => { e.preventDefault(); go(`${base}/p/${p.id}`); } },
+      h('div', { class: 'ph' }, h('img', { src: p.thumb, alt: p.name, loading: 'lazy', width: 600, height: 600 }),
+        p.sold_out ? h('span', { class: 'badge' }, 'Épuisé') : isNew(p) ? h('span', { class: 'badge new' }, 'Nouveau') : null),
+      h('div', { class: 'body' }, h('div', { class: 'cat-s' }, CAT[p.category] || ''), h('div', { class: 'nm' }, p.name), priceNode(p)));
+  }
 
   // ---------- Navigation (sans rechargement) ----------
   function go(url) { history.pushState({}, '', url); route(); window.scrollTo(0, 0); }
   window.addEventListener('popstate', route);
-
   function route() {
     const path = location.pathname.replace(/\/$/, '');
     const m = path.match(/\/p\/([0-9a-f-]{36})$/i);
@@ -55,20 +62,19 @@
     const grid = h('div', { class: 'grid' });
     const more = h('button', { class: 'btn ghost more hidden' }, 'Voir plus de tissus');
     const search = h('input', { class: 'search', type: 'search', placeholder: '🔍  Rechercher un tissu…', value: st.q, 'aria-label': 'Rechercher' });
-    const chips = h('div', { class: 'chips', role: 'group', 'aria-label': 'Catégories' });
+    const chips = h('div', { class: 'chips', role: 'group', 'aria-label': 'Rubriques' });
+    const count = h('div', { class: 'count' });
+    let counts = null;
 
     function drawChips() {
-      chips.replaceChildren(...[['', 'Tous'], ...Object.entries(CAT)].map(([k, label]) =>
-        h('button', { class: 'chip', 'aria-pressed': String(st.cat === k), onclick: () => { st.cat = k; sync(); load(true); drawChips(); } }, label)));
+      // Seules les rubriques qui ont des tissus sont proposées
+      const items = [['', 'Tous', counts?.total]].concat(Object.entries(CAT).filter(([k]) => !counts || counts.counts[k] > 0).map(([k, l]) => [k, l, counts?.counts[k]]));
+      chips.replaceChildren(...items.map(([k, label, n]) =>
+        h('button', { class: 'chip', 'aria-pressed': String(st.cat === k), onclick: () => { st.cat = k; sync(); load(true); drawChips(); } }, label, n != null ? h('em', {}, n) : null)));
     }
     function sync() { // garde les filtres dans l'adresse (partage possible)
       const p = new URLSearchParams(); if (st.cat) p.set('cat', st.cat); if (st.q) p.set('q', st.q);
-      history.replaceState({}, '', base + (p.size ? '?' + p : ''));
-    }
-    function card(p) {
-      return h('a', { class: 'card', href: `${base}/p/${p.id}`, onclick: (e) => { e.preventDefault(); go(`${base}/p/${p.id}`); } },
-        h('div', { class: 'ph' }, h('img', { src: p.thumb, alt: p.name, loading: 'lazy', width: 600, height: 600 }), p.sold_out ? h('span', { class: 'badge' }, 'Épuisé') : null),
-        h('div', { class: 'body' }, h('div', { class: 'nm' }, p.name), priceNode(p)));
+      history.replaceState({}, '', base + (p.toString() ? '?' + p : ''));
     }
     async function load(reset) {
       if (st.busy) return;
@@ -77,11 +83,13 @@
       more.disabled = true;
       try {
         const u = new URLSearchParams({ limit: PAGE, offset: st.offset });
-        if (st.cat) u.set('cat', st.cat); if (st.q) u.set('q', st.q);
+        if (st.cat) u.set('cat', st.cat);
+        if (st.q) u.set('q', st.q);
         const r = await api(`/api/shops/${shop.slug}/products?${u}`);
         if (reset) grid.replaceChildren();
         r.items.forEach((p) => grid.append(card(p)));
         st.offset += r.items.length; st.total = r.total;
+        count.textContent = r.total ? `${r.total} tissu${r.total > 1 ? 's' : ''}` : '';
         if (!r.total) grid.replaceChildren(h('div', { class: 'empty', style: 'grid-column:1/-1' }, st.q || st.cat ? 'Aucun tissu ne correspond à votre recherche.' : 'Les premiers tissus arrivent très bientôt.'));
       } catch (e) {
         grid.replaceChildren(h('div', { class: 'empty', style: 'grid-column:1/-1' }, e.message, h('br'), h('button', { class: 'btn ghost', onclick: () => load(true) }, 'Réessayer')));
@@ -93,18 +101,35 @@
     let timer;
     search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { st.q = search.value.trim(); sync(); load(true); }, 300); });
 
+    const perks = [['📸', 'Photos fidèles', 'Les couleurs réelles du tissu'], ['💬', 'Commande simple', 'Un message WhatsApp suffit'], ['📍', shop.city || 'Boutique', 'Venez voir sur place']];
     app.replaceChildren(
       header(),
-      h('section', { class: 'hero' }, h('h2', {}, 'Tissus d\'exception'), h('p', {}, 'Basin, broderies, wax et bazin — commandez en un message WhatsApp.'), h('div', { class: 'rule' })),
-      h('main', { class: 'wrap' }, h('div', { class: 'tools' }, search, chips), grid, more),
+      h('section', { class: 'hero' },
+        h('div', { class: 'wrap' },
+          h('div', { class: 'eyebrow' }, shop.city ? `Boutique de tissus · ${shop.city}` : 'Boutique de tissus'),
+          h('h2', {}, 'Des tissus d\'exception pour vos plus belles cérémonies'),
+          h('p', {}, 'Voiles suisses brodés, dentelles, basin riche, wax et bazin. Choisissez, commandez en un message.'),
+          h('div', { class: 'hero-cta' },
+            h('a', { class: 'btn accent', href: '#collection', onclick: (e) => { e.preventDefault(); document.getElementById('collection').scrollIntoView({ behavior: 'smooth' }); } }, 'Voir la collection'),
+            h('a', { class: 'btn ghost-light', href: waLink('Bonjour, je cherche un tissu pour une cérémonie.'), target: '_blank', rel: 'noopener' }, waIcon(20), 'Parler sur WhatsApp')))),
+      h('section', { class: 'perks' }, h('div', { class: 'wrap perks-in' }, perks.map(([i, t, d]) => h('div', { class: 'perk' }, h('span', {}, i), h('div', {}, h('strong', {}, t), h('small', {}, d)))))),
+      h('main', { class: 'wrap', id: 'collection' }, h('div', { class: 'tools' }, search, chips, count), grid, more),
       footer(), fab());
     drawChips(); load(true);
+    api(`/api/shops/${shop.slug}/categories`).then((c) => { counts = c; drawChips(); }).catch(() => {});
+  }
+
+  // ---------- Zoom plein écran (pincer pour agrandir) ----------
+  function lightbox(src, alt) {
+    const box = h('div', { class: 'lb', onclick: () => box.remove() },
+      h('button', { class: 'lb-x', 'aria-label': 'Fermer' }, '✕'), h('img', { src, alt }));
+    document.body.append(box);
   }
 
   // ---------- Fiche produit ----------
   async function productPage(id) {
     app.replaceChildren(header(), h('main', { class: 'wrap' }, h('a', { class: 'back', href: base, onclick: (e) => { e.preventDefault(); go(base); } }, '← Tous les tissus'),
-      h('div', { class: 'sk', style: 'aspect-ratio:1;max-width:560px' })), fab());
+      h('div', { class: 'sk', style: 'aspect-ratio:1;max-width:560px' })));
     let p;
     try { p = await api(`/api/shops/${shop.slug}/products/${id}`); }
     catch (e) {
@@ -114,20 +139,25 @@
     }
     document.title = `${p.name} — ${shop.name}`;
 
-    // Galerie : photo améliorée + photo d'origine (couleurs réelles du tissu)
+    // Galerie : photo mise en valeur + photo d'origine (les vraies couleurs du tissu)
     const slides = [{ src: p.image, cap: null }];
     if (p.original && p.original !== p.image) slides.push({ src: p.original, cap: 'Photo d\'origine' });
     const dots = h('div', { class: 'dots' }, slides.map((_, i) => h('i', { class: i ? '' : 'on' })));
     const gal = h('div', { class: 'gal' }, slides.map((s, i) =>
-      h('div', { class: 'slide' }, h('img', { src: s.src, alt: p.name, width: 900, height: 900, ...(i ? { loading: 'lazy' } : {}) }), s.cap ? h('span', { class: 'cap' }, s.cap) : null)));
+      h('div', { class: 'slide', onclick: () => lightbox(s.src, p.name) },
+        h('img', { src: s.src, alt: p.name, width: 900, height: 900, ...(i ? { loading: 'lazy' } : {}) }),
+        s.cap ? h('span', { class: 'cap' }, s.cap) : null, h('span', { class: 'zoom' }, '⤢ Agrandir'))));
     gal.addEventListener('scroll', () => {
       const i = Math.round(gal.scrollLeft / gal.clientWidth);
       [...dots.children].forEach((d, j) => d.classList.toggle('on', i === j));
     }, { passive: true });
 
-    const order = p.sold_out
-      ? h('button', { class: 'btn block', disabled: true }, 'Épuisé pour le moment')
-      : h('a', { class: 'btn block wa', href: orderLink(p), target: '_blank', rel: 'noopener' }, waIcon(24), 'Commander sur WhatsApp');
+    const orderBtn = (cls) => p.sold_out
+      ? h('button', { class: `btn ${cls || ''} block`, disabled: true }, 'Épuisé pour le moment')
+      : h('a', { class: `btn block wa ${cls || ''}`, href: orderLink(p), target: '_blank', rel: 'noopener' }, waIcon(24), 'Commander sur WhatsApp');
+    const similar = h('section', { class: 'similar hidden' }, h('h3', {}, 'Dans la même collection'));
+    const simGrid = h('div', { class: 'grid' });
+    similar.append(simGrid);
 
     app.replaceChildren(
       header(),
@@ -141,8 +171,18 @@
             h('div', { class: 'price' }, `${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null),
             h('span', { class: 'avail' + (p.sold_out ? ' out' : '') }, p.sold_out ? 'Épuisé' : '● Disponible'),
             p.description ? h('p', { class: 'desc' }, p.description) : null,
-            h('div', { class: 'actions' }, order, h('button', { class: 'btn block ghost', onclick: () => share(p) }, '↗  Partager'))))),
-      footer(), fab(`Bonjour, j'ai une question sur : ${p.name}`));
+            h('ul', { class: 'assure' }, h('li', {}, '📸 Photos fidèles aux couleurs du tissu'), h('li', {}, '💬 Réponse sur WhatsApp, commande en un message')),
+            h('div', { class: 'actions' }, orderBtn(), h('button', { class: 'btn block ghost', onclick: () => share(p) }, '↗  Partager')))),
+        similar),
+      footer(),
+      // Barre de commande toujours visible sur téléphone
+      h('div', { class: 'buybar' }, h('div', {}, h('strong', {}, `${fmt(p.price)} FCFA`), unit ? h('small', {}, ` / ${unit}`) : null), orderBtn('compact')));
+
+    // Tissus de la même rubrique
+    api(`/api/shops/${shop.slug}/products?cat=${p.category}&limit=5`).then((r) => {
+      const others = r.items.filter((x) => x.id !== p.id).slice(0, 4);
+      if (others.length) { others.forEach((o) => simGrid.append(card(o))); similar.classList.remove('hidden'); }
+    }).catch(() => {});
   }
 
   // ---------- Partage (WhatsApp / Facebook / lien) ----------

@@ -4,15 +4,61 @@ const crypto = require('crypto');
 const sharp = require('sharp');
 const store = require('../store');
 const auth = require('../auth');
+const otp = require('../otp');
+const config = require('../config');
 const pipeline = require('../ai/pipeline');
 const { adminProduct, publicShop } = require('../views');
-const { CATEGORIES, loginKey, clampStr } = require('../util');
+const { CATEGORIES, loginKey, clampStr, normalizePhone } = require('../util');
 
 const router = express.Router();
 const COOKIE = 'tissus_admin';
 const SESSION_DAYS = 60; // le propriétaire reste connecté longtemps sur son téléphone
 
-// ---------- Connexion ----------
+function startSession(req, res, shop) {
+  auth.setCookie(req, res, COOKIE, auth.sign({ sid: shop.id, role: 'admin' }, SESSION_DAYS * 86400), SESSION_DAYS * 86400);
+}
+
+// ---------- Connexion par code reçu sur le téléphone (méthode principale) ----------
+// 1) le propriétaire saisit son numéro -> il reçoit un code à 6 chiffres ; 2) il saisit le code.
+router.post('/otp/request', express.json({ limit: '5kb' }), async (req, res, next) => {
+  try {
+    if (!otp.enabled()) return res.status(503).json({ error: "L'envoi de code n'est pas encore configuré. Utilisez votre code secret." });
+    const slug = String(req.body.slug || '').toLowerCase();
+    const digits = normalizePhone(req.body.phone);
+    if (digits.length < 8) return res.status(400).json({ error: 'Numéro invalide.' });
+    const key = `${slug}|${loginKey(digits)}`;
+    const wait = auth.lockedFor(`${req.ip}|otp`);
+    if (wait) return res.status(429).json({ error: `Trop d'essais. Réessayez dans ${wait} min.` });
+    const shop = await store.getShopBySlug(slug);
+    const known = shop && shop.active && loginKey(digits) === loginKey(shop.admin_phone);
+    let r;
+    try { r = await otp.request(key, known ? shop : null, normalizePhone(shop?.admin_phone || digits)); }
+    catch (e) { console.error('[otp] envoi impossible :', e.message); return res.status(502).json({ error: "Le code n'a pas pu être envoyé. Réessayez ou utilisez votre code secret." }); }
+    if (r.wait) return res.status(429).json({ error: `Patientez ${r.wait} secondes avant de redemander un code.`, wait: r.wait });
+    // Réponse identique que le numéro existe ou non. En démo (console), on affiche le code pour pouvoir essayer.
+    res.json({ ok: true, ...(r.devCode && !config.isProd ? { dev_code: r.devCode } : {}) });
+  } catch (e) { next(e); }
+});
+
+router.post('/otp/verify', express.json({ limit: '5kb' }), async (req, res, next) => {
+  try {
+    const slug = String(req.body.slug || '').toLowerCase();
+    const key = `${slug}|${loginKey(req.body.phone)}`;
+    const lockKey = `${req.ip}|otp`;
+    const wait = auth.lockedFor(lockKey);
+    if (wait) return res.status(429).json({ error: `Trop d'essais. Réessayez dans ${wait} min.` });
+    const shop = await store.getShopBySlug(slug);
+    if (!shop || !shop.active || loginKey(req.body.phone) !== loginKey(shop.admin_phone) || !otp.verify(key, req.body.code)) {
+      auth.registerFail(lockKey);
+      return res.status(401).json({ error: 'Code incorrect ou expiré.' });
+    }
+    auth.clearFails(lockKey);
+    startSession(req, res, shop);
+    res.json({ ok: true });
+  } catch (e) { next(e); }
+});
+
+// ---------- Connexion par code secret (repli) ----------
 router.post('/login', express.json({ limit: '5kb' }), async (req, res, next) => {
   try {
     const slug = String(req.body.slug || '').toLowerCase();
@@ -28,7 +74,7 @@ router.post('/login', express.json({ limit: '5kb' }), async (req, res, next) => 
       return res.status(401).json({ error: 'Numéro ou code incorrect.' });
     }
     auth.clearFails(key);
-    auth.setCookie(req, res, COOKIE, auth.sign({ sid: shop.id, role: 'admin' }, SESSION_DAYS * 86400), SESSION_DAYS * 86400);
+    startSession(req, res, shop);
     res.json({ ok: true });
   } catch (e) { next(e); }
 });
@@ -47,7 +93,18 @@ async function requireAdmin(req, res, next) {
 }
 router.use(requireAdmin);
 
-router.get('/me', (req, res) => res.json({ shop: publicShop(req.shop) }));
+const settingsOf = (s) => ({ ai_auto: s.ai_auto !== false });
+router.get('/me', (req, res) => res.json({ shop: publicShop(req.shop), settings: settingsOf(req.shop) }));
+
+// Réglages que le propriétaire peut changer lui-même
+router.patch('/settings', express.json({ limit: '2kb' }), async (req, res, next) => {
+  try {
+    const patch = {};
+    if ('ai_auto' in req.body) patch.ai_auto = !!req.body.ai_auto;
+    const shop = Object.keys(patch).length ? await store.updateShop(req.shop.id, patch) : req.shop;
+    res.json({ settings: settingsOf(shop) });
+  } catch (e) { next(e); }
+});
 
 router.post('/pin', express.json({ limit: '5kb' }), async (req, res, next) => {
   try {

@@ -82,4 +82,6 @@ function registerFail(key) {
 }
 const clearFails = (key) => fails.delete(key);
 
-module.exports = { hashPin, verifyPin, safeEqual, sign, verify, readCookie, setCookie, clearCookie, lockedFor, registerFail, clearFails };
+const hmac = (s) => crypto.createHmac('sha256', SECRET).update(String(s)).digest('hex');
+
+module.exports = { hmac, hashPin, verifyPin, safeEqual, sign, verify, readCookie, setCookie, clearCookie, lockedFor, registerFail, clearFails };

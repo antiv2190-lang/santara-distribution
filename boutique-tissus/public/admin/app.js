@@ -24,28 +24,86 @@
   function nav(name) { history.pushState({ s: name }, ''); show(name); }
   window.addEventListener('popstate', (e) => show(e.state?.s || 'home'));
 
-  // ---------- Connexion ----------
+  // ---------- Connexion : numéro de téléphone -> code reçu -> c'est tout ----------
+  // (le code secret reste possible en repli)
   function loginScreen(message) {
     cleanup?.(); cleanup = null;
-    const err = h('div', { class: 'err' }, message || '');
-    const phone = h('input', { type: 'tel', inputmode: 'tel', autocomplete: 'username', placeholder: 'Ex. 70 12 34 56' });
-    const pin = h('input', { type: 'password', inputmode: 'numeric', autocomplete: 'current-password', placeholder: '••••', maxlength: 8 });
-    const go = h('button', { class: 'btn block', style: 'min-height:68px;font-size:1.3rem', onclick: submit }, 'Se connecter');
-    async function submit() {
-      err.textContent = ''; go.disabled = true;
-      try {
-        await rawApi('/api/admin/login', { method: 'POST', json: { slug: shop.slug, phone: phone.value, pin: pin.value } });
-        Q.resume();
-        history.replaceState({ s: 'home' }, ''); show('home');
-      } catch (e) { err.textContent = e.message; go.disabled = false; }
-    }
-    pin.addEventListener('keydown', (e) => e.key === 'Enter' && submit());
-    app.replaceChildren(h('div', { class: 'scr' }, h('div', { class: 'login' },
+    const root = h('div', { class: 'scr' });
+    app.replaceChildren(root);
+    let phone = '';
+    let timer = null;
+    const head = () => [
       h('div', { class: 'logo' }, shop.logo_url ? h('img', { src: shop.logo_url, alt: '' }) : (shop.name[0] || 'T').toUpperCase()),
       h('h1', {}, shop.name), h('p', { class: 'sub' }, 'Espace propriétaire'),
-      h('label', { class: 'field' }, h('span', {}, 'Votre numéro de téléphone'), phone),
-      h('label', { class: 'field' }, h('span', {}, 'Votre code secret'), pin),
-      err, go)));
+    ];
+    const finish = () => { clearInterval(timer); Q.resume(); history.replaceState({ s: 'home' }, ''); show('home'); };
+
+    // Étape 1 : le numéro
+    function phoneStep(msg) {
+      clearInterval(timer);
+      const err = h('div', { class: 'err' }, msg || '');
+      const input = h('input', { type: 'tel', inputmode: 'tel', autocomplete: 'tel', placeholder: 'Ex. 76 23 27 21', value: phone, style: 'font-size:1.5rem;text-align:center' });
+      const go = h('button', { class: 'btn block green', style: 'min-height:72px;font-size:1.35rem', onclick: async () => {
+        phone = input.value; err.textContent = ''; go.disabled = true;
+        try {
+          const r = await rawApi('/api/admin/otp/request', { method: 'POST', json: { slug: shop.slug, phone } });
+          codeStep(r.dev_code);
+        } catch (e) { err.textContent = e.message; go.disabled = false; }
+      } }, '📲 Recevoir mon code');
+      input.addEventListener('keydown', (e) => e.key === 'Enter' && go.click());
+      root.replaceChildren(h('div', { class: 'login' }, ...head(),
+        h('label', { class: 'field' }, h('span', {}, 'Votre numéro de téléphone'), input), err, go,
+        h('div', { class: 'links' }, h('button', { onclick: () => pinStep() }, 'J\'ai un code secret'))));
+    }
+
+    // Étape 2 : le code à 6 chiffres, sur un clavier géant (validation automatique)
+    function codeStep(devCode) {
+      let digits = '';
+      const err = h('div', { class: 'err' });
+      const boxes = h('div', { class: 'codeboxes' }, Array.from({ length: 6 }, () => h('div', { class: 'codebox' })));
+      const draw = () => [...boxes.children].forEach((b, i) => { b.textContent = digits[i] || ''; b.classList.toggle('on', i === digits.length); });
+      async function submit() {
+        try { await rawApi('/api/admin/otp/verify', { method: 'POST', json: { slug: shop.slug, phone, code: digits } }); finish(); }
+        catch (e) { err.textContent = e.message; digits = ''; draw(); }
+      }
+      const press = (k) => {
+        navigator.vibrate?.(8); err.textContent = '';
+        if (k === 'del') digits = digits.slice(0, -1); else if (digits.length < 6) digits += k;
+        draw(); if (digits.length === 6) submit();
+      };
+      const keys = h('div', { class: 'keys', style: 'height:44vh;flex:none' }, ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) =>
+        k === '' ? h('span') : h('button', { class: 'key' + (k === 'del' ? ' del' : ''), onclick: () => press(k) }, k === 'del' ? '⌫' : k)));
+      const resend = h('button', { disabled: true }, '');
+      let left = 30;
+      const tick = () => { resend.disabled = left > 0; resend.textContent = left > 0 ? `Renvoyer le code (${left} s)` : '↻ Renvoyer le code'; left--; };
+      tick(); timer = setInterval(tick, 1000);
+      resend.onclick = async () => { try { const r = await rawApi('/api/admin/otp/request', { method: 'POST', json: { slug: shop.slug, phone } }); left = 30; toast('Nouveau code envoyé ✓'); if (r.dev_code) codeStep(r.dev_code); } catch (e) { err.textContent = e.message; } };
+      root.replaceChildren(h('div', { class: 'login' },
+        h('h1', {}, 'Entrez votre code'), h('p', { class: 'sub' }, `Envoyé au +${phone.replace(/\D/g, '')}`),
+        devCode ? h('div', { class: 'banner' }, `🧪 Mode démo : votre code est ${devCode}`) : null,
+        boxes, err, keys,
+        h('div', { class: 'links' }, resend, h('button', { onclick: () => phoneStep() }, 'Changer de numéro'))));
+      draw();
+    }
+
+    // Repli : code secret
+    function pinStep() {
+      clearInterval(timer);
+      const err = h('div', { class: 'err' });
+      const input = h('input', { type: 'tel', inputmode: 'tel', placeholder: 'Votre numéro', value: phone });
+      const pin = h('input', { type: 'password', inputmode: 'numeric', autocomplete: 'current-password', placeholder: '••••', maxlength: 8 });
+      const go = h('button', { class: 'btn block', style: 'min-height:68px;font-size:1.3rem', onclick: async () => {
+        err.textContent = ''; go.disabled = true;
+        try { await rawApi('/api/admin/login', { method: 'POST', json: { slug: shop.slug, phone: input.value, pin: pin.value } }); finish(); }
+        catch (e) { err.textContent = e.message; go.disabled = false; }
+      } }, 'Se connecter');
+      pin.addEventListener('keydown', (e) => e.key === 'Enter' && go.click());
+      root.replaceChildren(h('div', { class: 'login' }, ...head(),
+        h('label', { class: 'field' }, h('span', {}, 'Votre numéro de téléphone'), input),
+        h('label', { class: 'field' }, h('span', {}, 'Votre code secret'), pin), err, go,
+        h('div', { class: 'links' }, h('button', { onclick: () => phoneStep() }, '← Recevoir un code par message'))));
+    }
+    phoneStep(message);
   }
 
   // ---------- Clavier numérique géant (partagé : ajout et changement de prix) ----------
@@ -107,11 +165,23 @@
     installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null;
   }
 
-  function settings() {
+  async function settings() {
+    let ai = true;
+    try { ai = (await api('/api/admin/me')).settings.ai_auto; } catch { /* hors ligne : valeur par défaut */ }
+    const aiBtn = h('button', { class: 'switch' + (ai ? ' on' : ''), role: 'switch', 'aria-checked': String(ai) });
+    const drawAi = () => { aiBtn.className = 'switch' + (ai ? ' on' : ''); aiBtn.setAttribute('aria-checked', String(ai)); aiBtn.textContent = ai ? '✨ L\'IA est ACTIVÉE' : 'L\'IA est désactivée'; };
+    aiBtn.onclick = async () => {
+      const next = !ai;
+      try { const r = await api('/api/admin/settings', { method: 'PATCH', json: { ai_auto: next } }); ai = r.settings.ai_auto; drawAi(); toast(ai ? 'L\'IA embellira vos prochaines photos ✨' : 'Vos photos seront publiées telles quelles'); }
+      catch (e) { toast(e.message, true); }
+    };
+    drawAi();
     const old = h('input', { type: 'password', inputmode: 'numeric', placeholder: 'Code actuel' });
     const nw = h('input', { type: 'password', inputmode: 'numeric', placeholder: 'Nouveau code (4 à 8 chiffres)', maxlength: 8 });
     const s = sheet([
       h('h2', {}, 'Réglages'),
+      h('div', { class: 'field' }, h('span', {}, 'Embellissement automatique des photos'), aiBtn,
+        h('p', { style: 'color:var(--muted);font-size:.9rem;margin:6px 0 0' }, 'Fond propre, lumière corrigée, nom et description. Les couleurs et les broderies ne sont jamais modifiées, et votre photo d\'origine est toujours gardée.')),
       installEvt ? h('button', { class: 'btn block accent', onclick: () => { s.close(); install(); } }, '📲 Installer sur mon téléphone')
         : h('p', { style: 'color:var(--muted)' }, 'Pour installer : menu du navigateur → « Ajouter à l\'écran d\'accueil ».'),
       h('h3', { style: 'margin-top:14px' }, 'Changer mon code secret'),
@@ -265,16 +335,25 @@
       btns = [
         h('button', { class: 'btn green', disabled: busy(p), onclick: () => patch({ reviewed: true }, 'Validé ✓') }, '✅ Valider'),
         h('button', { class: 'btn ghost', onclick: () => editSheet(p, refresh) }, '✏️ Corriger'),
-        p.ai_status === 'failed' ? h('button', { class: 'btn ghost', onclick: async () => { await api(`/api/admin/products/${p.id}/reprocess`, { method: 'POST' }).catch(() => {}); refresh(); } }, '🔄 Relancer l\'IA') : null,
+        embellish(p, refresh),
       ];
     } else {
       btns = [
         h('button', { class: 'btn ' + (p.sold_out ? 'green' : 'ghost'), onclick: () => patch({ sold_out: !p.sold_out }) }, p.sold_out ? '✅ Disponible' : '🚫 Épuisé'),
         h('button', { class: 'btn ghost', onclick: () => priceSheet(p, refresh) }, '💰 Prix'),
         h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: () => remove(p, refresh) }, '🗑 Supprimer'),
+        embellish(p, refresh),
       ];
     }
     return h('div', { class: 'card-a' }, top, h('div', { class: 'btns' }, btns));
+  }
+
+  // Photo pas encore embellie (IA désactivée ou en échec) : bouton pour la traiter à la demande
+  function embellish(p, refresh) {
+    if (p.ai_done || busy(p)) return null;
+    return h('button', { class: 'btn accent', onclick: async () => {
+      try { await api(`/api/admin/products/${p.id}/reprocess`, { method: 'POST' }); toast('✨ L\'IA s\'en occupe…'); refresh(); } catch (e) { toast(e.message, true); }
+    } }, p.ai_status === 'failed' ? '🔄 Relancer l\'IA' : '✨ Embellir avec l\'IA');
   }
 
   async function remove(p, refresh) {

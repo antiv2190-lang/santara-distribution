@@ -91,6 +91,18 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     assert((al.headers.get('set-cookie') || '').includes('HttpOnly')); ok('cookie HttpOnly');
     const al2 = await call('POST', '/api/admin/login', { json: { slug: 'autre', phone: '76333333', pin: '4321' } }); const ac2 = cookieOf(al2);
 
+    console.log('Connexion par code reçu sur le téléphone');
+    const unk = await call('POST', '/api/admin/otp/request', { json: { slug: 'demo', phone: '70 99 99 99' } });
+    assert.strictEqual(unk.status, 200); assert(!unk.data.dev_code); ok('numéro inconnu : même réponse, aucun code (pas de fuite)');
+    const rq = await call('POST', '/api/admin/otp/request', { json: { slug: 'demo', phone: '+223 76 11 11 11' } });
+    assert.strictEqual(rq.status, 200); assert(/^\d{6}$/.test(rq.data.dev_code)); ok('code à 6 chiffres envoyé (affiché en mode démo)');
+    assert.strictEqual((await call('POST', '/api/admin/otp/request', { json: { slug: 'demo', phone: '76111111' } })).status, 429); ok('2e envoi immédiat refusé (30 s)');
+    assert.strictEqual((await call('POST', '/api/admin/otp/verify', { json: { slug: 'demo', phone: '76111111', code: rq.data.dev_code === '000000' ? '111111' : '000000' } })).status, 401); ok('mauvais code refusé');
+    const vf = await call('POST', '/api/admin/otp/verify', { json: { slug: 'demo', phone: '76111111', code: rq.data.dev_code } });
+    assert.strictEqual(vf.status, 200); const oc = cookieOf(vf);
+    assert.strictEqual((await call('GET', '/api/admin/me', { cookie: oc })).status, 200); ok('bon code : connecté');
+    assert.strictEqual((await call('POST', '/api/admin/otp/verify', { json: { slug: 'demo', phone: '76111111', code: rq.data.dev_code } })).status, 401); ok('un code ne sert qu\'une fois');
+
     const photo = await fabricJpeg(true);
     assert.strictEqual((await call('POST', '/api/admin/products?price=0', { cookie: ac, body: photo, headers: { 'content-type': 'image/jpeg' } })).status, 400); ok('prix 0 refusé');
     assert.strictEqual((await call('POST', '/api/admin/products?price=1000', { cookie: ac, body: Buffer.from('pas une image'.repeat(60)), headers: { 'content-type': 'image/jpeg' } })).status, 400); ok('fichier non-image refusé');
@@ -127,6 +139,7 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     const list = await call('GET', '/api/shops/demo/products'); assert.strictEqual(list.data.total, 1);
     assert(!('ai_error' in list.data.items[0]) && !('reviewed' in list.data.items[0])); ok('liste publique sans champs internes');
     assert.strictEqual((await call('GET', '/api/shops/demo/products?cat=wax')).data.total, 0); ok('filtre catégorie');
+    const cats = (await call('GET', '/api/shops/demo/categories')).data; assert.strictEqual(cats.total, 1); assert.strictEqual(cats.counts.basin, 1); assert.strictEqual(cats.counts.wax, 0); ok('rubriques : seulement celles qui ont des tissus');
     assert.strictEqual((await call('GET', '/api/shops/demo/products?q=bleu')).data.total, 1); ok('recherche par nom');
     assert.strictEqual((await call('GET', '/api/shops/demo/products?q=zzz')).data.total, 0);
     assert.strictEqual((await call('GET', '/api/shops/autre/products')).data.total, 0); ok('isolation entre boutiques');
@@ -150,6 +163,21 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     assert.strictEqual((await call('DELETE', `/api/admin/products/${id}`, { cookie: ac })).status, 200);
     assert.strictEqual((await call('GET', '/api/shops/demo/products')).data.total, 0);
     assert.strictEqual((await fetch(BASE + oldImg)).status, 404); ok('supprimer (fiche + photos)');
+
+    console.log('Option « IA automatique »');
+    const waitFor = async (pid, pred) => { let q; for (let i = 0; i < 60; i++) { await sleep(200); q = (await call('GET', `/api/admin/products/${pid}`, { cookie: ac })).data; if (pred(q)) return q; } throw new Error('délai dépassé : ' + JSON.stringify(q)); };
+    assert.strictEqual((await call('GET', '/api/admin/me', { cookie: ac })).data.settings.ai_auto, true); ok('IA automatique activée par défaut');
+    assert.strictEqual((await call('PATCH', '/api/admin/settings', { cookie: ac, json: { ai_auto: false } })).data.settings.ai_auto, false); ok('le propriétaire la désactive');
+    seenAiRequest = null;
+    const np = await call('POST', '/api/admin/products?price=9000&cid=sans-ia', { cookie: ac, body: await fabricJpeg(false), headers: { 'content-type': 'image/jpeg' } });
+    const q1 = await waitFor(np.data.id, (q) => q.ai_status === 'done');
+    assert.strictEqual(seenAiRequest, null); assert.strictEqual(q1.ai_done, false); assert.strictEqual(q1.name, 'Nouveau tissu'); assert.strictEqual(q1.image, q1.original); ok('IA désactivée : publié tel quel, aucun appel IA, photo d\'origine');
+    assert.strictEqual((await call('GET', '/api/shops/demo/products')).data.total, 1); ok('le produit est quand même visible dans la vitrine');
+    await call('POST', `/api/admin/products/${np.data.id}/reprocess`, { cookie: ac });
+    const q2 = await waitFor(np.data.id, (q) => q.ai_done && q.ai_status === 'done');
+    assert(seenAiRequest); assert.strictEqual(q2.name, 'Basin riche brodé bleu royal'); assert(q2.image !== q2.original); ok('« Embellir avec l\'IA » : traitement à la demande (nom + photo)');
+    await call('PATCH', '/api/admin/settings', { cookie: ac, json: { ai_auto: true } });
+    await call('DELETE', `/api/admin/products/${np.data.id}`, { cookie: ac });
 
     console.log('\nTOUS LES TESTS PASSENT');
   } catch (e) { failed = true; console.error('\nÉCHEC :', e.message); if (e.stack) console.error(e.stack.split('\n').slice(1, 4).join('\n')); }

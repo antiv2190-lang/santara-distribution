@@ -79,3 +79,11 @@ input,textarea{user-select:text;-webkit-user-select:text}
 .sheet .keys{height:48vh;flex:none}
 .sheet .amount{min-height:0;margin-bottom:8px}
 .photo-view img{width:100%;border-radius:14px;margin-bottom:10px}
+
+/* Code à 6 chiffres + interrupteur IA */
+.codeboxes{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.codebox{width:48px;height:62px;border-radius:12px;background:#fff;font-size:2rem;font-weight:800;display:grid;place-items:center;border:3px solid var(--line)}
+.codebox.on{border-color:var(--accent)}
+.login .keys{margin-top:8px}
+.switch{width:100%;min-height:64px;border-radius:16px;background:#e5e0d3;color:var(--muted);font-weight:800;font-size:1.15rem}
+.switch.on{background:var(--accent);color:var(--on-accent)}

@@ -40,6 +40,7 @@
       aphone: h('input', { type: 'tel', placeholder: '+223 76 00 00 00' }),
       apin: h('input', { value: create ? randomPin() : '', inputmode: 'numeric', maxlength: 8, placeholder: create ? '' : 'Laisser vide = inchangé' }),
       review: h('input', { type: 'checkbox', ...(v.require_review ? { checked: true } : {}) }),
+      ai: h('input', { type: 'checkbox', ...(v.ai_auto === false ? {} : { checked: true }) }),
     };
     let unit = v.sale_unit, slugTouched = !create;
     f.name.addEventListener('input', () => { if (!slugTouched) f.slug.value = slugify(f.name.value); });
@@ -57,7 +58,7 @@
       err.textContent = ''; submit.disabled = true;
       try {
         const body = { name: f.name.value, city: f.city.value, whatsapp: f.whatsapp.value, sale_unit: unit, tagline: f.tagline.value,
-          color_primary: f.primary.value, color_accent: f.accent.value, require_review: f.review.checked };
+          color_primary: f.primary.value, color_accent: f.accent.value, require_review: f.review.checked, ai_auto: f.ai.checked };
         if (create) { body.slug = f.slug.value; body.admin_phone = f.aphone.value; body.admin_pin = f.apin.value; }
         else { body.admin_phone = f.aphone.value; if (f.apin.value) body.admin_pin = f.apin.value; }
         await onSubmit(body, f.logo.files[0], f.apin.value);
@@ -76,6 +77,7 @@
       L('Logo (facultatif)', f.logo), L('Petite phrase sous le nom', f.tagline),
       h('h3', { style: 'margin:14px 0 4px' }, 'Connexion du propriétaire'),
       h('div', { class: 'grid2' }, L('Son téléphone', f.aphone), L('Son code (4 à 8 chiffres)', f.apin)),
+      h('label', { style: 'display:flex;gap:10px;align-items:center;margin:10px 0' }, f.ai, '✨ L\'IA embellit les photos automatiquement (le propriétaire peut le changer)'),
       h('label', { style: 'display:flex;gap:10px;align-items:center;margin:10px 0' }, f.review, 'Publier seulement après validation du propriétaire'),
       err, submit);
   }

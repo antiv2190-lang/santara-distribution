@@ -20,6 +20,16 @@ router.get('/shops/:slug', activeShop, (req, res) => {
   res.json(publicShop(req.shop));
 });
 
+// Nombre de tissus par rubrique (la vitrine n'affiche que les rubriques qui ont des produits)
+router.get('/shops/:slug/categories', activeShop, async (req, res, next) => {
+  try {
+    const opts = { publicOnly: true, requireReview: req.shop.require_review, limit: 1 };
+    const [all, ...per] = await Promise.all([store.listProducts(req.shop.id, opts), ...CATEGORIES.map((c) => store.listProducts(req.shop.id, { ...opts, category: c }))]);
+    res.set('Cache-Control', 'public, max-age=15');
+    res.json({ total: all.total, counts: Object.fromEntries(CATEGORIES.map((c, i) => [c, per[i].total])) });
+  } catch (e) { next(e); }
+});
+
 router.get('/shops/:slug/products', activeShop, async (req, res, next) => {
   try {
     const category = CATEGORIES.includes(req.query.cat) ? req.query.cat : undefined;
