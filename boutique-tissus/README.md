@@ -26,7 +26,7 @@ Sans Supabase, l'application tourne en **mode démo** (données dans `.data/`). 
 « Nouveau tissu » (à corriger dans « À vérifier ») ; la photo est quand même améliorée.
 Pour la caméra : `localhost` fonctionne ; sur un vrai téléphone il faut **HTTPS** (fourni par Render, voir plus bas).
 
-`npm test` lance 44 vérifications de bout en bout (création de boutique, connexion, publication, IA simulée, règle des couleurs,
+`npm test` lance 56 vérifications de bout en bout (création de boutique, connexion, publication, IA simulée, règle des couleurs,
 isolation entre boutiques, sécurité).
 
 ---
@@ -51,6 +51,9 @@ Variables d'environnement (voir `.env.example`) :
 | `DEFAULT_SHOP` | Facultatif : « slug » de la boutique servie sur `/` et `/admin` |
 | `PUBLIC_URL` | Facultatif : adresse publique (liens partagés) |
 | `NODE_ENV=production` | Refuse de démarrer sans Supabase / secret |
+| `OTP_PROVIDER` | Comment le code de connexion arrive sur le téléphone : `twilio-whatsapp`, `twilio-sms` ou `webhook` (voir plus bas). Sans lui, le propriétaire utilise son code secret |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` | Si Twilio |
+| `OTP_WEBHOOK_URL`, `OTP_WEBHOOK_TOKEN` | Si `webhook` : n'importe quelle passerelle SMS/WhatsApp (Orange, WhatsApp Cloud API, n8n, Zapier…) |
 
 ### 3. Créer la boutique
 Ouvrez `https://votre-site/super-admin` → **➕ Nouvelle boutique** : nom, ville, WhatsApp, mode de vente
@@ -61,7 +64,15 @@ Ouvrez `https://votre-site/super-admin` → **➕ Nouvelle boutique** : nom, vil
 
 ### 4. Installer sur le téléphone du propriétaire
 Il ouvre `https://votre-site/<boutique>/admin` dans Chrome → **⋮ → Ajouter à l'écran d'accueil** (ou le bouton « 📲 Installer » dans l'appli).
-Il se connecte une fois (téléphone + code) et reste connecté 60 jours. Il peut changer son code dans ⚙️.
+Il tape son numéro, **reçoit un code à 6 chiffres sur son téléphone**, le tape sur le clavier géant : c'est fini. Il reste connecté 60 jours.
+Le code secret (défini à la création de la boutique) reste possible en repli (« J'ai un code secret »).
+
+### Connexion par code reçu sur le téléphone
+- Le code (6 chiffres, valable 5 min, 5 essais, 1 envoi / 30 s, 5 envois / heure) n'est jamais stocké en clair.
+- Un numéro inconnu reçoit la même réponse (impossible de savoir quels numéros sont inscrits).
+- **Choisissez le canal** : au Mali, **WhatsApp** (`twilio-whatsapp` ou une passerelle en `webhook`) est généralement plus fiable et moins cher que le SMS international.
+  Avec `webhook`, le serveur envoie `POST {to, message, code, shop}` à votre passerelle.
+- En démo (`OTP_PROVIDER=console`, hors production) le code s'affiche à l'écran pour pouvoir essayer. **En production, l'envoi réel n'a pas été testé** (pas de compte Twilio ici).
 
 ---
 
@@ -80,14 +91,20 @@ Si la caméra intégrée est refusée, l'application bascule sur l'appareil phot
 
 ## Traitement IA de chaque photo
 
+**Option « IA automatique »** : le propriétaire l'active ou la coupe lui-même dans ⚙️ (le super-admin peut aussi la régler à la création).
+Activée : chaque photo est traitée en arrière-plan. Désactivée : le tissu est publié tel quel (photo d'origine, nom « Nouveau tissu »),
+sans aucun appel IA, et chaque carte propose **✨ Embellir avec l'IA** pour traiter un tissu à la demande.
+
 - **Texte** (`lib/ai/describe.js`) : Claude (vision) renvoie, en JSON garanti, un nom attractif, une catégorie
   (basin / broderie / wax / bazin / autre) et 2–3 phrases marketing (texture, motif, occasions : mariage, baptême, Tabaski…).
   Il ne doit rien inventer (composition, marque, dimensions).
-- **Photo** (`lib/ai/enhance.js`) — **règle absolue : jamais de changement des couleurs, motifs ou broderies.**
+- **Photo** (`lib/ai/enhance.js`, `lib/ai/cutout.js`) — **règle absolue : jamais de changement des couleurs, motifs ou broderies.**
   Pour cela, aucune IA *générative* d'image n'est utilisée (elle pourrait inventer des motifs). Le serveur applique seulement :
   correction de **lumière** (étirement de la luminance), **netteté** douce, puis place le tissu centré sur un fond clair élégant avec ombre douce.
   Un **garde-fou** mesure l'écart de couleur (plan a\*b\* de Lab, indépendant de la luminosité) ; au-delà de 4 il renonce à la correction de lumière.
   Les tests vérifient que la teinte reste identique alors que la luminosité passe de 57 à 131.
+  Le **détourage du sol** (moquette, table) est fait en local, sans service externe : le sol est estimé d'après les bords de la photo,
+  retiré, remplacé par le fond élégant ; si le résultat n'est pas fiable (tissu empilé avec d'autres, fond chargé), la photo reste entière, simplement cadrée.
   Option `IMAGE_PROVIDER=removebg` : détourage du fond via remove.bg (les pixels du tissu restent identiques) puis même mise en scène.
 - **La photo originale est toujours conservée** octet pour octet et reste accessible (propriétaire, et « Photo d'origine » dans la galerie de la fiche produit — utile pour les couleurs réelles).
 - En cas de panne de l'IA : 3 essais espacés, puis le produit reste publiable (nom « Nouveau tissu », bouton **🔄 Relancer l'IA**).
@@ -135,6 +152,9 @@ test/smoke.test.js     tests de bout en bout
 ```
 
 ## Limites connues
+- **Détourage local imparfait** : testé sur 6 photos réelles (voile suisse sur moquette brune) : 4 propres, 2 avec un défaut visible (un reste de moquette, ou un tissu voisin resté collé).
+  Il est volontairement prudent : il ne coupe jamais dans un tissu sombre ou brun. Pour un rendu parfait à chaque fois, activer `IMAGE_PROVIDER=removebg` (ou brancher un service de détourage pro). La photo d'origine reste toujours disponible.
+- Les noms/descriptions de la démo « Nogoya Boutique » (`scripts/seed-photos.js`) sont des **textes d'exemple écrits à la main** et les prix sont fictifs ; en production c'est l'IA qui les rédige.
 - L'appel à l'API Claude est vérifié contre une API **simulée** (le format de requête/réponse est testé, pas la réponse réelle du modèle) : faites un premier essai avec votre clé.
 - Le détourage `removebg` n'a pas été testé (pas de clé).
 - Le plan gratuit de Render se met en veille (30–60 s au réveil) ; le traitement IA en cours reprend ensuite.
