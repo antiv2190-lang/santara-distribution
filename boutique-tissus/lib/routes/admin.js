@@ -153,8 +153,9 @@ router.get('/products/:id', async (req, res, next) => {
 // Réponse immédiate : l'IA travaille ensuite en arrière-plan.
 router.post('/products', express.raw({ type: ['image/*', 'application/octet-stream'], limit: '12mb' }), async (req, res, next) => {
   try {
-    const price = parseInt(req.query.price, 10);
-    if (!Number.isInteger(price) || price <= 0 || price > 100000000) return res.status(400).json({ error: 'Prix invalide.' });
+    // Prix facultatif : absent ou 0 = « prix sur demande » (à compléter plus tard avec le bouton Prix)
+    const price = req.query.price === undefined ? 0 : parseInt(req.query.price, 10);
+    if (!Number.isInteger(price) || price < 0 || price > 100000000) return res.status(400).json({ error: 'Prix invalide.' });
     if (!Buffer.isBuffer(req.body) || req.body.length < 500) return res.status(400).json({ error: 'Photo manquante.' });
 
     const cid = clampStr(req.query.cid, 64) || null;
@@ -187,8 +188,8 @@ router.patch('/products/:id', express.json({ limit: '20kb' }), async (req, res, 
     if ('category' in b) { if (!CATEGORIES.includes(b.category)) return res.status(400).json({ error: 'Catégorie invalide.' }); patch.category = b.category; }
     if ('price' in b) {
       const price = parseInt(b.price, 10);
-      if (!Number.isInteger(price) || price <= 0 || price > 100000000) return res.status(400).json({ error: 'Prix invalide.' });
-      patch.price = price;
+      if (!Number.isInteger(price) || price < 0 || price > 100000000) return res.status(400).json({ error: 'Prix invalide.' });
+      patch.price = price; // 0 = prix sur demande
     }
     if ('sold_out' in b) patch.sold_out = !!b.sold_out;
     if ('reviewed' in b) patch.reviewed = !!b.reviewed;

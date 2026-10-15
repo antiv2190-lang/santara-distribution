@@ -43,7 +43,7 @@ create table if not exists products (
   category       text not null default 'autre'
                  check (category in ('dentelle','basin','broderie','wax','bazin','autre')),
   description    text,
-  price          integer not null check (price >= 0), -- en FCFA
+  price          integer not null default 0 check (price >= 0), -- en FCFA ; 0 = « prix sur demande »
   original_path  text not null,                     -- photo d'origine (toujours conservée)
   enhanced_path  text,                              -- photo améliorée par le traitement
   thumb_path     text,                              -- miniature légère pour la grille

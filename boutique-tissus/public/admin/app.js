@@ -274,7 +274,8 @@
       blob = b;
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       previewUrl = URL.createObjectURL(b);
-      const pub = h('button', { class: 'btn block green pub', disabled: true, onclick: publish }, '✅ Publier');
+      const pub = h('button', { class: 'btn block green pub', disabled: true, onclick: () => publish() }, '✅ Publier');
+      const noPrice = h('button', { style: 'background:none;font-weight:700;color:var(--muted);padding:8px 0 0;text-decoration:underline', onclick: () => publish(true) }, 'Publier sans prix pour l\'instant');
       kp = keypad('', (v) => { pub.disabled = !v; });
       priceLayer.replaceChildren(
         h('div', { class: 'steps' }, h('span', { class: 'done' }, '① Photo ✓'), h('span', { class: 'on' }, '② Prix'), h('span', {}, '③ Publier')),
@@ -282,14 +283,14 @@
           h('img', { src: previewUrl, alt: 'Votre photo' }),
           kp.amount),
         h('button', { style: 'align-self:flex-start;background:none;font-weight:700;color:var(--muted);padding:4px 0 8px;text-decoration:underline', onclick: retake }, '↺ Reprendre la photo'),
-        kp.keys, pub);
+        kp.keys, pub, noPrice);
       priceLayer.classList.remove('hidden');
     }
     function retake() { priceLayer.classList.add('hidden'); blob = null; }
 
-    function publish() {
-      if (!blob || !kp.value) return;
-      Q.add({ blob, price: kp.value }); // sans attendre : l'envoi se fait en arrière-plan
+    function publish(withoutPrice) {
+      if (!blob || (!kp.value && withoutPrice !== true)) return;
+      Q.add({ blob, price: withoutPrice === true ? 0 : kp.value }); // 0 = prix sur demande (à compléter plus tard) // sans attendre : l'envoi se fait en arrière-plan
       published++;
       blob = null;
       toast('✅ Publié !', false, 1100);
@@ -328,7 +329,7 @@
       p.thumb ? h('img', { src: p.thumb, alt: '', width: 96, height: 96, onclick: () => details(p, refresh) }) : h('div', { class: 'noimg' }),
       h('div', { class: 'meta' },
         h('h3', {}, p.name),
-        h('div', { class: 'p' }, `${fmt(p.price)} FCFA`),
+        p.price > 0 ? h('div', { class: 'p' }, `${fmt(p.price)} FCFA`) : h('div', { class: 'p', style: 'color:var(--danger)' }, 'Prix à définir'),
         h('span', { class: 'tag' }, CAT[p.category] || ''), ' ', statusTag(p)));
     let btns;
     if (mode === 'review') {
@@ -340,7 +341,7 @@
     } else {
       btns = [
         h('button', { class: 'btn ' + (p.sold_out ? 'green' : 'ghost'), onclick: () => patch({ sold_out: !p.sold_out }) }, p.sold_out ? '✅ Disponible' : '🚫 Épuisé'),
-        h('button', { class: 'btn ghost', onclick: () => priceSheet(p, refresh) }, '💰 Prix'),
+        h('button', { class: 'btn ' + (p.price > 0 ? 'ghost' : 'accent'), onclick: () => priceSheet(p, refresh) }, p.price > 0 ? '💰 Prix' : '💰 Mettre le prix'),
         h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: () => remove(p, refresh) }, '🗑 Supprimer'),
         embellish(p, refresh),
       ];
@@ -364,7 +365,6 @@
   function priceSheet(p, refresh) {
     const kp = keypad(p.price);
     const save = h('button', { class: 'btn block green', style: 'min-height:70px;font-size:1.4rem', onclick: async () => {
-      if (!kp.value) return;
       try { await api(`/api/admin/products/${p.id}`, { method: 'PATCH', json: { price: kp.value } }); s.close(); toast('Prix modifié ✓'); refresh(); } catch (e) { toast(e.message, true); }
     } }, '💾 Enregistrer');
     const s = sheet([h('h2', {}, 'Nouveau prix'), kp.amount, kp.keys, save]);

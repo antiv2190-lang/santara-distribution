@@ -11,8 +11,10 @@
   // ---------- WhatsApp ----------
   const waLink = (text) => `https://wa.me/${shop.whatsapp}?text=${encodeURIComponent(text)}`;
   // Message exact demandé : « Bonjour, je souhaite commander : [nom] à [prix] FCFA. Lien : [lien] »
-  const orderLink = (p) =>
-    waLink(`Bonjour, je souhaite commander : ${p.name} à ${fmt(p.price, ' ')} FCFA. Lien : ${location.origin}${base}/p/${p.id}`);
+  // Sans prix affiché : on demande le prix dans le message.
+  const orderLink = (p) => waLink(p.price > 0
+    ? `Bonjour, je souhaite commander : ${p.name} à ${fmt(p.price, ' ')} FCFA. Lien : ${location.origin}${base}/p/${p.id}`
+    : `Bonjour, je souhaite connaître le prix de : ${p.name}. Lien : ${location.origin}${base}/p/${p.id}`);
 
   // ---------- Éléments communs ----------
   function logo() {
@@ -36,7 +38,9 @@
       h('div', { class: 'foot-name' }, shop.name), shop.city ? h('div', {}, shop.city) : null,
       h('div', {}, h('a', { href: `https://wa.me/${shop.whatsapp}`, target: '_blank', rel: 'noopener' }, `WhatsApp : +${shop.whatsapp}`)));
   }
-  const priceNode = (p) => h('div', { class: 'pr' }, `${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null);
+  // Prix à 0 = « prix sur demande »
+  const priceParts = (p) => (p.price > 0 ? [`${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null] : [h('span', { class: 'ask' }, 'Prix sur demande')]);
+  const priceNode = (p) => h('div', { class: 'pr' }, ...priceParts(p));
   function card(p) {
     return h('a', { class: 'card', href: `${base}/p/${p.id}`, onclick: (e) => { e.preventDefault(); go(`${base}/p/${p.id}`); } },
       h('div', { class: 'ph' }, h('img', { src: p.thumb, alt: p.name, loading: 'lazy', width: 600, height: 600 }),
@@ -154,7 +158,7 @@
 
     const orderBtn = (cls) => p.sold_out
       ? h('button', { class: `btn ${cls || ''} block`, disabled: true }, 'Épuisé pour le moment')
-      : h('a', { class: `btn block wa ${cls || ''}`, href: orderLink(p), target: '_blank', rel: 'noopener' }, waIcon(24), 'Commander sur WhatsApp');
+      : h('a', { class: `btn block wa ${cls || ''}`, href: orderLink(p), target: '_blank', rel: 'noopener' }, waIcon(24), p.price > 0 ? 'Commander sur WhatsApp' : 'Demander le prix sur WhatsApp');
     const similar = h('section', { class: 'similar hidden' }, h('h3', {}, 'Dans la même collection'));
     const simGrid = h('div', { class: 'grid' });
     similar.append(simGrid);
@@ -168,7 +172,7 @@
           h('div', { class: 'info' },
             h('div', { class: 'cat' }, CAT[p.category] || ''),
             h('h1', {}, p.name),
-            h('div', { class: 'price' }, `${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null),
+            h('div', { class: 'price' }, ...priceParts(p)),
             h('span', { class: 'avail' + (p.sold_out ? ' out' : '') }, p.sold_out ? 'Épuisé' : '● Disponible'),
             p.description ? h('p', { class: 'desc' }, p.description) : null,
             h('ul', { class: 'assure' }, h('li', {}, '📸 Photos fidèles aux couleurs du tissu'), h('li', {}, '💬 Réponse sur WhatsApp, commande en un message')),
@@ -176,7 +180,7 @@
         similar),
       footer(),
       // Barre de commande toujours visible sur téléphone
-      h('div', { class: 'buybar' }, h('div', {}, h('strong', {}, `${fmt(p.price)} FCFA`), unit ? h('small', {}, ` / ${unit}`) : null), orderBtn('compact')));
+      h('div', { class: 'buybar' }, h('div', {}, h('strong', {}, p.price > 0 ? `${fmt(p.price)} FCFA` : 'Prix sur demande'), p.price > 0 && unit ? h('small', {}, ` / ${unit}`) : null), orderBtn('compact')));
 
     // Tissus de la même rubrique
     api(`/api/shops/${shop.slug}/products?cat=${p.category}&limit=5`).then((r) => {
@@ -188,7 +192,7 @@
   // ---------- Partage (WhatsApp / Facebook / lien) ----------
   function share(p) {
     const url = `${location.origin}${base}/p/${p.id}`;
-    const text = `${p.name} — ${fmt(p.price, ' ')} FCFA · ${shop.name}`;
+    const text = `${p.name}${p.price > 0 ? ` — ${fmt(p.price, ' ')} FCFA` : ''} · ${shop.name}`;
     const s = sheet([
       h('h2', {}, 'Partager ce tissu'),
       h('div', { class: 'share-row' },

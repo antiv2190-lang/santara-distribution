@@ -56,6 +56,8 @@ input,textarea{user-select:text;-webkit-user-select:text}
 .key.del{background:#ffe2de}
 .pub{min-height:76px;font-size:1.7rem;border-radius:20px}
 /* Listes */
+.login .logo:has(img){background:transparent}
+.login .logo img{background:transparent!important}
 .card-a{background:#fff;border-radius:20px;padding:12px;margin-bottom:14px;box-shadow:0 1px 4px #0002}
 .card-top{display:flex;gap:12px}
 .card-top img,.card-top .noimg{width:96px;height:96px;border-radius:14px;object-fit:cover;flex:none;background:#e6e0d3}

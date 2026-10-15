@@ -104,7 +104,7 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     assert.strictEqual((await call('POST', '/api/admin/otp/verify', { json: { slug: 'demo', phone: '76111111', code: rq.data.dev_code } })).status, 401); ok('un code ne sert qu\'une fois');
 
     const photo = await fabricJpeg(true);
-    assert.strictEqual((await call('POST', '/api/admin/products?price=0', { cookie: ac, body: photo, headers: { 'content-type': 'image/jpeg' } })).status, 400); ok('prix 0 refusé');
+    assert.strictEqual((await call('POST', '/api/admin/products?price=-5', { cookie: ac, body: photo, headers: { 'content-type': 'image/jpeg' } })).status, 400); ok('prix négatif refusé');
     assert.strictEqual((await call('POST', '/api/admin/products?price=1000', { cookie: ac, body: Buffer.from('pas une image'.repeat(60)), headers: { 'content-type': 'image/jpeg' } })).status, 400); ok('fichier non-image refusé');
     const t0 = Date.now();
     const cr = await call('POST', '/api/admin/products?price=15000&cid=abc-123', { cookie: ac, body: photo, headers: { 'content-type': 'image/jpeg' } });
@@ -163,6 +163,13 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     assert.strictEqual((await call('DELETE', `/api/admin/products/${id}`, { cookie: ac })).status, 200);
     assert.strictEqual((await call('GET', '/api/shops/demo/products')).data.total, 0);
     assert.strictEqual((await fetch(BASE + oldImg)).status, 404); ok('supprimer (fiche + photos)');
+
+    console.log('Produit sans prix (« prix sur demande »)');
+    const sp = await call('POST', '/api/admin/products?cid=sans-prix', { cookie: ac, body: await fabricJpeg(false), headers: { 'content-type': 'image/jpeg' } });
+    assert.strictEqual(sp.status, 201); assert.strictEqual(sp.data.price, 0); ok('photo publiée sans prix');
+    assert.strictEqual((await call('PATCH', `/api/admin/products/${sp.data.id}`, { cookie: ac, json: { price: 30000 } })).data.price, 30000); ok('le prix se met ensuite avec le bouton Prix');
+    for (let i = 0; i < 60; i++) { await sleep(200); const q = (await call('GET', `/api/admin/products/${sp.data.id}`, { cookie: ac })).data; if (q.ai_status === 'done') break; } // laisse l'IA finir avant de supprimer
+    await call('DELETE', `/api/admin/products/${sp.data.id}`, { cookie: ac });
 
     console.log('Option « IA automatique »');
     const waitFor = async (pid, pred) => { let q; for (let i = 0; i < 60; i++) { await sleep(200); q = (await call('GET', `/api/admin/products/${pid}`, { cookie: ac })).data; if (pred(q)) return q; } throw new Error('délai dépassé : ' + JSON.stringify(q)); };

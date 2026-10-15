@@ -119,6 +119,21 @@ Logo + nom, grille (photo améliorée, nom, prix « / mètre »), filtres par ca
 bouton WhatsApp flottant partout, **Partager** (WhatsApp, Facebook, copier, applications du téléphone).
 Chaque fiche a ses balises de partage (aperçu image + titre dans WhatsApp/Facebook).
 
+
+## Logo et charte (Nogoya Boutique)
+`branding/nogoya/` contient le logo (monogramme « N » doré, anneau en festons comme la bordure d'un voile suisse, fleur brodée) :
+`logo-emblème.svg/.png` (fond transparent, utilisé par le site), `logo-horizontal.png` (en-têtes, affiches), `logo-profil-google-720.png` (profil Google / WhatsApp Business / Facebook).
+`npm run logo` le régénère (couleurs et texte en tête de `branding/make-logo.js`). `npm run seed` l'installe automatiquement sur la boutique ;
+sur une boutique existante : `/super-admin` → Modifier → Logo.
+
+## Mettre des photos en ligne sans prix
+- **Prix facultatif** : un tissu sans prix s'affiche « Prix sur demande » et le bouton de commande devient « Demander le prix sur WhatsApp ».
+  Dans l'espace propriétaire : « Publier sans prix pour l'instant », puis **💰 Mettre le prix** sur la carte quand il le connaît.
+- **Import en lot** (vous, sans le propriétaire) : `npm run import -- /chemin/dossier --shop nogoya --category dentelle`
+  charge toutes les photos du dossier **sans prix**, avec le même traitement (détourage, lumière, netteté). Noms/rubriques : fichier `manifest.json`
+  facultatif dans le dossier, sinon l'IA (si la clé est renseignée), sinon « Nouveau tissu » à corriger dans « À vérifier ».
+  Relançable sans doublons. Il écrit dans la base du `.env` (Supabase en production).
+
 ## Réutiliser pour une autre boutique
 Aucun code à modifier : **/super-admin → Nouvelle boutique**. Les couleurs, le logo, le mode de vente et le numéro sont des données.
 Pour une installation séparée (autre Supabase), dupliquez le dépôt et changez uniquement les variables d'environnement.
