@@ -63,7 +63,8 @@ async function compose(layerPng, inner, shadowStrength) {
 }
 
 // Retourne { enhanced: Buffer(jpeg), thumb: Buffer(webp), toneCorrected, mode: 'cutout'|'removebg'|'frame' }
-async function enhancePhoto(originalBuffer) {
+// options.cutout = false : ne pas détourer le sol (photo entière, cadrée) — utile quand le détourage automatique est imparfait.
+async function enhancePhoto(originalBuffer, options = {}) {
   const base = await sharp(originalBuffer).rotate().resize(1800, 1800, { fit: 'inside', withoutEnlargement: true })
     .removeAlpha().jpeg({ quality: 95, chromaSubsampling: '4:4:4' }).toBuffer();
   let toneCorrected = true;
@@ -78,7 +79,7 @@ async function enhancePhoto(originalBuffer) {
     } catch (e) { console.warn('[enhance] remove.bg indisponible :', e.message); }
   }
   // 2) détourage local
-  if (!enhanced) {
+  if (!enhanced && options.cutout !== false) {
     try {
       const m = await fabricMask(base);
       if (m) {

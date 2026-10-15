@@ -74,6 +74,8 @@ module.exports = {
     if (error) throw new Error('Stockage : ' + error.message);
   },
   async getFile(path) {
+    // Fichier livré avec l'application (voir public/demo) : lu sur place, pas dans le stockage
+    if (path.startsWith('/static/')) return require('fs').promises.readFile(require('path').join(config.publicDir, path.slice('/static/'.length)));
     const { data, error } = await sb.storage.from(bucket).download(path);
     if (error) throw new Error('Stockage : ' + error.message);
     return Buffer.from(await data.arrayBuffer());
@@ -82,5 +84,5 @@ module.exports = {
     const list = paths.filter(Boolean);
     if (list.length) await sb.storage.from(bucket).remove(list);
   },
-  fileUrl(p) { return p ? `${config.supabase.url}/storage/v1/object/public/${bucket}/${p}` : null; },
+  fileUrl(p) { if (p && p.startsWith('/static/')) return p; return p ? `${config.supabase.url}/storage/v1/object/public/${bucket}/${p}` : null; },
 };

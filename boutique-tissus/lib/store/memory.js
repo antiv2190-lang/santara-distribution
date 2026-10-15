@@ -87,9 +87,12 @@ module.exports = {
     await fs.promises.mkdir(path.dirname(full), { recursive: true });
     await fs.promises.writeFile(full, buffer);
   },
-  async getFile(p) { return fs.promises.readFile(path.join(FILES_DIR, p)); },
+  async getFile(p) {
+    if (p.startsWith('/static/')) return fs.promises.readFile(path.join(config.publicDir, p.slice('/static/'.length)));
+    return fs.promises.readFile(path.join(FILES_DIR, p));
+  },
   async deleteFiles(paths) {
     await Promise.all(paths.filter(Boolean).map((p) => fs.promises.rm(path.join(FILES_DIR, p), { force: true })));
   },
-  fileUrl(p) { return p ? `/files/${p}` : null; },
+  fileUrl(p) { if (p && p.startsWith('/static/')) return p; return p ? `/files/${p}` : null; },
 };
