@@ -33,7 +33,11 @@
       city: h('input', { value: v.city, maxlength: 60 }),
       whatsapp: h('input', { type: 'tel', value: v.whatsapp ? '+' + v.whatsapp : '', placeholder: '+223 70 00 00 00' }),
       slug: h('input', { value: v.slug, placeholder: 'tissus-diarra', maxlength: 30, ...(create ? {} : { disabled: true }) }),
-      tagline: h('input', { value: v.tagline || '', maxlength: 100, placeholder: 'Facultatif' }),
+      tagline: h('input', { value: v.tagline || '', maxlength: 100, placeholder: 'Ex. Vente de drap · Rideau · Bazin' }),
+      owner: h('input', { value: v.owner || '', maxlength: 60, placeholder: 'Ex. Fodé Sacko (affiché « Chez … »)' }),
+      address: h('input', { value: v.address || '', maxlength: 120, placeholder: 'Ex. Imm. Yacouba Guindo, Bamako' }),
+      phone2: h('input', { type: 'tel', value: v.phone2 ? '+' + v.phone2 : '', placeholder: '+223 66 00 00 00' }),
+      about: h('input', { value: v.about || '', maxlength: 200, placeholder: 'Phrase de présentation (facultatif)' }),
       primary: h('input', { type: 'color', value: v.color_primary }),
       accent: h('input', { type: 'color', value: v.color_accent }),
       logo: h('input', { type: 'file', accept: 'image/*' }),
@@ -58,7 +62,8 @@
       err.textContent = ''; submit.disabled = true;
       try {
         const body = { name: f.name.value, city: f.city.value, whatsapp: f.whatsapp.value, sale_unit: unit, tagline: f.tagline.value,
-          color_primary: f.primary.value, color_accent: f.accent.value, require_review: f.review.checked, ai_auto: f.ai.checked };
+          color_primary: f.primary.value, color_accent: f.accent.value, require_review: f.review.checked, ai_auto: f.ai.checked,
+          owner_name: f.owner.value, address: f.address.value, phone2: f.phone2.value, about: f.about.value };
         if (create) { body.slug = f.slug.value; body.admin_phone = f.aphone.value; body.admin_pin = f.apin.value; }
         else { body.admin_phone = f.aphone.value; if (f.apin.value) body.admin_pin = f.apin.value; }
         await onSubmit(body, f.logo.files[0], f.apin.value);
@@ -75,6 +80,8 @@
       h('div', { class: 'field' }, h('span', {}, 'Couleurs'), presets),
       h('div', { class: 'grid2' }, L('Couleur principale', f.primary), L('Couleur d\'accent', f.accent)),
       L('Logo (facultatif)', f.logo), L('Petite phrase sous le nom', f.tagline),
+      h('div', { class: 'grid2' }, L('Propriétaire (« Chez … »)', f.owner), L('2e numéro', f.phone2)),
+      L('Adresse', f.address), L('Présentation (sous le titre de la vitrine)', f.about),
       h('h3', { style: 'margin:14px 0 4px' }, 'Connexion du propriétaire'),
       h('div', { class: 'grid2' }, L('Son téléphone', f.aphone), L('Son code (4 à 8 chiffres)', f.apin)),
       h('label', { style: 'display:flex;gap:10px;align-items:center;margin:10px 0' }, f.ai, '✨ L\'IA embellit les photos automatiquement (le propriétaire peut le changer)'),

@@ -4,6 +4,7 @@ const store = require('./store');
 function publicShop(s) {
   return {
     slug: s.slug, name: s.name, tagline: s.tagline || '', city: s.city || '', whatsapp: s.whatsapp,
+    owner: s.owner_name || '', address: s.address || '', phone2: s.phone2 || '', about: s.about || '',
     sale_unit: s.sale_unit, color_primary: s.color_primary, color_accent: s.color_accent,
     logo_url: store.fileUrl(s.logo_path),
   };

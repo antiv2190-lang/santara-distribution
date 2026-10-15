@@ -31,7 +31,7 @@ function page(req, kind, { shop, product, title, noindex } = {}) {
   const base = shop ? `/${shop.slug}` : '';
   const url = origin(req) + req.originalUrl.split('?')[0];
   const t = title || shop?.name || 'Boutique de tissus';
-  let desc = shop ? `${shop.name}${shop.city ? ' — ' + shop.city : ''} : basin, broderies, wax et bazin de qualité.` : '';
+  let desc = shop ? (shop.about || `${shop.name}${shop.owner_name ? ' chez ' + shop.owner_name : ''}${shop.city ? ' — ' + shop.city : ''}${shop.tagline ? ' : ' + shop.tagline : ''}.`) : '';
   let image = shop ? absolute(req, store.fileUrl(shop.logo_path)) : '';
   if (product) {
     const pp = publicProduct(product);

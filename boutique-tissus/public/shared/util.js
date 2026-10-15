@@ -1,7 +1,7 @@
 // Petits outils communs (navigateur). Tout le rendu passe par h() : jamais de innerHTML => pas de faille XSS.
 const T = (() => {
   const UNIT = { metre: 'mètre', piece: 'pièce', lot: 'lot' };
-  const CAT = { dentelle: 'Dentelle', basin: 'Basin', broderie: 'Broderie', wax: 'Wax', bazin: 'Bazin', autre: 'Autre' };
+  const CAT = { broderie: 'Brodé', bazin: 'Bazin', drap: 'Drap', rideau: 'Rideau', dentelle: 'Dentelle', basin: 'Basin', wax: 'Wax', autre: 'Autre' };
 
   // 15000 -> « 15 000 » (espace insécable : le prix ne se coupe pas sur deux lignes)
   const fmt = (n, sep = ' ') => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, sep);

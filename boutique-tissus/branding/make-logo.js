@@ -60,7 +60,8 @@ const svgHorizontal = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2350
   <text x="1090" y="520" font-family="${SERIF}" font-size="210" font-weight="700" letter-spacing="18" fill="url(#g)">NOGOYA</text>
   <g stroke="${GOLD}" stroke-width="3"><line x1="1096" y1="590" x2="1320" y2="590"/><line x1="1780" y1="590" x2="2010" y2="590"/></g>
   <text x="1550" y="608" text-anchor="middle" font-family="${SERIF}" font-size="62" letter-spacing="26" fill="${GOLD_LIGHT}">BOUTIQUE</text>
-  <text x="1096" y="725" font-family="${SERIF}" font-size="44" letter-spacing="8" fill="#cfc7b2">VOILES SUISSES · DENTELLES · BAMAKO</text></svg>`;
+  <text x="1096" y="715" font-family="${SERIF}" font-size="58" letter-spacing="8" fill="${GOLD_LIGHT}">CHEZ FODÉ SACKO</text>
+  <text x="1096" y="800" font-family="${SERIF}" font-size="40" letter-spacing="7" fill="#cfc7b2">DRAP · RIDEAU · BAZIN · BRODÉ &amp; DIVERS</text></svg>`;
 
 // Version « profil » carrée : l'emblème sur fond noir (Google, WhatsApp et réseaux recadrent en rond)
 const svgSquare = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">${defs}${emblem(true)}</svg>`;

@@ -49,6 +49,10 @@ function readShopFields(b, partial) {
   if (!partial || 'whatsapp' in b) { out.whatsapp = util.normalizePhone(b.whatsapp); if (!util.isPhone(out.whatsapp)) err('Numéro WhatsApp invalide.'); }
   if (!partial || 'city' in b) out.city = util.clampStr(b.city, 60);
   if ('tagline' in b) out.tagline = util.clampStr(b.tagline, 100);
+  if ('owner_name' in b) out.owner_name = util.clampStr(b.owner_name, 60);
+  if ('address' in b) out.address = util.clampStr(b.address, 120);
+  if ('about' in b) out.about = util.clampStr(b.about, 200);
+  if ('phone2' in b) { out.phone2 = String(b.phone2 || '').trim() ? util.normalizePhone(b.phone2) : ''; if (out.phone2 && !util.isPhone(out.phone2)) err('2e numéro invalide.'); }
   if (!partial || 'sale_unit' in b) { out.sale_unit = b.sale_unit; if (!util.SALE_UNITS.includes(out.sale_unit)) err('Mode de vente invalide.'); }
   if (!partial || 'color_primary' in b) { out.color_primary = b.color_primary; if (!util.isHexColor(out.color_primary)) err('Couleur principale invalide.'); }
   if (!partial || 'color_accent' in b) { out.color_accent = b.color_accent; if (!util.isHexColor(out.color_accent)) err("Couleur d'accent invalide."); }

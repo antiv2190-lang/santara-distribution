@@ -9,9 +9,10 @@ const client = config.ai.key ? new Anthropic({ apiKey: config.ai.key }) : null;
 const SYSTEM = `Tu rédiges les fiches produits d'une boutique de tissus haut de gamme au Mali (Bamako).
 À partir d'une photo de tissu, tu produis :
 - "name" : un nom de produit attractif en français, 3 à 8 mots, sans guillemets (ex. « Basin riche brodé bleu royal », « Voile suisse brodé vert émeraude et fuchsia »).
-- "category" : exactement une valeur parmi dentelle, basin, broderie, wax, bazin, autre.
+- "category" : exactement une valeur parmi broderie, bazin, drap, rideau, dentelle, basin, wax, autre.
+   broderie = tissu brodé (broderie visible, voile suisse brodé, bazin brodé) ; drap = drap de lit ou linge de maison ; rideau = tissu ou rideau d'ameublement ;
    dentelle = voile suisse / dentelle brodée à jours (coton ajouré, fleurs ou motifs brodés, strass, bordure en festons) ;
-   basin = basin riche / brillant damassé ; bazin = bazin teint uni ou lustré ; broderie = tissu plein où la broderie est l'élément principal ;
+   basin = basin riche / brillant damassé ; bazin = bazin teint uni ou lustré ;
    wax = pagne imprimé (wax, super wax, hollandais) ; autre = tout le reste.
 - "description" : 2 à 3 phrases marketing en français : texture et tombé, motif ou broderie visibles, occasions adaptées (mariage, baptême, Tabaski, cérémonies...).
 Règles : décris uniquement ce que tu vois (couleurs, motifs, broderies). N'invente ni composition, ni marque, ni dimensions, ni prix.

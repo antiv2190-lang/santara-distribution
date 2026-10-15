@@ -27,16 +27,21 @@
       logo(),
       h('a', { class: 'brand', href: base, onclick: (e) => { e.preventDefault(); go(base); } },
         h('h1', {}, shop.name),
-        h('small', {}, shop.city || '', shop.tagline ? h('span', { class: 'tg' }, (shop.city ? ' · ' : '') + shop.tagline) : null)),
+        h('small', {}, [shop.owner ? `Chez ${shop.owner}` : '', shop.city].filter(Boolean).join(' · '), shop.tagline ? h('span', { class: 'tg' }, ' · ' + shop.tagline) : null)),
       h('a', { class: 'top-wa', href: waLink('Bonjour, j\'ai une question sur vos tissus.'), target: '_blank', rel: 'noopener', 'aria-label': 'WhatsApp' }, waIcon(20), h('span', {}, 'WhatsApp'))));
   }
   function fab(text) {
     return h('a', { class: 'fab', href: waLink(text || 'Bonjour, j\'ai une question sur vos tissus.'), target: '_blank', rel: 'noopener', 'aria-label': 'Écrire sur WhatsApp' }, waIcon(32));
   }
   function footer() {
+    const num = (n) => `+${n.slice(0, 3)} ${n.slice(3).replace(/(\d{2})(?=\d)/g, '$1 ')}`;
     return h('footer', { class: 'foot' },
-      h('div', { class: 'foot-name' }, shop.name), shop.city ? h('div', {}, shop.city) : null,
-      h('div', {}, h('a', { href: `https://wa.me/${shop.whatsapp}`, target: '_blank', rel: 'noopener' }, `WhatsApp : +${shop.whatsapp}`)));
+      h('div', { class: 'foot-name' }, shop.name), shop.owner ? h('div', {}, `Chez ${shop.owner}`) : null,
+      shop.tagline ? h('div', {}, shop.tagline) : null,
+      h('div', {}, [shop.address, shop.city].filter(Boolean).join(' · ')),
+      h('div', { class: 'foot-tel' },
+        h('a', { href: `https://wa.me/${shop.whatsapp}`, target: '_blank', rel: 'noopener' }, `WhatsApp : ${num(shop.whatsapp)}`),
+        shop.phone2 ? [' · ', h('a', { href: `tel:+${shop.phone2}` }, `Tél. : ${num(shop.phone2)}`)] : null));
   }
   // Prix à 0 = « prix sur demande »
   const priceParts = (p) => (p.price > 0 ? [`${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null] : [h('span', { class: 'ask' }, 'Prix sur demande')]);
@@ -105,14 +110,14 @@
     let timer;
     search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { st.q = search.value.trim(); sync(); load(true); }, 300); });
 
-    const perks = [['📸', 'Photos fidèles', 'Les couleurs réelles du tissu'], ['💬', 'Commande simple', 'Un message WhatsApp suffit'], ['📍', shop.city || 'Boutique', 'Venez voir sur place']];
+    const perks = [['📸', 'Photos fidèles', 'Les couleurs réelles du tissu'], ['💬', 'Commande simple', 'Un message WhatsApp suffit'], ['📍', shop.city || 'Boutique', shop.address || 'Venez voir sur place']];
     app.replaceChildren(
       header(),
       h('section', { class: 'hero' },
         h('div', { class: 'wrap' },
-          h('div', { class: 'eyebrow' }, shop.city ? `Boutique de tissus · ${shop.city}` : 'Boutique de tissus'),
+          h('div', { class: 'eyebrow' }, [shop.owner ? `Chez ${shop.owner}` : 'Boutique de tissus', shop.city].filter(Boolean).join(' · ')),
           h('h2', {}, 'Des tissus d\'exception pour vos plus belles cérémonies'),
-          h('p', {}, 'Voiles suisses brodés, dentelles, basin riche, wax et bazin. Choisissez, commandez en un message.'),
+          h('p', {}, shop.about || (shop.tagline ? `${shop.tagline}. ` : '') + 'Choisissez votre tissu en photos, commandez en un message WhatsApp.'),
           h('div', { class: 'hero-cta' },
             h('a', { class: 'btn accent', href: '#collection', onclick: (e) => { e.preventDefault(); document.getElementById('collection').scrollIntoView({ behavior: 'smooth' }); } }, 'Voir la collection'),
             h('a', { class: 'btn ghost-light', href: waLink('Bonjour, je cherche un tissu pour une cérémonie.'), target: '_blank', rel: 'noopener' }, waIcon(20), 'Parler sur WhatsApp')))),

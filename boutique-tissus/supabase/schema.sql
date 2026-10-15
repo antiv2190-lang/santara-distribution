@@ -21,6 +21,10 @@ create table if not exists shops (
   color_primary   text not null default '#0b0b0b', -- couleur principale (ex. noir)
   color_accent    text not null default '#c9a227', -- couleur d'accent (ex. or)
   logo_path       text,                            -- chemin dans le bucket de stockage
+  owner_name      text,                            -- « Fodé Sacko » -> affiché « Chez Fodé Sacko »
+  address         text,                            -- adresse affichée sur la vitrine
+  phone2          text,                            -- 2e numéro de la boutique (chiffres, avec indicatif)
+  about           text,                            -- phrase de présentation sous le titre
   admin_phone     text not null,                   -- identifiant de connexion du propriétaire
   admin_pin_hash  text not null,                   -- code secret (haché, jamais en clair)
   require_review  boolean not null default false,  -- true = un produit n'est public qu'après validation
@@ -42,7 +46,7 @@ create table if not exists products (
   client_id      text,                              -- identifiant généré par le téléphone (évite les doublons si renvoi)
   name           text,                              -- rempli par l'IA, corrigeable
   category       text not null default 'autre'
-                 check (category in ('dentelle','basin','broderie','wax','bazin','autre')),
+                 check (category in ('broderie','bazin','drap','rideau','dentelle','basin','wax','autre')),
   description    text,
   price          integer not null default 0 check (price >= 0), -- en FCFA ; 0 = « prix sur demande »
   original_path  text not null,                     -- photo d'origine (toujours conservée)
@@ -133,7 +137,7 @@ on conflict (id) do nothing;
 alter table shops add column if not exists ai_auto boolean not null default true;
 alter table products drop constraint if exists products_category_check;
 alter table products add constraint products_category_check
-  check (category in ('dentelle','basin','broderie','wax','bazin','autre'));
+  check (category in ('broderie','bazin','drap','rideau','dentelle','basin','wax','autre'));
 
 -- ---------------------------------------------------------------------
 -- 8) Codes de connexion par téléphone (état partagé entre instances serverless)
@@ -149,3 +153,12 @@ alter table otp_state enable row level security;
 
 -- 9) Autres personnes autorisées à gérer une boutique (mise à jour d'une base existante)
 alter table shops add column if not exists admins jsonb not null default '[]';
+
+-- 10) Fiche boutique enrichie + catégories drap / rideau (mise à jour d'une base existante)
+alter table shops add column if not exists owner_name text;
+alter table shops add column if not exists address text;
+alter table shops add column if not exists phone2 text;
+alter table shops add column if not exists about text;
+alter table products drop constraint if exists products_category_check;
+alter table products add constraint products_category_check
+  check (category in ('broderie','bazin','drap','rideau','dentelle','basin','wax','autre'));
