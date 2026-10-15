@@ -91,6 +91,19 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     assert((al.headers.get('set-cookie') || '').includes('HttpOnly')); ok('cookie HttpOnly');
     const al2 = await call('POST', '/api/admin/login', { json: { slug: 'autre', phone: '76333333', pin: '4321' } }); const ac2 = cookieOf(al2);
 
+    console.log('Deuxième personne autorisée');
+    const nf = await call('POST', `/api/super/shops/${s1.data.id}/admins`, { cookie: sc, json: { name: 'Fodé Sacko', phone: '+223 66 55 28 22', pin: '654321' } });
+    assert.strictEqual(nf.status, 201); assert.strictEqual(nf.data.admins.length, 1); assert(!JSON.stringify(nf.data).includes('pin_hash')); ok('ajoutée par le super-admin (sans fuite du code haché)');
+    assert.strictEqual((await call('POST', `/api/super/shops/${s1.data.id}/admins`, { cookie: sc, json: { name: 'Doublon', phone: '76111111', pin: '1111' } })).status, 409); ok('le numéro du propriétaire principal ne peut pas être dupliqué');
+    assert.strictEqual((await call('POST', '/api/admin/login', { json: { slug: 'demo', phone: '66552822', pin: '000000' } })).status, 401); ok('mauvais code refusé pour elle');
+    const fl = await call('POST', '/api/admin/login', { json: { slug: 'demo', phone: '+223 66 55 28 22', pin: '654321' } });
+    assert.strictEqual(fl.status, 200); const fc = cookieOf(fl);
+    assert.strictEqual((await call('GET', '/api/admin/me', { cookie: fc })).data.admin.name, 'Fodé Sacko'); ok('elle se connecte avec son propre numéro et son propre code');
+    assert.strictEqual((await call('POST', '/api/admin/pin', { cookie: fc, json: { old: '654321', pin: '777888' } })).status, 200);
+    assert.strictEqual((await call('POST', '/api/admin/login', { json: { slug: 'demo', phone: '76111111', pin: '4321' } })).status, 200); ok('chacune change son propre code sans toucher à celui des autres');
+    assert.strictEqual((await call('DELETE', `/api/super/shops/${s1.data.id}/admins/22366552822`, { cookie: sc })).status, 200);
+    assert.strictEqual((await call('GET', '/api/admin/me', { cookie: fc })).status, 401); ok('retirée : sa session s\'arrête aussitôt');
+
     console.log('Connexion par code reçu sur le téléphone');
     const unk = await call('POST', '/api/admin/otp/request', { json: { slug: 'demo', phone: '70 99 99 99' } });
     assert.strictEqual(unk.status, 200); assert(!unk.data.dev_code); ok('numéro inconnu : même réponse, aucun code (pas de fuite)');

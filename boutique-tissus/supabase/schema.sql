@@ -25,6 +25,7 @@ create table if not exists shops (
   admin_pin_hash  text not null,                   -- code secret (haché, jamais en clair)
   require_review  boolean not null default false,  -- true = un produit n'est public qu'après validation
   ai_auto         boolean not null default true,   -- true = l'IA traite chaque photo automatiquement (modifiable par le propriétaire)
+  admins          jsonb not null default '[]',     -- autres personnes autorisées : [{name, phone, pin_hash}]
   active          boolean not null default true,
   -- Interrupteurs des phases 2 et 3 (TOUS désactivés pour l'instant)
   features        jsonb not null default
@@ -145,3 +146,6 @@ create table if not exists otp_state (
   sends  jsonb not null default '[]' -- horodatages des envois (limites 30 s / 5 par heure)
 );
 alter table otp_state enable row level security;
+
+-- 9) Autres personnes autorisées à gérer une boutique (mise à jour d'une base existante)
+alter table shops add column if not exists admins jsonb not null default '[]';

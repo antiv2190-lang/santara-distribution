@@ -94,6 +94,33 @@ router.patch('/shops/:id', express.json({ limit: '20kb' }), async (req, res, nex
   } catch (e) { next(e); }
 });
 
+// Autres personnes autorisées à gérer la boutique (en plus du propriétaire principal)
+router.post('/shops/:id/admins', express.json({ limit: '5kb' }), async (req, res, next) => {
+  try {
+    const shop = await store.getShopById(req.params.id);
+    if (!shop) return res.status(404).json({ error: 'Boutique introuvable.' });
+    const name = util.clampStr(req.body.name, 60);
+    const phone = util.normalizePhone(req.body.phone);
+    const pin = String(req.body.pin || '');
+    if (!name) return res.status(400).json({ error: 'Le nom est obligatoire.' });
+    if (!util.isPhone(phone)) return res.status(400).json({ error: 'Numéro invalide.' });
+    if (!/^\d{4,8}$/.test(pin)) return res.status(400).json({ error: 'Le code doit avoir 4 à 8 chiffres.' });
+    if (util.loginKey(phone) === util.loginKey(shop.admin_phone)) return res.status(409).json({ error: 'Ce numéro est déjà celui du propriétaire principal.' });
+    const others = (shop.admins || []).filter((a) => util.loginKey(a.phone) !== util.loginKey(phone));
+    const updated = await store.updateShop(shop.id, { admins: [...others, { name, phone, pin_hash: auth.hashPin(pin) }] });
+    res.status(201).json(superShop(updated, await store.countProducts(shop.id)));
+  } catch (e) { next(e); }
+});
+router.delete('/shops/:id/admins/:phone', async (req, res, next) => {
+  try {
+    const shop = await store.getShopById(req.params.id);
+    if (!shop) return res.status(404).json({ error: 'Boutique introuvable.' });
+    const k = util.loginKey(req.params.phone);
+    const updated = await store.updateShop(shop.id, { admins: (shop.admins || []).filter((a) => util.loginKey(a.phone) !== k) });
+    res.json(superShop(updated, await store.countProducts(shop.id)));
+  } catch (e) { next(e); }
+});
+
 // Logo : le corps de la requête est l'image.
 router.post('/shops/:id/logo', express.raw({ type: 'image/*', limit: '8mb' }), async (req, res, next) => {
   try {

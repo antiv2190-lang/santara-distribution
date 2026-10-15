@@ -35,6 +35,7 @@ function adminProduct(p) {
 function superShop(s, productCount) {
   return {
     ...publicShop(s), id: s.id, admin_phone: s.admin_phone, active: s.active,
+    admins: (Array.isArray(s.admins) ? s.admins : []).map((a) => ({ name: a.name || '', phone: a.phone })),
     require_review: s.require_review, ai_auto: s.ai_auto !== false, features: s.features, product_count: productCount, created_at: s.created_at,
   };
 }

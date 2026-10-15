@@ -6,6 +6,7 @@ const store = require('../store');
 const auth = require('../auth');
 const otp = require('../otp');
 const config = require('../config');
+const { listAdmins, findAdmin } = require('../admins');
 const pipeline = require('../ai/pipeline');
 const { adminProduct, publicShop } = require('../views');
 const { CATEGORIES, loginKey, clampStr, normalizePhone } = require('../util');
@@ -14,8 +15,9 @@ const router = express.Router();
 const COOKIE = 'tissus_admin';
 const SESSION_DAYS = 60; // le propriétaire reste connecté longtemps sur son téléphone
 
-function startSession(req, res, shop) {
-  auth.setCookie(req, res, COOKIE, auth.sign({ sid: shop.id, role: 'admin' }, SESSION_DAYS * 86400), SESSION_DAYS * 86400);
+function startSession(req, res, shop, admin) {
+  // `ph` : qui est connecté (plusieurs personnes peuvent gérer la même boutique)
+  auth.setCookie(req, res, COOKIE, auth.sign({ sid: shop.id, role: 'admin', ph: loginKey(admin.phone) }, SESSION_DAYS * 86400), SESSION_DAYS * 86400);
 }
 
 // ---------- Connexion par code reçu sur le téléphone (méthode principale) ----------
@@ -30,9 +32,9 @@ router.post('/otp/request', express.json({ limit: '5kb' }), async (req, res, nex
     const wait = auth.lockedFor(`${req.ip}|otp`);
     if (wait) return res.status(429).json({ error: `Trop d'essais. Réessayez dans ${wait} min.` });
     const shop = await store.getShopBySlug(slug);
-    const known = shop && shop.active && loginKey(digits) === loginKey(shop.admin_phone);
+    const adm = shop && shop.active ? findAdmin(shop, digits) : null;
     let r;
-    try { r = await otp.request(key, known ? shop : null, normalizePhone(shop?.admin_phone || digits)); }
+    try { r = await otp.request(key, adm ? shop : null, normalizePhone(adm ? adm.phone : digits)); }
     catch (e) { console.error('[otp] envoi impossible :', e.message); return res.status(502).json({ error: "Le code n'a pas pu être envoyé. Réessayez ou utilisez votre code secret." }); }
     if (r.wait) return res.status(429).json({ error: `Patientez ${r.wait} secondes avant de redemander un code.`, wait: r.wait });
     // Réponse identique que le numéro existe ou non. En démo (console), on affiche le code pour pouvoir essayer.
@@ -48,12 +50,13 @@ router.post('/otp/verify', express.json({ limit: '5kb' }), async (req, res, next
     const wait = auth.lockedFor(lockKey);
     if (wait) return res.status(429).json({ error: `Trop d'essais. Réessayez dans ${wait} min.` });
     const shop = await store.getShopBySlug(slug);
-    if (!shop || !shop.active || loginKey(req.body.phone) !== loginKey(shop.admin_phone) || !(await otp.verify(key, req.body.code))) {
+    const adm = shop && shop.active ? findAdmin(shop, req.body.phone) : null;
+    if (!adm || !(await otp.verify(key, req.body.code))) {
       auth.registerFail(lockKey);
       return res.status(401).json({ error: 'Code incorrect ou expiré.' });
     }
     auth.clearFails(lockKey);
-    startSession(req, res, shop);
+    startSession(req, res, shop, adm);
     res.json({ ok: true });
   } catch (e) { next(e); }
 });
@@ -67,14 +70,14 @@ router.post('/login', express.json({ limit: '5kb' }), async (req, res, next) => 
     if (wait) return res.status(429).json({ error: `Trop d'essais. Réessayez dans ${wait} min.` });
 
     const shop = await store.getShopBySlug(slug);
-    const ok = shop && shop.active && loginKey(req.body.phone) === loginKey(shop.admin_phone)
-      && auth.verifyPin(String(req.body.pin || ''), shop.admin_pin_hash);
+    const adm = shop && shop.active ? findAdmin(shop, req.body.phone) : null;
+    const ok = adm && auth.verifyPin(String(req.body.pin || ''), adm.pin_hash);
     if (!ok) {
       auth.registerFail(key);
       return res.status(401).json({ error: 'Numéro ou code incorrect.' });
     }
     auth.clearFails(key);
-    startSession(req, res, shop);
+    startSession(req, res, shop, adm);
     res.json({ ok: true });
   } catch (e) { next(e); }
 });
@@ -87,14 +90,18 @@ async function requireAdmin(req, res, next) {
     const s = auth.verify(auth.readCookie(req, COOKIE));
     const shop = s && s.role === 'admin' ? await store.getShopById(s.sid) : null;
     if (!shop || !shop.active) return res.status(401).json({ error: 'Veuillez vous connecter.' });
+    // Personne connectée ; si elle a été retirée de la boutique, sa session cesse aussitôt de fonctionner.
+    const admin = s.ph ? listAdmins(shop).find((a) => loginKey(a.phone) === s.ph) : listAdmins(shop)[0];
+    if (!admin) return res.status(401).json({ error: 'Veuillez vous connecter.' });
     req.shop = shop;
+    req.admin = admin;
     next();
   } catch (e) { next(e); }
 }
 router.use(requireAdmin);
 
 const settingsOf = (s) => ({ ai_auto: s.ai_auto !== false });
-router.get('/me', (req, res) => res.json({ shop: publicShop(req.shop), settings: settingsOf(req.shop) }));
+router.get('/me', (req, res) => res.json({ shop: publicShop(req.shop), settings: settingsOf(req.shop), admin: { name: req.admin.name || null } }));
 
 // Réglages que le propriétaire peut changer lui-même
 router.patch('/settings', express.json({ limit: '2kb' }), async (req, res, next) => {
@@ -109,9 +116,12 @@ router.patch('/settings', express.json({ limit: '2kb' }), async (req, res, next)
 router.post('/pin', express.json({ limit: '5kb' }), async (req, res, next) => {
   try {
     const { old: oldPin, pin } = req.body;
-    if (!auth.verifyPin(String(oldPin || ''), req.shop.admin_pin_hash)) return res.status(400).json({ error: 'Ancien code incorrect.' });
+    if (!auth.verifyPin(String(oldPin || ''), req.admin.pin_hash)) return res.status(400).json({ error: 'Ancien code incorrect.' });
     if (!/^\d{4,8}$/.test(String(pin || ''))) return res.status(400).json({ error: 'Le nouveau code doit avoir 4 à 8 chiffres.' });
-    await store.updateShop(req.shop.id, { admin_pin_hash: auth.hashPin(pin) });
+    // Chaque personne change son propre code
+    const hash = auth.hashPin(pin);
+    if (req.admin.main) await store.updateShop(req.shop.id, { admin_pin_hash: hash });
+    else await store.updateShop(req.shop.id, { admins: req.shop.admins.map((a) => (loginKey(a.phone) === loginKey(req.admin.phone) ? { ...a, pin_hash: hash } : a)) });
     res.json({ ok: true });
   } catch (e) { next(e); }
 });

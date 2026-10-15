@@ -31,7 +31,7 @@ module.exports = {
   async getShopById(id) { return clone(db.shops.find((s) => s.id === id)); },
   async createShop(data) {
     if (db.shops.some((s) => s.slug === data.slug)) { const e = new Error('slug_taken'); e.code = 'slug_taken'; throw e; }
-    const shop = { id: crypto.randomUUID(), active: true, require_review: false, ai_auto: true, created_at: now(),
+    const shop = { id: crypto.randomUUID(), active: true, require_review: false, ai_auto: true, admins: [], created_at: now(),
       features: { orange_money: false, moov_money: false, facebook_autopost: false, tiktok_autopost: false }, ...data };
     db.shops.push(shop); persist(); return clone(shop);
   },

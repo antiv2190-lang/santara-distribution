@@ -137,12 +137,45 @@
     }, 'Créer la boutique')]);
   }
 
+  // Autres personnes autorisées à gérer la boutique (chacune avec son numéro et son code)
+  function peopleBlock(shop) {
+    const box = h('div', { style: 'margin-top:18px;border-top:2px solid var(--line);padding-top:12px' });
+    const draw = (sh) => {
+      const name = h('input', { placeholder: 'Nom (ex. Fodé Sacko)', maxlength: 60 });
+      const phone = h('input', { type: 'tel', placeholder: '+223 66 00 00 00' });
+      const pin = h('input', { value: randomPin(), inputmode: 'numeric', maxlength: 8 });
+      const err = h('div', { class: 'err' });
+      box.replaceChildren(
+        h('h3', {}, 'Autres personnes autorisées'),
+        ...(sh.admins.length ? sh.admins.map((a) => h('div', { class: 'row', style: 'align-items:center;justify-content:space-between' },
+          h('span', {}, h('strong', {}, a.name), ` · +${a.phone}`),
+          h('button', { class: 'btn ghost', onclick: async () => {
+            if (!(await confirmBox(`Retirer ${a.name} ? Sa connexion cessera aussitôt.`, 'Retirer'))) return;
+            draw(await api(`/api/super/shops/${sh.id}/admins/${a.phone}`, { method: 'DELETE' }));
+          } }, 'Retirer'))) : [h('p', { style: 'color:var(--muted)' }, 'Aucune pour le moment.')]),
+        h('div', { class: 'grid2', style: 'margin-top:10px' }, h('label', { class: 'field' }, h('span', {}, 'Nom'), name), h('label', { class: 'field' }, h('span', {}, 'Téléphone'), phone)),
+        h('label', { class: 'field' }, h('span', {}, 'Code secret (4 à 8 chiffres) — à lui transmettre'), pin), err,
+        h('button', { class: 'btn', onclick: async () => {
+          err.textContent = '';
+          try {
+            const updated = await api(`/api/super/shops/${sh.id}/admins`, { method: 'POST', json: { name: name.value, phone: phone.value, pin: pin.value } });
+            const msg = `Bonjour ${name.value} ! Vous pouvez gérer ${sh.name} :\n${origin}/${sh.slug}/admin\nTéléphone : ${phone.value}\nCode secret : ${pin.value}`;
+            toast('Ajouté ✓');
+            draw(updated);
+            box.append(h('a', { class: 'btn wa', style: 'margin-top:10px', target: '_blank', rel: 'noopener', href: `https://wa.me/${updated.admins.find((x) => x.name === name.value.trim())?.phone || ''}?text=${encodeURIComponent(msg)}` }, 'Envoyer ses accès par WhatsApp'));
+          } catch (e) { err.textContent = e.message; }
+        } }, '➕ Ajouter cette personne'));
+    };
+    draw(shop);
+    return box;
+  }
+
   function editSheet(shop) {
     const s = sheet([h('h2', {}, 'Modifier ' + shop.name), shopForm(shop, async (body, logo) => {
       await api(`/api/super/shops/${shop.id}`, { method: 'PATCH', json: body });
       await uploadLogo(shop.id, logo);
       s.close(); toast('Enregistré ✓'); dashboard();
-    }, 'Enregistrer')]);
+    }, 'Enregistrer'), peopleBlock(shop)]);
   }
 
   dashboard();
