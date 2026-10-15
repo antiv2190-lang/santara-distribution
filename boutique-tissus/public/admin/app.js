@@ -220,6 +220,7 @@
 
   screens.capture = () => {
     let stream = null, blob = null, previewUrl = null, published = 0, kp = null, closed = false;
+    let cat = ''; try { cat = localStorage.getItem('tissus-cat') || ''; } catch { /* stockage indisponible */ }
     const video = h('video', { autoplay: true, playsinline: true, muted: true });
     video.muted = true;
     const counter = h('span', { class: 'pill' });
@@ -284,6 +285,11 @@
         h('div', { class: 'prev' },
           h('img', { src: previewUrl, alt: 'Votre photo' }),
           kp.amount),
+        h('div', { class: 'pickcat' }, Object.entries(CAT).filter(([k]) => ['broderie', 'bazin', 'drap', 'rideau', 'autre'].includes(k)).map(([k, l]) =>
+          h('button', { class: cat === k ? 'on' : '', onclick: (e) => {
+            cat = cat === k ? '' : k; try { localStorage.setItem('tissus-cat', cat); } catch { /* ignore */ }
+            [...e.target.parentNode.children].forEach((b) => b.classList.toggle('on', b === e.target && !!cat));
+          } }, l))),
         h('button', { style: 'align-self:flex-start;background:none;font-weight:700;color:var(--muted);padding:4px 0 8px;text-decoration:underline', onclick: retake }, '↺ Reprendre la photo'),
         kp.keys, pub, noPrice);
       priceLayer.classList.remove('hidden');
@@ -292,7 +298,7 @@
 
     function publish(withoutPrice) {
       if (!blob || (!kp.value && withoutPrice !== true)) return;
-      Q.add({ blob, price: withoutPrice === true ? 0 : kp.value }); // 0 = prix sur demande (à compléter plus tard) // sans attendre : l'envoi se fait en arrière-plan
+      Q.add({ blob, cat, price: withoutPrice === true ? 0 : kp.value }); // 0 = prix sur demande (à compléter plus tard) // sans attendre : l'envoi se fait en arrière-plan
       published++;
       blob = null;
       toast('✅ Publié !', false, 1100);

@@ -39,8 +39,8 @@ const Q = (() => {
     const d = await db();
     return d ? ((await tx('readonly', (s) => s.getAll())) || []) : mem.slice();
   }
-  async function add({ blob, price }) {
-    const item = { id: (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2)), blob, price, ts: Date.now() };
+  async function add({ blob, price, cat }) {
+    const item = { cat: cat || '', id: (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2)), blob, price, ts: Date.now() };
     const d = await db();
     if (d) await tx('readwrite', (s) => s.put(item)); else mem.push(item);
     emit('change');
@@ -62,7 +62,7 @@ const Q = (() => {
         if (!items.length) break;
         const it = items[0];
         try {
-          await T.api(`/api/admin/products?price=${it.price}&cid=${encodeURIComponent(it.id)}`, { method: 'POST', headers: { 'Content-Type': it.blob.type || 'image/jpeg' }, body: it.blob });
+          await T.api(`/api/admin/products?price=${it.price}&cat=${encodeURIComponent(it.cat || '')}&cid=${encodeURIComponent(it.id)}`, { method: 'POST', headers: { 'Content-Type': it.blob.type || 'image/jpeg' }, body: it.blob });
           await remove(it.id);
           emit('sent', it);
           emit('change');

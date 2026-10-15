@@ -89,3 +89,8 @@ input,textarea{user-select:text;-webkit-user-select:text}
 .login .keys{margin-top:8px}
 .switch{width:100%;min-height:64px;border-radius:16px;background:#e5e0d3;color:var(--muted);font-weight:800;font-size:1.15rem}
 .switch.on{background:var(--accent);color:var(--on-accent)}
+
+/* Choix de la rubrique au moment de publier */
+.pickcat{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.pickcat button{flex:none;padding:10px 16px;border-radius:999px;background:#fff;font-weight:700;font-size:1rem;border:2px solid var(--line)}
+.pickcat button.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}

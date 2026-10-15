@@ -184,6 +184,12 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     for (let i = 0; i < 60; i++) { await sleep(200); const q = (await call('GET', `/api/admin/products/${sp.data.id}`, { cookie: ac })).data; if (q.ai_status === 'done') break; } // laisse l'IA finir avant de supprimer
     await call('DELETE', `/api/admin/products/${sp.data.id}`, { cookie: ac });
 
+    const rc = await call('POST', '/api/admin/products?price=12000&cat=rideau&cid=cat-rideau', { cookie: ac, body: await fabricJpeg(false), headers: { 'content-type': 'image/jpeg' } });
+    assert.strictEqual(rc.status, 201); assert.strictEqual(rc.data.category, 'rideau');
+    const bc = await call('POST', '/api/admin/products?price=1&cat=nimporte&cid=cat-bad', { cookie: ac, body: await fabricJpeg(false), headers: { 'content-type': 'image/jpeg' } });
+    assert.strictEqual(bc.data.category, 'autre'); ok('rubrique choisie à la publication (rideau) ; rubrique invalide -> « autre »');
+    for (const id of [rc.data.id, bc.data.id]) { for (let i = 0; i < 60; i++) { await sleep(200); if ((await call('GET', `/api/admin/products/${id}`, { cookie: ac })).data.ai_status === 'done') break; } await call('DELETE', `/api/admin/products/${id}`, { cookie: ac }); }
+
     console.log('Option « IA automatique »');
     const waitFor = async (pid, pred) => { let q; for (let i = 0; i < 60; i++) { await sleep(200); q = (await call('GET', `/api/admin/products/${pid}`, { cookie: ac })).data; if (pred(q)) return q; } throw new Error('délai dépassé : ' + JSON.stringify(q)); };
     assert.strictEqual((await call('GET', '/api/admin/me', { cookie: ac })).data.settings.ai_auto, true); ok('IA automatique activée par défaut');

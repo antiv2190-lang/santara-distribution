@@ -170,6 +170,7 @@ router.post('/products', express.raw({ type: ['image/*', 'application/octet-stre
     if (!Number.isInteger(price) || price < 0 || price > 100000000) return res.status(400).json({ error: 'Prix invalide.' });
     if (!Buffer.isBuffer(req.body) || req.body.length < 500) return res.status(400).json({ error: 'Photo manquante.' });
 
+    const cat = CATEGORIES.includes(req.query.cat) ? req.query.cat : 'autre'; // rubrique choisie par le propriétaire
     const cid = clampStr(req.query.cid, 64) || null;
     if (cid) {
       // Renvoi après une coupure réseau : on ne crée pas de doublon.
@@ -183,7 +184,7 @@ router.post('/products', express.raw({ type: ['image/*', 'application/octet-stre
     const id = crypto.randomUUID();
     const originalPath = `${req.shop.id}/${id}/original.${meta.format === 'jpeg' ? 'jpg' : meta.format}`;
     await store.putFile(originalPath, req.body, `image/${meta.format}`);
-    const p = await store.createProduct({ id, shop_id: req.shop.id, client_id: cid, price, original_path: originalPath });
+    const p = await store.createProduct({ id, shop_id: req.shop.id, client_id: cid, price, category: cat, original_path: originalPath });
     pipeline.enqueue(p.id);
     res.status(201).json(adminProduct(p));
   } catch (e) { next(e); }
