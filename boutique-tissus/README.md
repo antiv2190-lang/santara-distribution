@@ -55,6 +55,14 @@ Variables d'environnement (voir `.env.example`) :
 | `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` | Si Twilio |
 | `OTP_WEBHOOK_URL`, `OTP_WEBHOOK_TOKEN` | Si `webhook` : n'importe quelle passerelle SMS/WhatsApp (Orange, WhatsApp Cloud API, n8n, Zapier…) |
 
+### 2 bis. Hébergement sur Vercel (c'est ce qui est en place pour Nogoya)
+- Projet Vercel relié au dépôt GitHub, **Root Directory : `boutique-tissus`**, aucune commande de build (`api/index.js` + `vercel.json` suffisent). Fonctions à Paris (`cdg1`).
+- **Protection de déploiement désactivée** (Réglages → Deployment Protection → Vercel Authentication : Off), sinon les clients voient une page de connexion Vercel.
+- Variables d'environnement (Production **et** Preview) : `SUPABASE_URL`, **`SUPABASE_SERVICE_KEY`** (clé « secret » / `service_role` : Supabase → Project Settings → API Keys ; à coller en type *Sensitive*), `SESSION_SECRET`, `SUPERADMIN_CODE`, `DEFAULT_SHOP`. Facultatives : `ANTHROPIC_API_KEY`, `OTP_PROVIDER`…
+- Une variable ajoutée ou modifiée ne s'applique qu'au **déploiement suivant** : refaire un déploiement (Deployments → ⋯ → Redeploy).
+- Serverless : le traitement IA d'une photo continue après la réponse grâce à `waitUntil` ; un traitement interrompu est repris automatiquement à la visite suivante de l'espace propriétaire. Les codes de connexion sont stockés en base (`otp_state`), pas en mémoire.
+- Limites : un envoi de photo ne doit pas dépasser 4,5 Mo (l'appli réduit les photos à ~1 Mo). Le plan Vercel Hobby est réservé à un usage personnel non commercial : pour une boutique, prévoir le plan Pro.
+
 ### 3. Créer la boutique
 Ouvrez `https://votre-site/super-admin` → **➕ Nouvelle boutique** : nom, ville, WhatsApp, mode de vente
 (au mètre / à la pièce / au lot), couleurs (palettes prêtes : or & noir, vert & or…), logo, téléphone + code du propriétaire.
