@@ -6,6 +6,7 @@ const { enhancePhoto } = require('./enhance');
 const integrations = require('../integrations');
 
 const PLACEHOLDER = 'Nouveau tissu'; // nom provisoire tant que l'IA n'est pas passée
+const SERVERLESS = !!process.env.VERCEL; // Vercel : pas de processus permanent
 const CONCURRENCY = 2;
 const MAX_ATTEMPTS = 3;
 const queue = [];
@@ -13,9 +14,23 @@ const inFlight = new Set(); // ids en file ou en cours
 let running = 0;
 
 // force = true : traiter même si le propriétaire a désactivé l'IA automatique (bouton « Embellir avec l'IA »)
+// Sur Vercel, une fonction peut être gelée dès que la réponse est partie : waitUntil() la garde en vie
+// jusqu'à la fin du traitement (durée maximale réglée dans vercel.json).
+function keepAlive(promise) {
+  if (!SERVERLESS) return;
+  try { require('@vercel/functions').waitUntil(promise); } catch { /* hors Vercel */ }
+}
+
 function enqueue(productId, force = false) {
   if (inFlight.has(productId)) return;
   inFlight.add(productId);
+  if (SERVERLESS) { // pas de file en mémoire : on traite tout de suite, en arrière-plan de la requête
+    const run = processProduct(productId, force)
+      .catch((e) => console.error('[pipeline]', productId, e.message))
+      .finally(() => inFlight.delete(productId));
+    keepAlive(run);
+    return;
+  }
   queue.push({ id: productId, force });
   pump();
 }
@@ -72,7 +87,8 @@ async function processProduct(id, force) {
   if (retryable) {
     await store.updateProduct(id, { ...patch, ai_status: 'pending', ai_error: errors.join(' | ').slice(0, 300) });
     const delay = 5000 * 2 ** ((fresh.ai_attempts || 1) - 1);
-    setTimeout(() => enqueue(id, force), delay).unref();
+    // Serverless : pas de minuterie fiable ; le produit reste « pending » et sera repris par maybeRecover().
+    if (!SERVERLESS) setTimeout(() => enqueue(id, force), delay).unref();
     return;
   }
   // Repli : un produit est toujours publiable, même si l'IA est absente ou en panne.
@@ -91,7 +107,16 @@ async function recoverStuck() {
     for (const p of await store.listStuckProducts(90 * 1000)) enqueue(p.id); // (les produits déjà « sautés » par l'option IA restent « done »)
   } catch (e) { console.error('[pipeline] reprise:', e.message); }
 }
+// Serverless : appelé à chaque visite de l'espace propriétaire ; relance au plus 1 fois par minute et par instance
+// les produits restés bloqués (fonction coupée, panne passagère de l'IA...).
+let lastRecover = 0;
+function maybeRecover() {
+  if (Date.now() - lastRecover < 60 * 1000) return;
+  lastRecover = Date.now();
+  keepAlive(recoverStuck());
+}
 function start() {
+  if (SERVERLESS) return;
   recoverStuck();
   setInterval(recoverStuck, 60 * 1000).unref();
 }
@@ -102,4 +127,4 @@ async function reprocess(id) {
   enqueue(id, true);
 }
 
-module.exports = { enqueue, start, reprocess };
+module.exports = { enqueue, start, reprocess, maybeRecover };

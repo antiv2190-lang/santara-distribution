@@ -133,3 +133,15 @@ alter table shops add column if not exists ai_auto boolean not null default true
 alter table products drop constraint if exists products_category_check;
 alter table products add constraint products_category_check
   check (category in ('dentelle','basin','broderie','wax','bazin','autre'));
+
+-- ---------------------------------------------------------------------
+-- 8) Codes de connexion par téléphone (état partagé entre instances serverless)
+-- ---------------------------------------------------------------------
+create table if not exists otp_state (
+  key    text primary key,          -- "<boutique>|<8 derniers chiffres>"
+  hash   text,                      -- HMAC du code (jamais le code en clair)
+  exp    bigint not null default 0, -- expiration (ms epoch)
+  tries  integer not null default 0,
+  sends  jsonb not null default '[]' -- horodatages des envois (limites 30 s / 5 par heure)
+);
+alter table otp_state enable row level security;

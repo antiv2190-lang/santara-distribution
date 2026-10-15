@@ -3,7 +3,7 @@
 // L'envoi des photos et le traitement IA se font en arrière-plan.
 (() => {
   const { h, fmt, api: rawApi, toast, sheet, confirmBox, UNIT, CAT } = T;
-  const { base, shop } = window.__BOOT__;
+  const { base, shop, otp: otpEnabled } = window.__BOOT__;
   const app = document.getElementById('app');
   const unit = UNIT[shop.sale_unit] || '';
   const shopUrl = () => location.origin + base;
@@ -101,9 +101,11 @@
       root.replaceChildren(h('div', { class: 'login' }, ...head(),
         h('label', { class: 'field' }, h('span', {}, 'Votre numéro de téléphone'), input),
         h('label', { class: 'field' }, h('span', {}, 'Votre code secret'), pin), err, go,
-        h('div', { class: 'links' }, h('button', { onclick: () => phoneStep() }, '← Recevoir un code par message'))));
+        otpEnabled === false ? null : h('div', { class: 'links' }, h('button', { onclick: () => phoneStep() }, '← Recevoir un code par message'))));
     }
-    phoneStep(message);
+    // Sans canal d'envoi configuré (SMS/WhatsApp), on propose directement le code secret
+    otpEnabled === false ? pinStep() : phoneStep(message);
+    if (otpEnabled === false && message) root.querySelector('.err').textContent = message;
   }
 
   // ---------- Clavier numérique géant (partagé : ajout et changement de prix) ----------

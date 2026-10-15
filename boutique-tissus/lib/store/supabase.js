@@ -63,6 +63,11 @@ module.exports = {
     return check(await sb.from('products').select('*').in('ai_status', ['pending', 'processing']).lt('updated_at', limit).limit(50));
   },
 
+  // ---- Codes de connexion (OTP) : en base, car les instances serverless ne partagent pas leur mémoire ----
+  async getOtp(key) { return check(await sb.from('otp_state').select('*').eq('key', key).maybeSingle()); },
+  async setOtp(key, v) { check(await sb.from('otp_state').upsert({ key, hash: v.hash || null, exp: v.exp || 0, tries: v.tries || 0, sends: v.sends || [] })); },
+  async deleteOtp(key) { check(await sb.from('otp_state').delete().eq('key', key)); },
+
   // ---- Fichiers ----
   async putFile(path, buffer, contentType) {
     const { error } = await sb.storage.from(bucket).upload(path, buffer, { contentType, upsert: true, cacheControl: '31536000' });

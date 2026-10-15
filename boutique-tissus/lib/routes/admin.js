@@ -48,7 +48,7 @@ router.post('/otp/verify', express.json({ limit: '5kb' }), async (req, res, next
     const wait = auth.lockedFor(lockKey);
     if (wait) return res.status(429).json({ error: `Trop d'essais. Réessayez dans ${wait} min.` });
     const shop = await store.getShopBySlug(slug);
-    if (!shop || !shop.active || loginKey(req.body.phone) !== loginKey(shop.admin_phone) || !otp.verify(key, req.body.code)) {
+    if (!shop || !shop.active || loginKey(req.body.phone) !== loginKey(shop.admin_phone) || !(await otp.verify(key, req.body.code))) {
       auth.registerFail(lockKey);
       return res.status(401).json({ error: 'Code incorrect ou expiré.' });
     }
@@ -119,6 +119,7 @@ router.post('/pin', express.json({ limit: '5kb' }), async (req, res, next) => {
 // ---------- Produits ----------
 router.get('/products', async (req, res, next) => {
   try {
+    pipeline.maybeRecover();
     const filter = ['review', 'available', 'soldout'].includes(req.query.filter) ? req.query.filter : undefined;
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 40, 1), 100);
     const offset = Math.max(parseInt(req.query.offset) || 0, 0);
@@ -131,6 +132,7 @@ router.get('/products', async (req, res, next) => {
 // Compteurs pour l'écran d'accueil
 router.get('/stats', async (req, res, next) => {
   try {
+    pipeline.maybeRecover();
     const [all, review] = await Promise.all([
       store.listProducts(req.shop.id, { limit: 1 }),
       store.listProducts(req.shop.id, { filter: 'review', limit: 1 }),

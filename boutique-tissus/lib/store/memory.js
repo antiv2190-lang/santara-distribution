@@ -10,6 +10,7 @@ const FILES_DIR = path.join(config.dataDir, 'files');
 fs.mkdirSync(FILES_DIR, { recursive: true });
 
 let db = { shops: [], products: [] };
+const otpMap = new Map(); // codes de connexion (éphémères, jamais écrits sur disque)
 try { db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); } catch { /* première utilisation */ }
 
 let timer = null;
@@ -74,6 +75,11 @@ module.exports = {
     const limit = new Date(Date.now() - olderThanMs).toISOString();
     return clone(db.products.filter((p) => ['pending', 'processing'].includes(p.ai_status) && p.updated_at < limit));
   },
+
+  // ---- Codes de connexion (OTP) ----
+  async getOtp(key) { return clone(otpMap.get(key)); },
+  async setOtp(key, v) { otpMap.set(key, clone(v)); },
+  async deleteOtp(key) { otpMap.delete(key); },
 
   // ---- Fichiers ----
   async putFile(p, buffer) {

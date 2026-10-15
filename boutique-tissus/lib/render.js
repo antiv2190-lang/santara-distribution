@@ -6,6 +6,7 @@ const config = require('./config');
 const store = require('./store');
 const { onColor, escapeHtml: h, safeJson } = require('./util');
 const { publicShop, publicProduct } = require('./views');
+const otp = require('./otp');
 
 const read = (f) => fs.readFileSync(path.join(config.publicDir, f), 'utf8');
 const templates = { vitrine: read('vitrine/index.html'), admin: read('admin/index.html'), super: read('super/index.html') };
@@ -48,7 +49,7 @@ function page(req, kind, { shop, product, title, noindex } = {}) {
 ${image ? `<meta property="og:image" content="${h(image)}">` : ''}
 <meta name="twitter:card" content="summary_large_image">`;
   const manifest = kind === 'admin' ? `${base}/admin/manifest.webmanifest` : kind === 'vitrine' ? `${base}/manifest.webmanifest` : '';
-  const boot = shop ? { base, shop: publicShop(shop) } : {};
+  const boot = shop ? { base, shop: publicShop(shop), ...(kind === 'admin' ? { otp: otp.enabled() } : {}) } : {};
   return fill(templates[kind], {
     TITLE: h(t),
     META: meta,

@@ -115,9 +115,12 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(500).json({ error: 'Erreur du serveur. Réessayez.' });
 });
 
-app.listen(config.port, () => {
-  console.log(`Boutique Tissus prêt : http://localhost:${config.port}  (stockage : ${store.name})`);
-  pipeline.start();
-});
+// Lancement classique (npm start, Render...) : on écoute un port. Sur Vercel, api/index.js importe simplement `app`.
+if (require.main === module) {
+  app.listen(config.port, () => {
+    console.log(`Boutique Tissus prêt : http://localhost:${config.port}  (stockage : ${store.name})`);
+    pipeline.start();
+  });
+}
 
 module.exports = app;
