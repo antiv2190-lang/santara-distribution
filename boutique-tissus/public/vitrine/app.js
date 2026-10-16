@@ -41,7 +41,9 @@
       h('div', {}, [shop.address, shop.city].filter(Boolean).join(' · ')),
       h('div', { class: 'foot-tel' },
         h('a', { href: `https://wa.me/${shop.whatsapp}`, target: '_blank', rel: 'noopener' }, `WhatsApp : ${num(shop.whatsapp)}`),
-        shop.phone2 ? [' · ', h('a', { href: `tel:+${shop.phone2}` }, `Tél. : ${num(shop.phone2)}`)] : null));
+        shop.phone2 ? [' · ', h('a', { href: `tel:+${shop.phone2}` }, `Tél. : ${num(shop.phone2)}`)] : null),
+      // Lien vers l'espace propriétaire : visible, mais l'accès exige le numéro + le code de la boutique.
+      h('div', { class: 'foot-admin' }, h('a', { href: `${base}/admin` }, '🔒 Espace propriétaire')));
   }
   // Prix à 0 = « prix sur demande »
   const priceParts = (p) => (p.price > 0 ? [`${fmt(p.price)} FCFA`, unit ? h('small', {}, ` / ${unit}`) : null] : [h('span', { class: 'ask' }, 'Prix sur demande')]);

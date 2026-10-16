@@ -119,3 +119,4 @@ body{padding-bottom:90px}
 /* Logo : l'emblème rond a un fond transparent, on ne le met pas sur un carré blanc/doré */
 .logo:has(img){background:transparent;border-radius:0}
 .logo img{background:transparent!important}
+.foot-admin{margin-top:14px;font-size:.85rem}.foot-admin a{color:var(--muted);text-decoration:underline}
