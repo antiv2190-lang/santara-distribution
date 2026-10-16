@@ -1,0 +1,122 @@
+/* Vitrine client — élégante, mobile d'abord */
+body{padding-bottom:90px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.top{background:var(--primary);color:var(--on-primary);border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:20}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-top:10px;padding-bottom:10px}
+.logo{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;
+  font:700 1.6rem Georgia,serif;flex:none;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.brand{min-width:0;text-decoration:none}
+.brand h1{font-size:1.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}
+.brand small{display:block;opacity:.8;font-size:.82rem}
+.top-wa{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:var(--wa);color:#073b1d;font-weight:800;font-size:.9rem;padding:9px 14px;border-radius:999px;text-decoration:none;flex:none}
+@media(max-width:380px){.top-wa span{display:none}}
+.hero{position:relative;overflow:hidden;color:var(--on-primary);text-align:center;padding:38px 0 44px;
+  background:radial-gradient(120% 90% at 50% 0,color-mix(in srgb,var(--primary) 78%,var(--accent)) 0,var(--primary) 70%)}
+/* motif de dentelle très discret en filigrane */
+.hero::before{content:"";position:absolute;inset:0;opacity:.14;pointer-events:none;
+  background-image:radial-gradient(circle at 50% 50%,transparent 0 5px,var(--accent) 5.5px 6.5px,transparent 7px),radial-gradient(circle at 0 0,var(--accent) 0 2px,transparent 2.5px);
+  background-size:34px 34px,34px 34px;background-position:0 0,17px 17px}
+.hero .wrap{position:relative}
+.eyebrow{display:inline-block;color:var(--accent);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.74rem;margin-bottom:12px;
+  padding:6px 14px;border:1px solid color-mix(in srgb,var(--accent) 60%,transparent);border-radius:999px}
+.hero h2{font-size:clamp(1.9rem,7vw,3.1rem);font-weight:600;max-width:20ch;margin:0 auto}
+.hero p{margin:12px auto 0;max-width:42ch;opacity:.88;font-size:1.04rem}
+.hero-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.hero-cta .btn{min-width:200px}
+.btn.ghost-light{background:transparent;color:var(--on-primary);border:2px solid color-mix(in srgb,var(--on-primary) 45%,transparent)}
+.perks{background:var(--card);border-bottom:1px solid var(--line)}
+.perks-in{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:12px;padding-bottom:12px}
+.perk{display:flex;align-items:center;gap:8px;font-size:.82rem;line-height:1.25}
+.perk>span{font-size:1.4rem}.perk strong{display:block}.perk small{color:var(--muted)}
+@media(max-width:560px){.perks-in{grid-template-columns:1fr;gap:6px}.perk small{display:inline;margin-left:6px}.perk>div{display:flex;flex-wrap:wrap;align-items:baseline}}
+.tools{padding-top:16px}
+.search{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:999px;background:#fff;font-size:1.02rem}
+.search:focus{outline:none;border-color:var(--accent)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:9px 18px;border-radius:999px;background:#fff;border:2px solid var(--line);font-weight:600}
+.chip[aria-pressed=true]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:14px 0}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+@media(min-width:960px){.grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--card);border-radius:16px;overflow:hidden;text-decoration:none;box-shadow:0 1px 3px rgba(40,30,10,.08);display:flex;flex-direction:column;
+  transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 8px 24px rgba(40,30,10,.14);transform:translateY(-2px)}
+.card .ph{position:relative;aspect-ratio:1;background:#eee9de}
+.card img{width:100%;height:100%;object-fit:cover}
+.card .body{padding:10px 12px 14px}
+.card .nm{font:600 1.02rem/1.25 Georgia,serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.card .pr{margin-top:6px;font-weight:800;color:var(--ink)}
+.card .pr small{font-weight:500;color:var(--muted)}
+.badge{position:absolute;top:8px;left:8px;background:#000c;color:#fff;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px}
+.sk{aspect-ratio:.82;border-radius:16px;background:linear-gradient(90deg,#eee9de 25%,#f6f2e9 50%,#eee9de 75%);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.empty{text-align:center;color:var(--muted);padding:50px 10px}
+.more{display:block;margin:6px auto 20px}
+.foot{border-top:1px solid var(--line);margin-top:20px;padding:24px 16px;text-align:center;color:var(--muted);font-size:.92rem}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;background:var(--wa);color:#fff;
+  display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:30;text-decoration:none}
+.fab svg{width:32px;height:32px}
+/* Fiche produit */
+.back{display:inline-flex;align-items:center;gap:6px;padding:14px 0;font-weight:600;text-decoration:none;color:var(--muted)}
+.pdp{display:grid;gap:18px;padding-bottom:20px}
+@media(min-width:820px){.pdp{grid-template-columns:1.1fr 1fr;gap:34px;align-items:start}}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:18px;scrollbar-width:none;background:#eee9de}
+.gal::-webkit-scrollbar{display:none}
+.slide{flex:none;width:100%;scroll-snap-align:center;position:relative;aspect-ratio:1}
+.slide img{width:100%;height:100%;object-fit:cover}
+.slide .cap{position:absolute;left:10px;bottom:10px;background:#000b;color:#fff;font-size:.8rem;padding:5px 12px;border-radius:999px}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:8px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)}
+.info h1{font-size:clamp(1.8rem,5vw,2.4rem)}
+.cat{color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem;margin-bottom:6px;filter:brightness(.8)}
+.price{font-size:1.9rem;font-weight:800;margin:10px 0 2px}
+.price small{font-size:1rem;font-weight:500;color:var(--muted)}
+.avail{display:inline-block;padding:5px 14px;border-radius:999px;font-weight:700;font-size:.88rem;background:#e3f6ea;color:#176a38}
+.avail.out{background:#fbe5e1;color:#9b2a1e}
+.desc{margin:16px 0;color:#3b352d;font-size:1.05rem}
+.actions{display:grid;gap:10px;margin-top:14px}
+.share-row{display:grid;gap:10px}
+
+/* Rubriques, compteur, cartes */
+.chip em{font-style:normal;opacity:.6;font-size:.8em;margin-left:6px}
+.count{color:var(--muted);font-size:.9rem;padding:6px 2px 0}
+.card .cat-s{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;filter:brightness(.8)}
+.card .nm{min-height:2.5em;margin-top:2px}
+.badge.new{background:var(--accent);color:var(--on-accent)}
+.card .ph img{transition:transform .5s}
+.card:hover .ph img{transform:scale(1.04)}
+.foot-name{font:700 1.2rem Georgia,serif;color:var(--ink)}
+/* Fiche produit : zoom, assurances, barre de commande */
+.slide{cursor:zoom-in}
+.slide .zoom{position:absolute;right:10px;bottom:10px;background:#000b;color:#fff;font-size:.8rem;padding:5px 12px;border-radius:999px}
+.assure{list-style:none;padding:0;margin:14px 0 4px;color:var(--muted);font-size:.92rem;display:grid;gap:4px}
+.similar{padding:10px 0 30px}.similar h3{font-size:1.5rem;margin:8px 0 2px}
+.buybar{display:none}
+@media(max-width:819px){
+  body{padding-bottom:96px}
+  .buybar{display:flex;align-items:center;justify-content:space-between;gap:12px;position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--card);
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.14);border-top:1px solid var(--line)}
+  .buybar strong{font-size:1.15rem;display:block}.buybar small{color:var(--muted)}
+  .buybar .btn.compact{width:auto;flex:1;max-width:260px;min-height:50px;font-size:1rem;padding:10px 14px}
+  .buybar ~ .fab, body:has(.buybar) .fab{display:none}
+}
+/* Zoom plein écran */
+.lb{position:fixed;inset:0;background:#000;z-index:90;display:grid;place-items:center;overflow:auto;touch-action:pinch-zoom pan-x pan-y}
+.lb img{max-width:100%;max-height:100%;object-fit:contain}
+.lb-x{position:fixed;top:calc(12px + env(safe-area-inset-top));right:14px;width:48px;height:48px;border-radius:50%;background:#fff3;color:#fff;font-size:1.3rem;z-index:91}
+
+/* En-tête compact sur téléphone : le nom de la boutique doit rester lisible en entier */
+.brand{flex:1;min-width:0}
+.brand small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:600px){.brand .tg{display:none}.top-wa span{display:none}.top-wa{padding:10px 12px}.brand h1{font-size:1.35rem}}
+.card .pr{font-size:.98rem}.card .pr small{font-size:.76rem;white-space:nowrap}
+
+.ask{font-weight:700;font-size:.92em;color:var(--muted);letter-spacing:.01em}
+.price .ask{font-size:1.5rem}
+/* Logo : l'emblème rond a un fond transparent, on ne le met pas sur un carré blanc/doré */
+.logo:has(img){background:transparent;border-radius:0}
+.logo img{background:transparent!important}
+.foot-admin{margin-top:14px;font-size:.85rem}.foot-admin a{color:var(--muted);text-decoration:underline}
