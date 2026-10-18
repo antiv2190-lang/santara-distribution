@@ -60,7 +60,7 @@ async function processProduct(id, force) {
   const original = await store.getFile(p.original_path);
 
   // Description et photo en parallèle : l'une peut échouer sans bloquer l'autre.
-  const [desc, photo] = await Promise.allSettled([describeFabric(original, shop), enhancePhoto(original)]);
+  const [desc, photo] = await Promise.allSettled([describeFabric(original, shop, p.category), enhancePhoto(original)]);
 
   const patch = {};
   const errors = [];

@@ -14,6 +14,7 @@ const FAKE = PORT + 1000;
 const BASE = `http://localhost:${PORT}`;
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tissus-'));
 let seenAiRequest = null;
+let failAi = false; // simule un compte sans crédit / une panne de l'IA payante
 
 // Faux serveur Anthropic : renvoie une réponse au bon format et mémorise la requête reçue.
 const fake = http.createServer((req, res) => {
@@ -21,6 +22,7 @@ const fake = http.createServer((req, res) => {
   req.on('data', (c) => (body += c));
   req.on('end', () => {
     seenAiRequest = { url: req.url, body: JSON.parse(body) };
+    if (failAi) { res.statusCode = 400; res.setHeader('content-type', 'application/json'); return res.end(JSON.stringify({ type: 'error', error: { type: 'invalid_request_error', message: 'Your credit balance is too low' } })); }
     const out = { name: 'Basin riche brodé bleu royal', category: 'basin', description: 'Un basin riche à la texture soyeuse. Idéal pour le mariage et la Tabaski.' };
     res.setHeader('content-type', 'application/json');
     res.end(JSON.stringify({ id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-opus-5-5', stop_reason: 'end_turn', stop_sequence: null,
@@ -204,6 +206,26 @@ const { colorSignature, colorDrift } = require('../lib/ai/color');
     assert(seenAiRequest); assert.strictEqual(q2.name, 'Basin riche brodé bleu royal'); assert(q2.image !== q2.original); ok('« Embellir avec l\'IA » : traitement à la demande (nom + photo)');
     await call('PATCH', '/api/admin/settings', { cookie: ac, json: { ai_auto: true } });
     await call('DELETE', `/api/admin/products/${np.data.id}`, { cookie: ac });
+
+    console.log('IA payante en panne / sans crédit : le site fonctionne quand même (repli local gratuit)');
+    failAi = true;
+    const lp = await call('POST', '/api/admin/products?cat=bazin&cid=sans-credit', { cookie: ac, body: await fabricJpeg(false), headers: { 'content-type': 'image/jpeg' } });
+    const lq = await waitFor(lp.data.id, (q) => q.ai_status === 'done');
+    assert(/^Bazin /.test(lq.name), lq.name); assert.strictEqual(lq.category, 'bazin'); assert(lq.description.length > 20); assert(lq.ai_done);
+    ok(`nom + description automatiques sans IA payante (« ${lq.name} »), photo embellie`);
+
+    console.log('Plusieurs photos par tissu');
+    const ph1 = await call('POST', `/api/admin/products/${lp.data.id}/photos`, { cookie: ac, body: await fabricJpeg(false), headers: { 'content-type': 'image/jpeg' } });
+    assert.strictEqual(ph1.status, 201); assert.strictEqual(ph1.data.gallery.length, 1);
+    const ph2 = await call('POST', `/api/admin/products/${lp.data.id}/photos`, { cookie: ac, body: await fabricJpeg(true), headers: { 'content-type': 'image/jpeg' } });
+    assert.strictEqual(ph2.data.gallery.length, 2); ok('photos supplémentaires ajoutées (original conservé + version embellie)');
+    const pub = (await call('GET', `/api/shops/demo/products/${lp.data.id}`)).data;
+    assert.strictEqual(pub.gallery.length, 2); assert(pub.gallery[0].image && pub.gallery[0].original); ok('visibles sur la fiche publique');
+    assert((await call('POST', `/api/admin/products/${lp.data.id}/photos`, { cookie: ac, body: Buffer.from('pas une image'.repeat(60)), headers: { 'content-type': 'image/jpeg' } })).status === 400); ok('fichier qui n\'est pas une photo refusé');
+    const rm = await call('DELETE', `/api/admin/products/${lp.data.id}/photos/0`, { cookie: ac });
+    assert.strictEqual(rm.data.gallery.length, 1); ok('suppression d\'une photo');
+    await call('DELETE', `/api/admin/products/${lp.data.id}`, { cookie: ac });
+    failAi = false;
 
     console.log('\nTOUS LES TESTS PASSENT');
   } catch (e) { failed = true; console.error('\nÉCHEC :', e.message); if (e.stack) console.error(e.stack.split('\n').slice(1, 4).join('\n')); }

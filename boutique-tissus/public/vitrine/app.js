@@ -152,6 +152,7 @@
 
     // Galerie : photo mise en valeur + photo d'origine (les vraies couleurs du tissu)
     const slides = [{ src: p.image, cap: null }];
+    (p.gallery || []).forEach((g) => slides.push({ src: g.image, cap: null })); // autres photos du même tissu
     if (p.original && p.original !== p.image) slides.push({ src: p.original, cap: 'Photo d\'origine' });
     const dots = h('div', { class: 'dots' }, slides.map((_, i) => h('i', { class: i ? '' : 'on' })));
     const gal = h('div', { class: 'gal' }, slides.map((s, i) =>

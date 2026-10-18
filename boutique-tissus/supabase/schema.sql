@@ -59,6 +59,7 @@ create table if not exists products (
   reviewed       boolean not null default false,    -- false = apparaît dans « À vérifier »
   sold_out       boolean not null default false,
   -- Réservé aux phases 2/3 (publication automatique réseaux sociaux)
+  gallery        jsonb not null default '[]',       -- photos supplémentaires : [{o, e}]
   social         jsonb not null default '{}',       -- ex. {"facebook_post_id":"..","tiktok_post_id":".."}
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now()
@@ -162,3 +163,6 @@ alter table shops add column if not exists about text;
 alter table products drop constraint if exists products_category_check;
 alter table products add constraint products_category_check
   check (category in ('broderie','bazin','drap','rideau','dentelle','basin','wax','autre'));
+
+-- 11) Plusieurs photos par tissu : [{o: photo d'origine, e: photo embellie}] (mise à jour d'une base existante)
+alter table products add column if not exists gallery jsonb not null default '[]';

@@ -8,6 +8,7 @@ const otp = require('../otp');
 const config = require('../config');
 const { listAdmins, findAdmin } = require('../admins');
 const pipeline = require('../ai/pipeline');
+const { enhancePhoto } = require('../ai/enhance');
 const { adminProduct, publicShop } = require('../views');
 const { CATEGORIES, loginKey, clampStr, normalizePhone } = require('../util');
 
@@ -190,6 +191,46 @@ router.post('/products', express.raw({ type: ['image/*', 'application/octet-stre
   } catch (e) { next(e); }
 });
 
+// Photos supplémentaires d'un même tissu (autres angles, détails) : le corps de la requête EST la photo.
+const MAX_EXTRA_PHOTOS = 12;
+router.post('/products/:id/photos', express.raw({ type: ['image/*', 'application/octet-stream'], limit: '12mb' }), async (req, res, next) => {
+  try {
+    const p = await store.getProduct(req.params.id);
+    if (!p || p.shop_id !== req.shop.id) return res.status(404).json({ error: 'Introuvable.' });
+    const gallery = Array.isArray(p.gallery) ? p.gallery : [];
+    if (gallery.length >= MAX_EXTRA_PHOTOS) return res.status(400).json({ error: `Maximum ${MAX_EXTRA_PHOTOS} photos en plus.` });
+    if (!Buffer.isBuffer(req.body) || req.body.length < 500) return res.status(400).json({ error: 'Photo manquante.' });
+    let meta;
+    try { meta = await sharp(req.body).metadata(); } catch { meta = null; }
+    if (!meta || !['jpeg', 'png', 'webp'].includes(meta.format)) return res.status(400).json({ error: 'Format de photo non pris en charge.' });
+    const n = crypto.randomUUID().slice(0, 8);
+    const o = `${req.shop.id}/${p.id}/extra-${n}-original.${meta.format === 'jpeg' ? 'jpg' : meta.format}`;
+    await store.putFile(o, req.body, `image/${meta.format}`);
+    const entry = { o }; // la photo d'origine est toujours conservée ; si l'embellissement échoue, on affiche l'originale
+    try { // lumière et netteté seulement (sans détourage : rapide), couleurs jamais modifiées
+      const { enhanced } = await enhancePhoto(req.body, { cutout: false });
+      entry.e = `${req.shop.id}/${p.id}/extra-${n}.jpg`;
+      await store.putFile(entry.e, enhanced, 'image/jpeg');
+    } catch (e) { console.error('[photos]', e.message); }
+    const updated = await store.updateProduct(p.id, { gallery: [...gallery, entry] });
+    res.status(201).json(adminProduct(updated));
+  } catch (e) { next(e); }
+});
+
+router.delete('/products/:id/photos/:idx', async (req, res, next) => {
+  try {
+    const p = await store.getProduct(req.params.id);
+    if (!p || p.shop_id !== req.shop.id) return res.status(404).json({ error: 'Introuvable.' });
+    const gallery = Array.isArray(p.gallery) ? p.gallery : [];
+    const i = parseInt(req.params.idx, 10);
+    if (!Number.isInteger(i) || i < 0 || i >= gallery.length) return res.status(404).json({ error: 'Photo introuvable.' });
+    const [gone] = gallery.splice(i, 1);
+    const updated = await store.updateProduct(p.id, { gallery });
+    await store.deleteFiles([gone.o, gone.e]);
+    res.json(adminProduct(updated));
+  } catch (e) { next(e); }
+});
+
 router.patch('/products/:id', express.json({ limit: '20kb' }), async (req, res, next) => {
   try {
     const p = await store.getProduct(req.params.id);
@@ -225,7 +266,7 @@ router.delete('/products/:id', async (req, res, next) => {
     const p = await store.getProduct(req.params.id);
     if (!p || p.shop_id !== req.shop.id) return res.status(404).json({ error: 'Introuvable.' });
     await store.deleteProduct(p.id);
-    await store.deleteFiles([p.original_path, p.enhanced_path, p.thumb_path]);
+    await store.deleteFiles([p.original_path, p.enhanced_path, p.thumb_path, ...(Array.isArray(p.gallery) ? p.gallery.flatMap((g) => [g.o, g.e]) : [])]);
     res.json({ ok: true });
   } catch (e) { next(e); }
 });

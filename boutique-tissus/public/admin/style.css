@@ -94,3 +94,9 @@ input,textarea{user-select:text;-webkit-user-select:text}
 .pickcat{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
 .pickcat button{flex:none;padding:10px 16px;border-radius:999px;background:#fff;font-weight:700;font-size:1rem;border:2px solid var(--line)}
 .pickcat button.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+
+.gal-a{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
+.gal-a .g{position:relative}
+.gal-a img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:#eee}
+.gal-a small{display:block;text-align:center;font-size:.72rem;color:var(--muted,#777)}
+.gal-a .x{position:absolute;top:4px;right:4px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:1rem}

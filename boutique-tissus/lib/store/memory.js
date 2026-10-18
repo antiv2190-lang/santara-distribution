@@ -44,7 +44,7 @@ module.exports = {
   // ---- Produits ----
   async createProduct(data) {
     const p = { id: crypto.randomUUID(), category: 'autre', ai_status: 'pending', ai_attempts: 0, reviewed: false,
-      sold_out: false, social: {}, name: null, description: null, enhanced_path: null, thumb_path: null,
+      sold_out: false, social: {}, gallery: [], name: null, description: null, enhanced_path: null, thumb_path: null,
       ai_error: null, created_at: now(), updated_at: now(), ...data };
     db.products.push(p); persist(); return clone(p);
   },

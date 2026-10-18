@@ -19,6 +19,8 @@ function publicProduct(p) {
     image: enhanced || original,           // photo améliorée si disponible
     thumb: store.fileUrl(p.thumb_path) || enhanced || original,
     original,                              // la photo d'origine reste toujours accessible
+    // Photos supplémentaires du même tissu (autres angles, détails) : { image, original }
+    gallery: (Array.isArray(p.gallery) ? p.gallery : []).map((g) => ({ image: store.fileUrl(g.e) || store.fileUrl(g.o), original: store.fileUrl(g.o) })),
     created_at: p.created_at,
   };
 }

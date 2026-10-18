@@ -350,6 +350,7 @@
       btns = [
         h('button', { class: 'btn ' + (p.sold_out ? 'green' : 'ghost'), onclick: () => patch({ sold_out: !p.sold_out }) }, p.sold_out ? '✅ Disponible' : '🚫 Épuisé'),
         h('button', { class: 'btn ' + (p.price > 0 ? 'ghost' : 'accent'), onclick: () => priceSheet(p, refresh) }, p.price > 0 ? '💰 Prix' : '💰 Mettre le prix'),
+        h('button', { class: 'btn ghost', onclick: () => photosSheet(p, refresh) }, `📷 Photos${p.gallery?.length ? ' (' + (p.gallery.length + 1) + ')' : ''}`),
         h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: () => remove(p, refresh) }, '🗑 Supprimer'),
         embellish(p, refresh),
       ];
@@ -368,6 +369,39 @@
   async function remove(p, refresh) {
     if (!(await confirmBox(`Supprimer « ${p.name} » ?`, '🗑 Oui, supprimer'))) return;
     try { await api(`/api/admin/products/${p.id}`, { method: 'DELETE' }); toast('Supprimé'); refresh(); } catch (e) { toast(e.message, true); }
+  }
+
+  // Plusieurs photos pour un même tissu (autres angles, détails de la broderie...)
+  function photosSheet(p, refresh) {
+    const grid = h('div', { class: 'gal-a' });
+    const input = h('input', { type: 'file', accept: 'image/*', multiple: true, class: 'hidden' });
+    let cur = p;
+    const draw = () => grid.replaceChildren(
+      h('div', { class: 'g' }, h('img', { src: cur.image, alt: '' }), h('small', {}, 'Photo principale')),
+      ...(cur.gallery || []).map((g, i) => h('div', { class: 'g' }, h('img', { src: g.image, alt: '' }),
+        h('button', { class: 'x', 'aria-label': 'Supprimer cette photo', onclick: async () => {
+          if (!(await confirmBox('Supprimer cette photo ?', '🗑 Oui'))) return;
+          try { cur = await api(`/api/admin/products/${p.id}/photos/${i}`, { method: 'DELETE' }); draw(); refresh(); } catch (e) { toast(e.message, true); }
+        } }, '✕'))));
+    input.onchange = async () => {
+      const files = [...input.files]; input.value = '';
+      for (const f of files) {
+        try {
+          toast('Envoi de la photo…', false, 8000);
+          const blob = await fileToJpeg(f);
+          cur = await api(`/api/admin/products/${p.id}/photos`, { method: 'POST', headers: { 'Content-Type': 'image/jpeg' }, body: blob });
+          draw();
+        } catch (e) { toast(e.message, true); break; }
+      }
+      toast('Photos enregistrées ✓'); refresh();
+    };
+    draw();
+    const s = sheet([
+      h('h2', {}, `Photos de « ${p.name} »`),
+      grid, input,
+      h('button', { class: 'btn block green', style: 'min-height:66px', onclick: () => input.click() }, '➕ Ajouter des photos'),
+      h('button', { class: 'btn block ghost', onclick: () => s.close() }, 'Fermer'),
+    ]);
   }
 
   function priceSheet(p, refresh) {

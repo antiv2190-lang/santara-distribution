@@ -47,7 +47,8 @@ Variables d'environnement (voir `.env.example`) :
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Connexion Supabase (obligatoires) |
 | `SESSION_SECRET` | Longue phrase au hasard (signe les connexions) — obligatoire |
 | `SUPERADMIN_CODE` | Votre code d'accès à `/super-admin` — gardez-le pour vous |
-| `ANTHROPIC_API_KEY` | Active l'IA (nom, catégorie, description). `AI_MODEL` pour changer de modèle (défaut `claude-opus-5-5`) |
+| `GEMINI_API_KEY` | (gratuit, facultatif) clé d'aistudio.google.com : nom et description écrits par Gemini à partir de la photo. `GEMINI_MODEL` pour changer de modèle |
+| `ANTHROPIC_API_KEY` | (payant, facultatif) IA Claude pour le nom, la catégorie et la description. `AI_MODEL` pour changer de modèle (défaut `claude-opus-5-5`) |
 | `DEFAULT_SHOP` | Facultatif : « slug » de la boutique servie sur `/` et `/admin` |
 | `PUBLIC_URL` | Facultatif : adresse publique (liens partagés) |
 | `NODE_ENV=production` | Refuse de démarrer sans Supabase / secret |
@@ -115,7 +116,9 @@ sans aucun appel IA, et chaque carte propose **✨ Embellir avec l'IA** pour tra
   retiré, remplacé par le fond élégant ; si le résultat n'est pas fiable (tissu empilé avec d'autres, fond chargé), la photo reste entière, simplement cadrée.
   Option `IMAGE_PROVIDER=removebg` : détourage du fond via remove.bg (les pixels du tissu restent identiques) puis même mise en scène.
 - **La photo originale est toujours conservée** octet pour octet et reste accessible (propriétaire, et « Photo d'origine » dans la galerie de la fiche produit — utile pour les couleurs réelles).
-- En cas de panne de l'IA : 3 essais espacés, puis le produit reste publiable (nom « Nouveau tissu », bouton **🔄 Relancer l'IA**).
+- **Aucune IA payante n'est nécessaire.** Ordre d'essai : Claude (si clé), Gemini (si clé), puis un repli **local gratuit** : nom = rubrique choisie + couleur
+  dominante (« Bazin bleu »), texte standard. Le propriétaire corrige en un geste. L'embellissement de la photo (lumière, netteté, détourage) est toujours local et gratuit.
+- **Plusieurs photos par tissu** : bouton **📷 Photos** sur chaque tissu (jusqu'à 12 en plus de la photo principale) ; elles défilent sur la fiche du client.
   Le traitement reprend automatiquement après un redémarrage du serveur.
 
 > Coût : un appel Claude avec une image réduite à 1024 px par tissu. Pour réduire, mettez `AI_MODEL=claude-haiku-5-5` (ou `claude-sonnet-5-5`).
