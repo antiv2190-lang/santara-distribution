@@ -59,24 +59,34 @@ async function describeWithClaude(originalBuffer, shop) {
 // ---- Fournisseur 2 : Gemini de Google (gratuit avec une clé d'aistudio.google.com, optionnel : GEMINI_API_KEY) ----
 async function describeWithGemini(originalBuffer, shop) {
   const small = await smallJpeg(originalBuffer);
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: [{ role: 'user', parts: [
-        { inlineData: { mimeType: 'image/jpeg', data: small.toString('base64') } },
-        { text: `Boutique : ${shop.name}${shop.city ? ' (' + shop.city + ')' : ''}. Fiche produit pour ce tissu. Réponds en JSON : {"name","category","description"}.` },
-      ] }],
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.4 },
-    }),
-    signal: AbortSignal.timeout(40000),
+  const body = JSON.stringify({
+    systemInstruction: { parts: [{ text: SYSTEM }] },
+    contents: [{ role: 'user', parts: [
+      { inlineData: { mimeType: 'image/jpeg', data: small.toString('base64') } },
+      { text: `Boutique : ${shop.name}${shop.city ? ' (' + shop.city + ')' : ''}. Fiche produit pour ce tissu. Réponds en JSON : {"name","category","description"}.` },
+    ] }],
+    generationConfig: { responseMimeType: 'application/json', temperature: 0.4 },
   });
-  if (!r.ok) throw new Error(`Gemini ${r.status}`);
-  const j = await r.json();
-  const text = (j.candidates?.[0]?.content?.parts || []).map((x) => x.text || '').join('');
-  return clean(JSON.parse(text));
+  // Modèle léger et rapide d'abord, puis un autre s'il est surchargé (503) ou limité (429)
+  const models = [process.env.GEMINI_MODEL || 'gemini-flash-lite-latest', 'gemini-flash-latest'];
+  let last;
+  for (const model of models) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+        body, signal: AbortSignal.timeout(20000),
+      });
+      if (r.ok) {
+        const j = await r.json();
+        const text = (j.candidates?.[0]?.content?.parts || []).filter((x) => !x.thought).map((x) => x.text || '').join('');
+        return clean(JSON.parse(text));
+      }
+      last = new Error(`Gemini ${model} ${r.status} ${(await r.text()).slice(0, 120)}`);
+      if (![429, 500, 503].includes(r.status)) break; // erreur définitive : inutile de réessayer ce modèle
+      await new Promise((ok) => setTimeout(ok, 1500));
+    }
+  }
+  throw last;
 }
 
 // ---- Fournisseur 3 : local, GRATUIT, sans internet (toujours disponible) ----

@@ -47,7 +47,7 @@ Variables d'environnement (voir `.env.example`) :
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Connexion Supabase (obligatoires) |
 | `SESSION_SECRET` | Longue phrase au hasard (signe les connexions) — obligatoire |
 | `SUPERADMIN_CODE` | Votre code d'accès à `/super-admin` — gardez-le pour vous |
-| `GEMINI_API_KEY` | (gratuit, facultatif) clé d'aistudio.google.com : nom et description écrits par Gemini à partir de la photo. `GEMINI_MODEL` pour changer de modèle |
+| `GEMINI_API_KEY` | (gratuit, facultatif) clé d'aistudio.google.com : nom et description écrits par Gemini à partir de la photo. `GEMINI_MODEL` pour changer de modèle (défaut `gemini-flash-lite-latest`) |
 | `ANTHROPIC_API_KEY` | (payant, facultatif) IA Claude pour le nom, la catégorie et la description. `AI_MODEL` pour changer de modèle (défaut `claude-opus-5-5`) |
 | `DEFAULT_SHOP` | Facultatif : « slug » de la boutique servie sur `/` et `/admin` |
 | `PUBLIC_URL` | Facultatif : adresse publique (liens partagés) |
