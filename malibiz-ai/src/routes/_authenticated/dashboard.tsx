@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { inquiriesQueryOptions, isAdminQueryOptions } from "@/lib/admin";
 import { DEMO_LEADS, formatDate, useMyLeads, leadsQueryOptions } from "@/lib/leads";
 import { LeadsError } from "@/components/LeadsError";
 import { Card, DemoBadge, PageHeader, StatusBadge } from "@/components/ui-kit";
@@ -21,6 +23,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { leads: mine } = useMyLeads();
+  const { data: isAdmin } = useQuery(isAdminQueryOptions);
+  const { data: inquiries = [] } = useQuery({ ...inquiriesQueryOptions, enabled: isAdmin === true });
   const all = [...mine, ...DEMO_LEADS];
   const stats = [
     { label: "Total prospects", value: all.length },
@@ -57,6 +61,25 @@ function Dashboard() {
           ))}
         </ul>
       </Card>
+      {isAdmin && (
+        <Card className="mt-6">
+          <h2 className="mb-4 font-display text-lg font-semibold text-foreground">Demandes reçues ({inquiries.length})</h2>
+          {inquiries.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucune demande pour le moment.</p>
+          ) : (
+            <ul className="divide-y">
+              {inquiries.map((q) => (
+                <li key={q.id} className="py-3">
+                  <p className="font-medium text-foreground">{q.name} · <a className="text-primary underline" href={`tel:${q.phone.replace(/\s/g, "")}`}>{q.phone}</a></p>
+                  <p className="text-sm text-foreground">{q.need}</p>
+                  <p className="text-sm text-muted-foreground">{q.message}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{formatDate(q.created_at.slice(0, 10))}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      )}
     </div>
   );
 }
