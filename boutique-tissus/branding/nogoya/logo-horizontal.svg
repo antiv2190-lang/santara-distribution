@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2350 1000" width="2350" height="1000"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#f1d98a"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801c"/></linearGradient></defs>
+  <rect width="2350" height="1000" fill="#0b0b0b"/>
+  <g transform="translate(40 0)">
+  <circle cx="500" cy="500" r="488" fill="#0b0b0b"/>
+  <path d="M500.00 50.00 A37 37 0 0 1 570.40 55.54 A37 37 0 0 1 639.06 72.02 A37 37 0 0 1 704.30 99.05 A37 37 0 0 1 764.50 135.94 A37 37 0 0 1 818.20 181.80 A37 37 0 0 1 864.06 235.50 A37 37 0 0 1 900.95 295.70 A37 37 0 0 1 927.98 360.94 A37 37 0 0 1 944.46 429.60 A37 37 0 0 1 950.00 500.00 A37 37 0 0 1 944.46 570.40 A37 37 0 0 1 927.98 639.06 A37 37 0 0 1 900.95 704.30 A37 37 0 0 1 864.06 764.50 A37 37 0 0 1 818.20 818.20 A37 37 0 0 1 764.50 864.06 A37 37 0 0 1 704.30 900.95 A37 37 0 0 1 639.06 927.98 A37 37 0 0 1 570.40 944.46 A37 37 0 0 1 500.00 950.00 A37 37 0 0 1 429.60 944.46 A37 37 0 0 1 360.94 927.98 A37 37 0 0 1 295.70 900.95 A37 37 0 0 1 235.50 864.06 A37 37 0 0 1 181.80 818.20 A37 37 0 0 1 135.94 764.50 A37 37 0 0 1 99.05 704.30 A37 37 0 0 1 72.02 639.06 A37 37 0 0 1 55.54 570.40 A37 37 0 0 1 50.00 500.00 A37 37 0 0 1 55.54 429.60 A37 37 0 0 1 72.02 360.94 A37 37 0 0 1 99.05 295.70 A37 37 0 0 1 135.94 235.50 A37 37 0 0 1 181.80 181.80 A37 37 0 0 1 235.50 135.94 A37 37 0 0 1 295.70 99.05 A37 37 0 0 1 360.94 72.02 A37 37 0 0 1 429.60 55.54 A37 37 0 0 1 500.00 50.00 Z" fill="none" stroke="url(#g)" stroke-width="7" stroke-linejoin="round"/>
+  <circle cx="500" cy="500" r="418" fill="none" stroke="url(#g)" stroke-width="3"/>
+  <circle cx="500" cy="500" r="392" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 15"/>
+  <ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(0 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(45 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(90 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(135 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(180 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(225 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(270 500 292)" fill="url(#g)"/><ellipse cx="500" cy="246.12" rx="14.8" ry="34.04" transform="rotate(315 500 292)" fill="url(#g)"/><circle cx="500" cy="292" r="14.8" fill="#0b0b0b" stroke="#f1d98a" stroke-width="3"/>
+  <g fill="url(#g)">
+  <rect x="398" y="396" width="12" height="268"/><rect x="590" y="396" width="12" height="268"/>
+  <polygon points="398,396 448,396 602,664 552,664"/>
+  <rect x="368" y="387" width="84" height="10"/><rect x="368" y="663" width="84" height="10"/>
+  <rect x="552" y="387" width="84" height="10"/><rect x="552" y="663" width="84" height="10"/></g>
+  <g stroke="#d4af37" stroke-width="3"><line x1="388" y1="742" x2="470" y2="742"/><line x1="530" y1="742" x2="612" y2="742"/></g>
+  <rect x="493" y="735" width="14" height="14" transform="rotate(45 500 742)" fill="url(#g)"/></g>
+  <text x="1090" y="520" font-family="'Caladea','Bitstream Charter','FreeSerif','DejaVu Serif',Georgia,serif" font-size="210" font-weight="700" letter-spacing="18" fill="url(#g)">NOGOYA</text>
+  <g stroke="#d4af37" stroke-width="3"><line x1="1096" y1="590" x2="1320" y2="590"/><line x1="1780" y1="590" x2="2010" y2="590"/></g>
+  <text x="1550" y="608" text-anchor="middle" font-family="'Caladea','Bitstream Charter','FreeSerif','DejaVu Serif',Georgia,serif" font-size="62" letter-spacing="26" fill="#f1d98a">BOUTIQUE</text>
+  <text x="1096" y="715" font-family="'Caladea','Bitstream Charter','FreeSerif','DejaVu Serif',Georgia,serif" font-size="58" letter-spacing="8" fill="#f1d98a">CHEZ FODÉ SACKO</text>
+  <text x="1096" y="800" font-family="'Caladea','Bitstream Charter','FreeSerif','DejaVu Serif',Georgia,serif" font-size="40" letter-spacing="7" fill="#cfc7b2">DRAP · RIDEAU · BAZIN · BRODÉ &amp; DIVERS</text></svg>
