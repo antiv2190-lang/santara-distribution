@@ -1,4 +1,4 @@
-# Alder & Stone – inventaire complet (vidéo + capture) et fiche prospection services digitaux
+# Alder & Stone – inventaire complet de la vidéo et de la capture d'écran
 
 Source : vidéo `alder-stone-preview-card-20261016.mp4` (12 s, 1440×1080) et une capture d'écran
 (carrousel avec bande floue). Page d'origine : `horizonx.so/explore/alder-stone`
@@ -73,32 +73,3 @@ Rien ne prouve que ce soit une vraie entreprise.
 7. Étiquettes « Hover to explore » : survol attendu sur l'écran Services (interaction non visible dans la vidéo)
 
 Ce qui est déjà recréé : points 1 à 6 dans `alder-stone.html` (3 écrans). L'écran **Services** (disque noir) n'est pas encore recréé.
-
-## 6. Fiche prospection – services digitaux
-
-Ce modèle sert d'exemple de réalisation à montrer à des prospects du même secteur :
-cabinets d'architecture, bureaux d'études, agences d'urbanisme, promoteurs.
-
-| Champ | À remplir |
-|---|---|
-| Entreprise | |
-| Site web actuel | |
-| Contact (nom, rôle) | |
-| E-mail / LinkedIn | |
-| Besoin repéré (site daté, pas de portfolio, lent, pas mobile…) | |
-| Offre proposée | Refonte de site, page vitrine animée, SEO, réseaux sociaux |
-| Date du premier contact | |
-| Relance prévue | |
-| Statut | à contacter / contacté / répondu / devis / gagné / perdu |
-
-**Message d'accroche (modèle)**
-
-> Bonjour [Prénom],
-> J'ai regardé le site de [Entreprise]. Vos projets méritent une vitrine qui les mette mieux en valeur.
-> Nous réalisons des sites d'architecture animés (portfolio, transitions, version mobile), comme [lien vers la démo].
-> Puis-je vous montrer une maquette adaptée à votre studio, en 15 minutes ?
-> [Votre nom]
-
-**Prochaines étapes** : lister 10 à 20 vrais cabinets (Google Maps, LinkedIn, annuaires), remplir le tableau,
-envoyer le message, relancer après 5 à 7 jours, joindre la démo (`alder-stone.html` ou le fichier Figma
-https://www.figma.com/design/nLSNpgnJeyjPmRejnYlvOk).
