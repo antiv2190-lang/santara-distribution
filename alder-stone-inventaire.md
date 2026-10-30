@@ -72,4 +72,4 @@ Rien ne prouve que ce soit une vraie entreprise.
 6. Slider à 3 positions (points actifs allongés)
 7. Étiquettes « Hover to explore » : survol attendu sur l'écran Services (interaction non visible dans la vidéo)
 
-Ce qui est déjà recréé : points 1 à 6 dans `alder-stone.html` (3 écrans). L'écran **Services** (disque noir) n'est pas encore recréé.
+Ce qui est recréé : points 1 à 6 dans `alder-stone.html`, avec 4 écrans (Hero, Studio, Works, Services). L'écran Services est aussi dans le fichier Figma.
