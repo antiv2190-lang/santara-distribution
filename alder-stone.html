@@ -34,6 +34,10 @@
   #ring { position: absolute; left: 120px; top: 150px; width: 1200px; height: 1200px; border-radius: 50%;
     border: 1px solid #d9dcde; opacity: 0; transition: opacity .8s; pointer-events: none; }
   body[data-slide="1"] #grid, body[data-slide="1"] #ring { opacity: 1; }
+  #disc { position: absolute; left: 266px; top: 86px; width: 908px; height: 908px; border-radius: 50%; opacity: 0; transform: scale(.85); transition: opacity .8s, transform .9s;
+    background: radial-gradient(circle at 32% 26%, #4b4b4c 0%, #262627 38%, #131314 75%, #0c0c0d 100%);
+    box-shadow: 0 40px 70px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.04); }
+  body[data-slide="3"] #disc { opacity: 1; transform: none; }
   canvas#city { position: absolute; inset: 0; width: 1440px; height: 1080px; }
 
   /* scan band used by the transition */
@@ -56,7 +60,7 @@
 
   /* slide layers */
   .layer { position: absolute; inset: 0; z-index: 3; opacity: 0; pointer-events: none; transition: opacity .35s; }
-  body[data-slide="0"] .s0, body[data-slide="1"] .s1, body[data-slide="2"] .s2 { opacity: 1; pointer-events: auto; }
+  body[data-slide="0"] .s0, body[data-slide="1"] .s1, body[data-slide="2"] .s2, body[data-slide="3"] .s3 { opacity: 1; pointer-events: auto; }
 
   /* slide 0 – hero */
   h1 { position: absolute; top: 100px; left: 30px; font-weight: 300; font-size: 126px; line-height: .9; letter-spacing: -.05em; white-space: nowrap; }
@@ -83,6 +87,15 @@
   .s2 .title { position: absolute; left: 48px; bottom: 170px; font-size: 96px; line-height: .92; letter-spacing: -.05em; font-weight: 300; }
   .s2 p { position: absolute; left: 52px; bottom: 112px; width: 420px; font-size: 15px; line-height: 1.38; }
 
+  /* slide 3 – services */
+  .s3 .title { position: absolute; left: 880px; top: 940px; font-size: 84px; line-height: .9; letter-spacing: -.05em; font-weight: 300; text-transform: uppercase; white-space: nowrap; }
+  .s3 .hint { position: absolute; top: 520px; width: 130px; text-align: center; font-size: 11px; color: #6d7078; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .s3 .hint b { width: 42px; height: 42px; border-radius: 50%; background: var(--dark); display: grid; place-items: center; }
+  .s3 .hint.l { left: 137px; } .s3 .hint.r { left: 1173px; }
+  .s3 .num { position: absolute; right: 34px; bottom: 54px; font-size: 12px; color: #6d7078; }
+  .s3 .arc { position: absolute; top: 140px; width: 130px; height: 800px; border: 1px solid #dcdfe1; border-radius: 50%; }
+  .s3 .arc.l { left: 80px; border-right-color: transparent; border-left-color: transparent; } .s3 .arc.r { right: 80px; }
+
   /* slider */
   .slider { position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%); display: flex; gap: 14px; z-index: 6; }
   .slider .circ { width: 54px; height: 54px; }
@@ -94,6 +107,7 @@
 <body data-slide="0">
 <div id="stage">
   <div id="grid"></div><div id="ring"></div>
+  <div id="disc"></div>
   <canvas id="city"></canvas>
   <div id="band"></div>
 
@@ -142,9 +156,18 @@
     <p data-t>Houses, offices and public rooms across Copenhagen and the Nordics, from 2011 to today.</p>
   </div>
 
+  <!-- slide 3 : services -->
+  <div class="layer s3">
+    <div class="arc l"></div><div class="arc r"></div>
+    <div class="hint l"><b><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.4"><path d="M1 9s3-5.500 8-5.500S17 9 17 9s-3 5.500-8 5.500S1 9 1 9z"/><circle cx="9" cy="9" r="2.300" fill="#fff"/></svg></b><span data-t>Hover to explore</span></div>
+    <div class="hint r"><b><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.4"><path d="M1 9s3-5.500 8-5.500S17 9 17 9s-3 5.500-8 5.500S1 9 1 9z"/><circle cx="9" cy="9" r="2.300" fill="#fff"/></svg></b><span data-t>Hover to explore</span></div>
+    <div class="title" data-t>Services</div>
+    <div class="num" data-t>[2]</div>
+  </div>
+
   <div class="slider">
     <button class="circ" id="prev" aria-label="Previous"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2 2 8l6 6"/></svg></button>
-    <div class="track"><i class="on"></i><i></i><i></i></div>
+    <div class="track"><i class="on"></i><i></i><i></i><i></i></div>
     <button class="circ" id="next" aria-label="Next"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 2 6 6-6 6"/></svg></button>
   </div>
 </div>
@@ -187,6 +210,7 @@
   for (let i = 0; i < 16; i++) { const g = 1 + Math.sin(i*.45)*.08; box(0, 0, 3.2*g, 3.2*g, .5, 1, i*.75); }
   box(0, 0, 3.0, 3.0, 12, 16);
   box(0, 0, 6, 6, .5, 2);
+  const TOWER_END = pts.length;
   [[-7,-2,4,3,1.4,4],[-8.5,2.5,4.5,3.5,1.1,3],[-4.5,4.5,4,3,1.6,4],[4.8,-5,4,3,2.2,6],[8.5,-1.5,3.8,4,3.6,8],
    [6.2,3.2,3.6,3.2,1.5,4],[8.4,6.2,3.6,3,1.1,3],[-2,8.2,4.2,3,1,3],[2.4,7.4,3.4,3,1.2,3],[-4,-6.5,3.4,3,1.3,4],
    [3,-8.5,4,3,1.1,3],[-9.5,-6,3,3,1,3]].forEach(b => box(...b));
@@ -198,10 +222,11 @@
     { zoom: 1.00, tilt: .75, rot: 0,   cx: 720, cy: 640 },   // hero
     { zoom: .62,  tilt: .62, rot: .5,  cx: 720, cy: 560 },   // studio (small, inside ring)
     { zoom: 1.25, tilt: .95, rot: -.45, cx: 820, cy: 600 },  // works
+    { zoom: 1.45, tilt: .22, rot: 0,    cx: 720, cy: 880, tower: true }, // services (tower on dark disc)
   ];
   const cam = { ...CAMS[0] };
   let from = { ...CAMS[0] }, to = { ...CAMS[0] };
-  let slide = 0, trans = null;
+  let slide = 0, trans = null, towerOnly = false;
   const DUR = 1300;
   const ease = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -249,13 +274,13 @@
   addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
   const BASE = 40;
 
-  function drawPass(zoom, ox, color, alpha, jitter) {
+  function drawPass(zoom, ox, color, alpha, jitter, count) {
     const a = cam.rot + spin + mx*.4, cr = Math.cos(a), sr = Math.sin(a);
     const tl = cam.tilt + my*.08, cp = Math.cos(tl), sp = Math.sin(tl);
     const sc = BASE * zoom;
     const size = Math.max(1.5, sc * .055);
     ctx.fillStyle = color;
-    for (let i = 0; i < pts.length; i++) {
+    for (let i = 0; i < count; i++) {
       const p = pts[i];
       const x = p[0]*cr - p[2]*sr, z = p[0]*sr + p[2]*cr;
       let sx = cam.cx + ox + x*sc, sy = cam.cy + (z*sp - p[1]*cp)*sc;
@@ -277,7 +302,7 @@
       zoomMul = 1 + 5.5 * Math.pow(g, 3);        // dive into the dots at the midpoint
       band.style.top = (150 + p * 520) + 'px';
       if (p >= .5 && !trans.swapped) {
-        trans.swapped = true; slide = trans.next;
+        trans.swapped = true; slide = trans.next; towerOnly = !!CAMS[slide].tower;
         document.body.dataset.slide = slide;
         dots.forEach((d, i) => d.classList.toggle('on', i === slide));
         scrambleSlide(slide);
@@ -286,11 +311,12 @@
     }
     ctx.clearRect(0, 0, W, H);
     const z = cam.zoom * zoomMul;
+    const n = towerOnly ? TOWER_END : pts.length;
     if (g > .05) {                                // RGB split
-      drawPass(z,  g * 14, '#ff3d78', .55, g * 6);
-      drawPass(z, -g * 14, '#2fc4e6', .55, g * 6);
+      drawPass(z,  g * 14, '#ff3d78', .55, g * 6, n);
+      drawPass(z, -g * 14, '#2fc4e6', .55, g * 6, n);
     }
-    drawPass(z, 0, '#25272e', 1, g * 3);
+    drawPass(z, 0, towerOnly ? '#e9e9ea' : '#25272e', 1, g * 3, n);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
