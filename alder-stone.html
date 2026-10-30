@@ -5,215 +5,296 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Alder &amp; Stone</title>
 <style>
+  /* Colours sampled from the reference video (1440 x 1080 frame) */
   :root {
-    --bg: #eceef0;
+    --bg: #e9eaea;
+    --bg-edge: #e3e5e5;
     --ink: #2b2d33;
-    --pill: #d9dde1;
-    --dark: #0d0e12;
-    --muted: #6d7078;
+    --btn: #303136;
+    --pill: #d6dcde;
+    --pill-ring: #e8ecee;
+    --dark: #090d13;
+    --dark-ic: #21252c;
+    --muted: #a0a3a9;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  html, body { height: 100%; background: var(--bg); overflow: hidden; }
+  body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: var(--ink); }
+
+  /* Fixed 1440x1080 stage, scaled to fit the window so sizes match the video */
+  #stage {
+    position: absolute; left: 50%; top: 50%;
+    width: 1440px; height: 1080px; margin: -540px 0 0 -720px;
+    transform-origin: 50% 50%;
+    background: radial-gradient(ellipse at 50% 45%, #f1f2f2 0%, var(--bg) 55%, var(--bg-edge) 100%);
     overflow: hidden;
   }
-  .hero { position: relative; width: 100%; height: 100vh; min-height: 560px; overflow: hidden; }
-  canvas#city { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #grid { position: absolute; inset: 0; opacity: 0; transition: opacity .8s;
+    background-image: radial-gradient(#cfd3d5 1px, transparent 1.2px); background-size: 20px 20px; }
+  #ring { position: absolute; left: 120px; top: 150px; width: 1200px; height: 1200px; border-radius: 50%;
+    border: 1px solid #d9dcde; opacity: 0; transition: opacity .8s; pointer-events: none; }
+  body[data-slide="1"] #grid, body[data-slide="1"] #ring { opacity: 1; }
+  canvas#city { position: absolute; inset: 0; width: 1440px; height: 1080px; }
+
+  /* scan band used by the transition */
+  #band { position: absolute; left: 0; right: 0; height: 140px; top: 0; z-index: 4; opacity: 0; pointer-events: none;
+    background: linear-gradient(90deg, rgba(120,120,125,0), rgba(120,120,125,.35) 30%, rgba(120,120,125,.55) 55%, rgba(120,120,125,.1) 80%, rgba(255,255,255,0));
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,.6); border-bottom: 1px solid rgba(255,255,255,.6); }
 
   /* nav */
-  .logo { position: absolute; top: 28px; left: 32px; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; letter-spacing: -.01em; z-index: 3; }
-  .logo svg { width: 20px; height: 22px; }
-  .nav { position: absolute; top: 28px; right: 32px; display: flex; gap: 14px; z-index: 3; }
-  .pill { display: flex; align-items: center; gap: 24px; height: 44px; padding: 0 6px 0 28px; border-radius: 999px; font-size: 13px; letter-spacing: .01em; text-transform: uppercase; border: 0; cursor: pointer; font-family: inherit; }
-  .pill.light { background: var(--pill); color: var(--ink); box-shadow: inset 0 0 0 3px #e9ecee; }
-  .pill.dark { background: var(--dark); color: #fff; }
-  .pill .ic { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; }
-  .pill.light .ic { background: #f3f5f6; }
-  .pill.dark .ic { background: #23252b; }
-  .dots { display: flex; gap: 4px; }
-  .dots i { width: 5px; height: 5px; border-radius: 50%; background: #fff; display: block; }
+  .logo { position: absolute; top: 36px; left: 48px; display: flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 500; letter-spacing: -.02em; z-index: 5; }
+  .logo svg { width: 27px; height: 31px; }
+  .nav { position: absolute; top: 40px; right: 48px; display: flex; gap: 20px; z-index: 5; }
+  .pill { display: flex; align-items: center; justify-content: space-between; height: 58px; border-radius: 999px; font-size: 17px; text-transform: uppercase; border: 0; cursor: pointer; font-family: inherit; padding: 0 8px 0 32px; gap: 30px; }
+  .pill.light { width: 273px; background: var(--pill); color: var(--ink); box-shadow: inset 0 0 0 4px var(--pill-ring); }
+  .pill.dark { width: 177px; background: var(--dark); color: #fff; }
+  .pill .ic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; }
+  .pill.light .ic { background: #f2f4f5; }
+  .pill.dark .ic { background: var(--dark-ic); }
+  .dots { display: flex; gap: 6px; } .dots i { width: 7px; height: 7px; border-radius: 50%; background: #fff; display: block; }
 
-  /* headline */
-  h1 {
-    position: absolute; top: 72px; left: 20px; z-index: 2;
-    font-weight: 300; font-size: clamp(48px, 7.6vw, 108px); line-height: .94; letter-spacing: -.045em;
-    pointer-events: none;
-  }
-  h1 .arch { display: inline-block; width: .5em; height: .6em; margin: 0 .06em -.02em; vertical-align: baseline; }
+  /* slide layers */
+  .layer { position: absolute; inset: 0; z-index: 3; opacity: 0; pointer-events: none; transition: opacity .35s; }
+  body[data-slide="0"] .s0, body[data-slide="1"] .s1, body[data-slide="2"] .s2 { opacity: 1; pointer-events: auto; }
 
-  /* bottom-left */
-  .intro { position: absolute; left: 25px; bottom: 28px; z-index: 3; max-width: 260px; }
-  .intro p { font-size: 12.5px; line-height: 1.4; margin-bottom: 18px; }
-  .intro .row { display: flex; gap: 8px; align-items: center; }
-  .btn { height: 30px; padding: 0 20px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 12px; border: 0; cursor: pointer; font-family: inherit; }
-  .circ { width: 30px; height: 30px; border-radius: 50%; border: 0; background: var(--pill); display: grid; place-items: center; cursor: pointer; }
-  .foot { margin-top: 14px; font-size: 9px; color: #a0a3a9; }
+  /* slide 0 – hero */
+  h1 { position: absolute; top: 100px; left: 30px; font-weight: 300; font-size: 126px; line-height: .9; letter-spacing: -.05em; white-space: nowrap; }
+  h1 .arch { display: inline-block; width: 74px; height: 92px; margin: 0 8px -4px 10px; }
+  .intro { position: absolute; left: 37px; bottom: 36px; width: 360px; }
+  .intro p { font-size: 15px; line-height: 1.38; margin-bottom: 26px; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  .btn { height: 44px; padding: 0 26px; border-radius: 999px; background: var(--btn); color: #fff; font-size: 15px; border: 0; cursor: pointer; font-family: inherit; }
+  .circ { width: 44px; height: 44px; border-radius: 50%; border: 0; background: #e1e4e6; display: grid; place-items: center; cursor: pointer; color: var(--ink); }
+  .foot { margin-top: 22px; font-size: 11px; color: var(--muted); }
+  .card { position: absolute; right: 40px; bottom: 36px; display: flex; gap: 6px; height: 157px; }
+  .card .txt { width: 210px; border-radius: 26px; padding: 16px 18px; background: rgba(255,255,255,.4); border: 1px solid #d3d6d9; display: flex; flex-direction: column; justify-content: space-between; font-size: 12.5px; line-height: 1.4; }
+  .card .acts { display: flex; gap: 8px; } .card .acts span { width: 44px; height: 38px; border-radius: 19px; background: #fff; display: grid; place-items: center; }
+  .card .img { position: relative; width: 110px; border-radius: 26px; overflow: hidden; background: linear-gradient(165deg, #6d9fd8 0%, #a9c8ea 42%, #e4edf6 62%, #b4c3d1 100%); }
+  .card .img::after { content: ""; position: absolute; left: -16px; right: 14px; top: 62px; height: 14px; background: #f5f7f9; transform: skewY(-10deg); box-shadow: 0 14px 0 #c9d1d8; }
+  .card .img b { position: absolute; right: 9px; bottom: 9px; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 400; z-index: 1; }
 
-  /* bottom-right card */
-  .card { position: absolute; right: 26px; bottom: 28px; z-index: 3; display: flex; gap: 6px; height: 106px; }
-  .card .txt { width: 144px; border-radius: 18px; padding: 12px; background: rgba(255,255,255,.35); border: 1px solid #d4d7db; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between; font-size: 9px; line-height: 1.35; }
-  .card .txt .acts { display: flex; gap: 6px; }
-  .card .txt .acts span { width: 30px; height: 26px; border-radius: 13px; background: #fff; display: grid; place-items: center; }
-  .card .img { position: relative; width: 74px; border-radius: 18px; background: linear-gradient(160deg, #8fb7e8 0%, #cfe1f5 45%, #e9f0f7 60%, #b9c6d2 100%); overflow: hidden; }
-  .card .img::after { content: ""; position: absolute; left: -10px; right: 10px; top: 44px; height: 10px; background: #f4f6f8; transform: skewY(-10deg); box-shadow: 0 10px 0 #cfd6dd; }
-  .card .img b { position: absolute; right: 6px; bottom: 6px; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 400; z-index: 1; }
+  /* slide 1 – studio */
+  .s1 .title { position: absolute; left: 720px; top: 130px; font-size: 84px; line-height: .92; letter-spacing: -.045em; font-weight: 300; text-transform: uppercase; }
+  .s1 p { position: absolute; left: 720px; top: 800px; width: 270px; font-size: 13px; line-height: 1.38; }
+  .s1 p + p { top: 860px; }
+
+  /* slide 2 – works */
+  .s2 .title { position: absolute; left: 48px; bottom: 170px; font-size: 96px; line-height: .92; letter-spacing: -.05em; font-weight: 300; }
+  .s2 p { position: absolute; left: 52px; bottom: 112px; width: 420px; font-size: 15px; line-height: 1.38; }
 
   /* slider */
-  .slider { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: none; gap: 12px; z-index: 3; }
-
-  @media (max-width: 720px) {
-    .card { display: none; }
-    .pill.light { display: none; }
-    h1 { top: 84px; }
-  }
+  .slider { position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%); display: flex; gap: 14px; z-index: 6; }
+  .slider .circ { width: 54px; height: 54px; }
+  .slider .track { height: 54px; padding: 0 22px; border-radius: 27px; background: #e1e4e6; display: flex; align-items: center; gap: 10px; }
+  .slider .track i { display: block; width: 14px; height: 14px; border-radius: 7px; background: #b9bdc2; cursor: pointer; transition: width .35s, background .35s; }
+  .slider .track i.on { width: 46px; background: var(--dark); }
 </style>
 </head>
-<body>
-<section class="hero">
+<body data-slide="0">
+<div id="stage">
+  <div id="grid"></div><div id="ring"></div>
   <canvas id="city"></canvas>
+  <div id="band"></div>
 
   <div class="logo">
-    <svg viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 21V10a8 8 0 0 1 16 0v11M6 21V10.5a4 4 0 0 1 8 0V21"/></svg>
+    <svg viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 21V10a8 8 0 0 1 16 0v11M6 21V10.5a4 4 0 0 1 8 0V21"/></svg>
     Alder &amp; Stone
   </div>
-
   <div class="nav">
-    <button class="pill light">Start a project <span class="ic"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="10" height="7.5" rx="1.5"/><path d="M4 11h4"/></svg></span></button>
+    <button class="pill light">Start a project <span class="ic"><svg width="16" height="16" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="1" y="1.5" width="10" height="7.5" rx="1.5"/><path d="M4 11h4"/></svg></span></button>
     <button class="pill dark">Menu <span class="ic"><span class="dots"><i></i><i></i></span></span></button>
   </div>
 
-  <h1>
-    Shaping Spaces<br>That<svg class="arch" viewBox="0 0 30 36" fill="currentColor"><path d="M0 36V15C0 6 6 0 15 0s15 6 15 15v21H20V16a5 5 0 0 0-10 0v20z"/></svg>Endure
-  </h1>
-
-  <div class="intro">
-    <p>Architecture moves us when place and material speak together. We design homes, workplaces and public spaces in Copenhagen, built to last.</p>
-    <div class="row">
-      <button class="btn" style="height:38px;padding:0 20px">Start a Project</button>
-      <button class="circ" style="width:38px;height:38px" aria-label="Grid"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor"><rect x="1.5" y="1.5" width="4" height="4"/><rect x="8.5" y="1.5" width="4" height="4"/><rect x="1.5" y="8.5" width="4" height="4"/><rect x="8.5" y="8.5" width="4" height="4"/></svg></button>
-      <button class="circ" style="width:38px;height:38px;opacity:.7" aria-label="Scroll"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor"><path d="M6 1v12M1.5 8.5 6 13l4.5-4.5"/></svg></button>
-    </div>
-    <div class="foot">* Founded in Copenhagen in 2011</div>
-  </div>
-
-  <div class="card">
-    <div class="txt">
-      An independent studio for homes, workplaces and public space.
-      <div class="acts">
-        <span><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor"><rect x="1" y="2" width="10" height="8" rx="1"/><path d="m1.5 3 4.5 3.5L10.5 3"/></svg></span>
-        <span><svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor"><path d="M5 11s4-3.4 4-6.5a4 4 0 0 0-8 0C1 7.600 5 11 5 11z"/><circle cx="5" cy="4.5" r="1.2"/></svg></span>
+  <!-- slide 0 : hero -->
+  <div class="layer s0">
+    <h1><span data-t>Shaping Spaces</span><br><span data-t>That</span><svg class="arch" viewBox="0 0 30 36" fill="currentColor"><path d="M0 36V15C0 6 6 0 15 0s15 6 15 15v21H20V16a5 5 0 0 0-10 0v20z"/></svg><span data-t>Endure</span></h1>
+    <div class="intro">
+      <p data-t>Architecture moves us when place and material speak together. We design homes, workplaces and public spaces in Copenhagen, built to last.</p>
+      <div class="row">
+        <button class="btn" data-t>Start a Project</button>
+        <button class="circ" aria-label="Grid"><svg width="18" height="18" viewBox="0 0 14 14" fill="none" stroke="currentColor"><rect x="1.5" y="1.5" width="4" height="4"/><rect x="8.5" y="1.5" width="4" height="4"/><rect x="1.5" y="8.5" width="4" height="4"/><rect x="8.5" y="8.5" width="4" height="4"/></svg></button>
+        <button class="circ" aria-label="Scroll" style="opacity:.75"><svg width="14" height="16" viewBox="0 0 12 14" fill="none" stroke="currentColor"><path d="M6 1v12M1.5 8.5 6 13l4.5-4.5"/></svg></button>
       </div>
+      <div class="foot" data-t>* Founded in Copenhagen in 2011</div>
     </div>
-    <div class="img"><b>↗</b></div>
+    <div class="card">
+      <div class="txt"><span data-t>An independent studio for homes, workplaces and public space.</span>
+        <div class="acts">
+          <span><svg width="16" height="16" viewBox="0 0 12 12" fill="none" stroke="currentColor"><rect x="1" y="2" width="10" height="8" rx="1"/><path d="m1.5 3 4.5 3.5L10.5 3"/></svg></span>
+          <span><svg width="14" height="16" viewBox="0 0 10 12" fill="none" stroke="currentColor"><path d="M5 11s4-3.4 4-6.5a4 4 0 0 0-8 0C1 7.6 5 11 5 11z"/><circle cx="5" cy="4.5" r="1.2"/></svg></span>
+        </div>
+      </div>
+      <div class="img"><b>↗</b></div>
+    </div>
   </div>
-</section>
+
+  <!-- slide 1 : studio -->
+  <div class="layer s1">
+    <div class="title" data-t>Alder &amp;<br>Stone</div>
+    <p data-t>Good buildings are quiet. They let light, material and place do the talking.</p>
+    <p data-t>We design homes, workplaces and public spaces that sit in their site, stand the weather and are built for generations.</p>
+  </div>
+
+  <!-- slide 2 : works -->
+  <div class="layer s2">
+    <div class="title" data-t>Selected<br>Works</div>
+    <p data-t>Houses, offices and public rooms across Copenhagen and the Nordics, from 2011 to today.</p>
+  </div>
+
+  <div class="slider">
+    <button class="circ" id="prev" aria-label="Previous"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2 2 8l6 6"/></svg></button>
+    <div class="track"><i class="on"></i><i></i><i></i></div>
+    <button class="circ" id="next" aria-label="Next"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 2 6 6-6 6"/></svg></button>
+  </div>
+</div>
 
 <script>
 (() => {
+  const W = 1440, H = 1080;
+  const stage = document.getElementById('stage');
   const cv = document.getElementById('city');
   const ctx = cv.getContext('2d');
-  let W, H, dpr;
+  const band = document.getElementById('band');
 
-  // ---- build the point cloud: dotted wireframe boxes + roads + lamp posts ----
+  function fit() {
+    const s = Math.min(innerWidth / W, innerHeight / H);
+    stage.style.transform = `scale(${s})`;
+    const k = s * Math.min(devicePixelRatio || 1, 2);
+    cv.width = W * k; cv.height = H * k;
+    ctx.setTransform(k, 0, 0, k, 0, 0);
+  }
+  addEventListener('resize', fit); fit();
+
+  /* ---------- point cloud: dotted wireframe city ---------- */
   const pts = [];
   const STEP = 0.16;
-
   function line(a, b) {
     const n = Math.max(2, Math.round(Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]) / STEP));
-    for (let i = 0; i <= n; i++) {
-      const t = i / n;
-      pts.push([a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]);
-    }
+    for (let i = 0; i <= n; i++) { const t = i / n; pts.push([a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]); }
   }
-  // box: x,z centre, w,d footprint, h height, floors = horizontal rings
   function box(cx, cz, w, d, h, floors, y0 = 0) {
-    const x0 = cx - w/2, x1 = cx + w/2, z0 = cz - d/2, z1 = cz + d/2;
+    const x0 = cx-w/2, x1 = cx+w/2, z0 = cz-d/2, z1 = cz+d/2;
     for (let f = 0; f <= floors; f++) {
-      const y = y0 + h * f / floors;
-      line([x0,y,z0],[x1,y,z0]); line([x1,y,z0],[x1,y,z1]);
-      line([x1,y,z1],[x0,y,z1]); line([x0,y,z1],[x0,y,z0]);
+      const y = y0 + h*f/floors;
+      line([x0,y,z0],[x1,y,z0]); line([x1,y,z0],[x1,y,z1]); line([x1,y,z1],[x0,y,z1]); line([x0,y,z1],[x0,y,z0]);
     }
-    const cols = Math.max(2, Math.round(w / 0.55));
-    for (let i = 0; i <= cols; i++) {
-      const x = x0 + w * i / cols;
-      line([x,y0,z0],[x,y0+h,z0]); line([x,y0,z1],[x,y0+h,z1]);
-    }
-    const rows = Math.max(2, Math.round(d / 0.55));
-    for (let i = 0; i <= rows; i++) {
-      const z = z0 + d * i / rows;
-      line([x0,y0,z],[x0,y0+h,z]); line([x1,y0,z],[x1,y0+h,z]);
-    }
-    // rooftop dots
-    for (let x = x0 + .3; x < x1 - .1; x += .3)
-      for (let z = z0 + .3; z < z1 - .1; z += .3) pts.push([x, y0 + h, z]);
+    const cols = Math.max(2, Math.round(w/.55)), rows = Math.max(2, Math.round(d/.55));
+    for (let i = 0; i <= cols; i++) { const x = x0 + w*i/cols; line([x,y0,z0],[x,y0+h,z0]); line([x,y0,z1],[x,y0+h,z1]); }
+    for (let i = 0; i <= rows; i++) { const z = z0 + d*i/rows; line([x0,y0,z],[x0,y0+h,z]); line([x1,y0,z],[x1,y0+h,z]); }
+    for (let x = x0+.3; x < x1-.1; x += .3) for (let z = z0+.3; z < z1-.1; z += .3) pts.push([x, y0+h, z]);
   }
-
-  // tower (stacked slabs that step out like the reference)
-  for (let i = 0; i < 14; i++) {
-    const grow = 1 + Math.sin(i * .45) * .08;
-    box(0, 0, 3.2 * grow, 3.2 * grow, .55, 1, i * .6);
-  }
-  box(0, 0, 3.0, 3.0, 8.4, 14);
-  // podium
+  for (let i = 0; i < 16; i++) { const g = 1 + Math.sin(i*.45)*.08; box(0, 0, 3.2*g, 3.2*g, .5, 1, i*.75); }
+  box(0, 0, 3.0, 3.0, 12, 16);
   box(0, 0, 6, 6, .5, 2);
-
-  // surrounding blocks
-  const blocks = [
-    [-7, -2, 4, 3, 1.4, 4], [-8.5, 2.5, 4.5, 3.5, 1.1, 3], [-4.5, 4.5, 4, 3, 1.6, 4],
-    [4.8, -5, 4, 3, 2.2, 6], [8.5, -1.5, 3.8, 4, 3.6, 8], [6.2, 3.2, 3.6, 3.2, 1.5, 4],
-    [8.4, 6.2, 3.6, 3, 1.1, 3], [-2, 8.2, 4.2, 3, 1.0, 3], [2.4, 7.4, 3.4, 3, 1.2, 3],
-    [-4, -6.5, 3.4, 3, 1.3, 4], [3, -8.5, 4, 3, 1.1, 3], [-9.5, -6, 3, 3, 1, 3]
-  ];
-  blocks.forEach(b => box(...b));
-
-  // roads
-  for (let k = -14; k <= 14; k += .5) {
-    pts.push([k, 0, 5.5], [k, 0, -3.8], [5.8, 0, k], [-3.4, 0, k]);
-  }
-  // lamp posts
+  [[-7,-2,4,3,1.4,4],[-8.5,2.5,4.5,3.5,1.1,3],[-4.5,4.5,4,3,1.6,4],[4.8,-5,4,3,2.2,6],[8.5,-1.5,3.8,4,3.6,8],
+   [6.2,3.2,3.6,3.2,1.5,4],[8.4,6.2,3.6,3,1.1,3],[-2,8.2,4.2,3,1,3],[2.4,7.4,3.4,3,1.2,3],[-4,-6.5,3.4,3,1.3,4],
+   [3,-8.5,4,3,1.1,3],[-9.5,-6,3,3,1,3]].forEach(b => box(...b));
+  for (let k = -14; k <= 14; k += .5) pts.push([k,0,5.5],[k,0,-3.8],[5.8,0,k],[-3.4,0,k]);
   [[-6,-4.5],[-5,6],[3,-3.8],[7,-3.5],[1,5.8],[9,2],[-9,5]].forEach(([x,z]) => line([x,0,z],[x,1.5,z]));
 
-  // ---- render ----
-  const DARK = '#2b2d33';
-  function resize() {
-    dpr = Math.min(devicePixelRatio || 1, 2);
-    W = cv.clientWidth; H = cv.clientHeight;
-    cv.width = W * dpr; cv.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  /* ---------- camera per slide ---------- */
+  const CAMS = [
+    { zoom: 1.00, tilt: .75, rot: 0,   cx: 720, cy: 640 },   // hero
+    { zoom: .62,  tilt: .62, rot: .5,  cx: 720, cy: 560 },   // studio (small, inside ring)
+    { zoom: 1.25, tilt: .95, rot: -.45, cx: 820, cy: 600 },  // works
+  ];
+  const cam = { ...CAMS[0] };
+  let from = { ...CAMS[0] }, to = { ...CAMS[0] };
+  let slide = 0, trans = null;
+  const DUR = 1300;
+  const ease = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  /* ---------- text scramble ---------- */
+  const GLYPHS = '<>-_\\/[]{}=+*^?#%&|!';
+  const store = new WeakMap();
+  function scramble(el, ms = 650) {
+    const nodes = [];
+    const walk = n => n.childNodes.forEach(c => c.nodeType === 3 ? nodes.push(c) : walk(c));
+    walk(el);
+    nodes.forEach(n => { if (!store.has(n)) store.set(n, n.nodeValue); });
+    const t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min(1, (now - t0) / ms);
+      nodes.forEach(n => {
+        const src = store.get(n);
+        n.nodeValue = [...src].map((ch, i) =>
+          ch === ' ' || ch === '\n' ? ch : (i / src.length < p ? ch : GLYPHS[(Math.random()*GLYPHS.length)|0])).join('');
+      });
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
   }
-  addEventListener('resize', resize); resize();
+  const scrambleSlide = i => document.querySelectorAll(`.s${i} [data-t]`).forEach(e => scramble(e));
 
-  let mx = 0, my = 0;
-  addEventListener('pointermove', e => { mx = e.clientX / W - .5; my = e.clientY / H - .5; });
+  /* ---------- slide switching ---------- */
+  const dots = [...document.querySelectorAll('.track i')];
+  function go(i) {
+    i = (i + CAMS.length) % CAMS.length;
+    if (trans || i === slide) return;
+    from = { ...cam }; to = { ...CAMS[i] };
+    trans = { t0: performance.now(), next: i, swapped: false };
+    band.style.opacity = 1;
+  }
+  document.getElementById('next').onclick = () => go(slide + 1);
+  document.getElementById('prev').onclick = () => go(slide - 1);
+  dots.forEach((d, i) => d.onclick = () => go(i));
+  addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(slide + 1); if (e.key === 'ArrowLeft') go(slide - 1); });
+  const auto = setInterval(() => go(slide + 1), 7000);
+  document.querySelector('.slider').addEventListener('pointerdown', () => clearInterval(auto));
+  window.__go = go; // handy for testing
 
-  const tilt = 0.75; // camera pitch
-  function frame(t) {
-    ctx.clearRect(0, 0, W, H);
-    const rot = t * 0.00012 + mx * .5;
-    const cr = Math.cos(rot), sr = Math.sin(rot);
-    const cp = Math.cos(tilt + my * .1), sp = Math.sin(tilt + my * .1);
-    const scale = Math.min(W / 36, H / 22);
-    const cx = W * .5, cy = H * .58;
-    const size = Math.max(1.3, scale * .05);
+  /* ---------- render ---------- */
+  let mx = 0, my = 0, spin = 0;
+  addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
+  const BASE = 40;
 
-    ctx.fillStyle = DARK;
+  function drawPass(zoom, ox, color, alpha, jitter) {
+    const a = cam.rot + spin + mx*.4, cr = Math.cos(a), sr = Math.sin(a);
+    const tl = cam.tilt + my*.08, cp = Math.cos(tl), sp = Math.sin(tl);
+    const sc = BASE * zoom;
+    const size = Math.max(1.5, sc * .055);
+    ctx.fillStyle = color;
     for (let i = 0; i < pts.length; i++) {
       const p = pts[i];
-      const x = p[0] * cr - p[2] * sr;
-      const z = p[0] * sr + p[2] * cr;
-      const sx = cx + x * scale;
-      const sy = cy + (z * sp - p[1] * cp) * scale;
-      const depth = z * cp + p[1] * sp;
-      ctx.globalAlpha = Math.min(1, Math.max(.35, .75 + depth * .03));
+      const x = p[0]*cr - p[2]*sr, z = p[0]*sr + p[2]*cr;
+      let sx = cam.cx + ox + x*sc, sy = cam.cy + (z*sp - p[1]*cp)*sc;
+      if (jitter) { sx += (Math.random()-.5)*jitter; sy += (Math.random()-.5)*jitter; }
+      if (sx < -10 || sx > W+10 || sy < -10 || sy > H+10) continue;
+      ctx.globalAlpha = alpha * Math.min(1, Math.max(.4, .78 + (z*cp + p[1]*sp)*.03));
       ctx.fillRect(sx, sy, size, size);
     }
     ctx.globalAlpha = 1;
+  }
+
+  function frame(now) {
+    spin = now * 0.00009;
+    let g = 0, zoomMul = 1;
+    if (trans) {
+      const p = Math.min(1, (now - trans.t0) / DUR), e = ease(p);
+      for (const k of ['zoom','tilt','rot','cx','cy']) cam[k] = lerp(from[k], to[k], e);
+      g = Math.sin(Math.PI * p);                 // glitch intensity 0 -> 1 -> 0
+      zoomMul = 1 + 5.5 * Math.pow(g, 3);        // dive into the dots at the midpoint
+      band.style.top = (150 + p * 520) + 'px';
+      if (p >= .5 && !trans.swapped) {
+        trans.swapped = true; slide = trans.next;
+        document.body.dataset.slide = slide;
+        dots.forEach((d, i) => d.classList.toggle('on', i === slide));
+        scrambleSlide(slide);
+      }
+      if (p >= 1) { trans = null; band.style.opacity = 0; }
+    }
+    ctx.clearRect(0, 0, W, H);
+    const z = cam.zoom * zoomMul;
+    if (g > .05) {                                // RGB split
+      drawPass(z,  g * 14, '#ff3d78', .55, g * 6);
+      drawPass(z, -g * 14, '#2fc4e6', .55, g * 6);
+    }
+    drawPass(z, 0, '#25272e', 1, g * 3);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+  scrambleSlide(0);
 })();
 </script>
 </body>
