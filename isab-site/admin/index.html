@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Administration · ISAB Construction</title>
+<link rel="icon" href="../logo.jpg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap">
+<style>
+:root{--ink:#0C2340;--muted:#52627A;--line:#C5D2E0;--accent:#17569F;--bg:#E8EEF5;--card:#FFFFFF;--navy:#06142A;--ok:#167F42;--warn:#B3261E;--gold:#F0B323}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:400 16px/1.5 "Inter","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 50% 0%,#F3F7FB 0%,var(--bg) 55%,#DEE6F0 100%);min-height:100vh}
+[hidden]{display:none!important}
+h1,h2,h3{font-weight:300;text-transform:uppercase;letter-spacing:-.03em;line-height:1;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:980px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left)) 60px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;border:0;font-weight:500;font-size:15px;cursor:pointer;text-decoration:none;background:var(--navy);color:#fff}
+.btn.green{background:var(--ok)}.btn.line{background:transparent;color:var(--ink);border:1px solid var(--ink)}.btn.small{min-height:38px;padding:0 16px;font-size:14px}
+.btn.danger{background:var(--warn)}.btn:disabled{opacity:.55;cursor:wait}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.card{background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:26px;padding:26px}
+label.l,.lab{display:block;font:500 11px "Inter",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+input[type=text],input[type=password],input[type=number],select,textarea{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:#fff;font-size:16px}
+textarea{min-height:96px;resize:vertical}
+.field{margin-bottom:16px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:620px){.row2{grid-template-columns:1fr}}
+.msg{padding:12px 16px;border-radius:14px;font-size:15px;margin:0 0 16px}
+.msg.err{background:#FDECEA;color:var(--warn);border:1px solid #F3C4BF}.msg.ok{background:#E6F4EA;color:var(--ok);border:1px solid #BFE1CA}
+/* connexion */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+#login .card{width:min(420px,100%)}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.brand img{width:62px;height:auto;border-radius:10px;background:#fff;padding:3px}
+.brand b{display:block;font-size:20px;font-weight:600}.brand span{color:var(--muted);font-size:14px}
+/* application */
+.top{position:sticky;top:0;z-index:5;background:rgba(232,238,245,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-bottom:26px}
+.top .in{max-width:980px;margin:0 auto;padding:12px max(16px,env(safe-area-inset-left));display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.top .brand{margin:0}.top .brand img{width:46px}
+.top .acts{display:flex;flex-wrap:wrap;gap:8px}
+h2{font-size:30px;margin-bottom:18px}
+.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:620px){.photos{grid-template-columns:repeat(2,1fr)}}
+.slot{position:relative;aspect-ratio:4/3;border:2px dashed var(--line);border-radius:16px;background:#F6F9FC;display:grid;place-items:center;overflow:hidden;cursor:pointer;text-align:center;color:var(--muted);font-size:14px;padding:6px}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .x{position:absolute;right:6px;top:6px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(6,20,42,.78);color:#fff;font-size:18px;cursor:pointer;z-index:2}
+.slot .n{position:absolute;left:8px;bottom:6px;background:rgba(6,20,42,.7);color:#fff;border-radius:999px;font-size:11px;padding:2px 9px;z-index:2}
+.hint{color:var(--muted);font-size:14px;margin:8px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.list{display:grid;gap:12px}
+.item{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center;border:1px solid var(--line);border-radius:20px;background:#fff;padding:12px}
+@media(max-width:620px){.item{grid-template-columns:72px 1fr}}
+.item .th{width:100%;aspect-ratio:1;border-radius:14px;background:#DDE6F0 center/cover no-repeat}
+.item h3{font-size:19px;text-transform:none;font-weight:500;letter-spacing:-.01em;margin-bottom:4px}
+.meta{color:var(--muted);font-size:14px}
+.badge{display:inline-block;border-radius:999px;font:600 11px "Inter",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;margin-left:6px;vertical-align:middle}
+.badge.disponible{background:#E6F4EA;color:var(--ok)}.badge.vendu{background:#FFF3D1;color:#8A6200}.badge.masque{background:#ECEFF3;color:var(--muted)}
+.item .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;grid-column:1/-1}
+.empty{color:var(--muted);padding:12px 4px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 20px;border-radius:999px;z-index:30;font-size:15px}
+dialog{border:0;border-radius:24px;padding:26px;max-width:min(440px,92vw);width:100%}
+dialog::backdrop{background:rgba(6,20,42,.55)}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <form class="card" id="loginForm" autocomplete="on">
+    <div class="brand"><img src="../logo.jpg" alt="Logo ISAB Construction"><div><b>ISAB Construction</b><span>Espace administrateur</span></div></div>
+    <div id="loginMsg" class="msg err" hidden></div>
+    <div class="field"><label class="l" for="uid">Identifiant</label><input id="uid" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+    <div class="field"><label class="l" for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
+    <button class="btn" id="loginBtn" type="submit" style="width:100%">Se connecter</button>
+    <p class="hint">Cet espace est réservé à ISAB Construction.</p>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top"><div class="in">
+    <div class="brand"><img src="../logo.jpg" alt=""><div><b>Gestion des biens</b><span>ISAB Construction</span></div></div>
+    <div class="acts">
+      <a class="btn line small" href="../#biens" target="_blank" rel="noopener">Voir le site</a>
+      <button class="btn line small" id="pwBtn" type="button">Mot de passe</button>
+      <button class="btn small" id="outBtn" type="button">Se déconnecter</button>
+    </div>
+  </div></header>
+
+  <main class="wrap">
+    <section class="card" id="formCard" style="margin-bottom:28px">
+      <h2 id="formTitle">Ajouter un bien</h2>
+      <div id="formMsg" class="msg" hidden></div>
+      <form id="bienForm" novalidate>
+        <div class="row2">
+          <div class="field"><label class="l" for="f_cat">Type de bien</label>
+            <select id="f_cat"><option value="terrain">Terrain nu</option><option value="villa">Villa</option><option value="immeuble">Immeuble</option><option value="batiment">Autre bâtiment</option></select></div>
+          <div class="field"><label class="l" for="f_statut">Statut</label>
+            <select id="f_statut"><option value="disponible">Disponible (visible sur le site)</option><option value="vendu">Vendu (visible, marqué « Vendu »)</option><option value="masque">Masqué (non visible)</option></select></div>
+        </div>
+        <div class="field"><label class="l" for="f_titre">Titre de l'annonce</label><input id="f_titre" type="text" maxlength="120" placeholder="Ex. Terrain de 300 m² à Sébénikoro"></div>
+        <div class="row2">
+          <div class="field"><label class="l" for="f_prix">Prix (F CFA)</label><input id="f_prix" type="number" inputmode="numeric" min="0" step="1" placeholder="Ex. 25000000"></div>
+          <div class="field"><label class="l" for="f_sup">Superficie (m²)</label><input id="f_sup" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 300"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label class="l" for="f_loc">Localisation</label><input id="f_loc" type="text" maxlength="160" placeholder="Ex. Sébénikoro, Bamako"></div>
+          <div class="field"><label class="l" for="f_tf">N° de titre foncier (TF)</label><input id="f_tf" type="text" maxlength="60" placeholder="Ex. TF n° 12345 du District de Bamako"></div>
+        </div>
+        <div class="field"><label class="l" for="f_desc">Description (facultatif)</label><textarea id="f_desc" maxlength="2000" placeholder="Ex. Terrain plat, clôturé, proche de la route."></textarea></div>
+        <div class="field"><span class="lab">Photos (1 à 4)</span>
+          <div class="photos" id="photos"></div>
+          <p class="hint">Touchez une case pour ajouter une photo. Les photos sont réduites automatiquement.</p>
+          <input id="fileIn" type="file" accept="image/*" hidden>
+        </div>
+        <div class="actions">
+          <button class="btn green" id="saveBtn" type="submit">Enregistrer et publier</button>
+          <button class="btn line" id="cancelBtn" type="button" hidden>Annuler la modification</button>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Mes biens</h2>
+      <div id="listMsg" class="msg err" hidden></div>
+      <div class="list" id="list"><p class="empty">Chargement…</p></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="pwDlg">
+  <form method="dialog" id="pwForm">
+    <h2 style="font-size:24px">Changer le mot de passe</h2>
+    <div id="pwMsg" class="msg err" hidden></div>
+    <div class="field"><label class="l" for="np1">Nouveau mot de passe (8 caractères minimum)</label><input id="np1" type="password" autocomplete="new-password"></div>
+    <div class="field"><label class="l" for="np2">Confirmer</label><input id="np2" type="password" autocomplete="new-password"></div>
+    <div class="actions"><button class="btn green" id="pwSave" type="button">Enregistrer</button><button class="btn line" id="pwCancel" type="button">Annuler</button></div>
+  </form>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+  var SB = "https://ubrkwxtyuwaqucitikab.supabase.co", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVicmt3eHR5dXdhcXVjaXRpa2FiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMjQ4MTAsImV4cCI6MjEwMzcwMDgxMH0.zkjIUO5O3XXNy9WFtUwitS_399PCqXidY5FiOIRAdpE", BUCKET = "isab-biens", DOMAIN = "@isab-construction.app", STORE = "isab_session";
+  var $ = function (id) { return document.getElementById(id); };
+  var session = null, biens = [], editing = null, slots = [null, null, null, null], pickIndex = 0, busy = false;
+  var LABEL = { terrain: "Terrain", villa: "Villa", immeuble: "Immeuble", batiment: "Bâtiment" };
+  var STAT = { disponible: "Disponible", vendu: "Vendu", masque: "Masqué" };
+
+  function fmt(n) { return new Intl.NumberFormat("fr-FR").format(n).replace(/[  ]/g, " "); }
+  function toast(t) { var d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2600); }
+  function showMsg(id, text, ok) { var m = $(id); if (!text) { m.hidden = true; return; } m.textContent = text; m.className = "msg " + (ok ? "ok" : "err"); m.hidden = false; }
+  function safe(fn) { return function (e) { try { var r = fn(e); if (r && r.catch) r.catch(function (err) { console.error(err); }); } catch (err) { console.error(err); } }; }
+
+  /* ---------- session ---------- */
+  function loadSession() { try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { return null; } }
+  function saveSession(s) { session = s; try { if (s) localStorage.setItem(STORE, JSON.stringify(s)); else localStorage.removeItem(STORE); } catch (e) {} }
+  function authFetch(path, body) {
+    return fetch(SB + "/auth/v1/" + path, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(function (r) {
+      return r.json().then(function (j) { if (!r.ok) { var e = new Error(j.error_description || j.msg || j.message || "Erreur"); e.status = r.status; throw e; } return j; });
+    });
+  }
+  function toSession(j) { return { access_token: j.access_token, refresh_token: j.refresh_token, expires_at: Date.now() + (j.expires_in || 3600) * 1000 - 30000 }; }
+  function refresh() {
+    if (!session) return Promise.reject(new Error("Session expirée"));
+    return authFetch("token?grant_type=refresh_token", { refresh_token: session.refresh_token }).then(function (j) { saveSession(toSession(j)); });
+  }
+  function api(path, opt, retried) {
+    opt = opt || {};
+    var ready = (session && Date.now() > session.expires_at) ? refresh() : Promise.resolve();
+    return ready.then(function () {
+      if (!session) throw new Error("Session expirée");
+      opt.headers = Object.assign({ apikey: KEY, Authorization: "Bearer " + session.access_token }, opt.headers || {});
+      return fetch(SB + path, opt);
+    }).then(function (r) {
+      if (r.status === 401 && !retried) { return refresh().then(function () { return api(path, opt, true); }); }
+      return r;
+    });
+  }
+  function errText(r) { return r.text().then(function (t) { var m = ""; try { var j = JSON.parse(t); m = j.message || j.error || ""; } catch (e) {} if (r.status === 401 || r.status === 403 || /row-level|policy|permission/i.test(m + t)) return "Accès refusé. Reconnectez-vous avec le compte ISAB."; return m || ("Erreur " + r.status); }); }
+
+  /* ---------- connexion ---------- */
+  $("loginForm").addEventListener("submit", safe(function (e) {
+    e.preventDefault(); showMsg("loginMsg", "");
+    var id = $("uid").value.trim().toLowerCase(), pw = $("pwd").value;
+    if (!id || !pw) { showMsg("loginMsg", "Saisissez votre identifiant et votre mot de passe."); return; }
+    var email = id.indexOf("@") > -1 ? id : id + DOMAIN;
+    $("loginBtn").disabled = true;
+    return authFetch("token?grant_type=password", { email: email, password: pw }).then(function (j) {
+      saveSession(toSession(j)); $("pwd").value = ""; start();
+    }).catch(function (err) {
+      showMsg("loginMsg", err.status === 400 || err.status === 401 ? "Identifiant ou mot de passe incorrect." : "Connexion impossible : " + err.message);
+    }).then(function () { $("loginBtn").disabled = false; });
+  }));
+  $("outBtn").addEventListener("click", function () { saveSession(null); biens = []; $("app").hidden = true; $("login").hidden = false; });
+
+  function start() { $("login").hidden = true; $("app").hidden = false; resetForm(); loadList(); }
+
+  /* ---------- photos ---------- */
+  function renderSlots() {
+    var box = $("photos"); box.textContent = "";
+    slots.forEach(function (s, i) {
+      var d = document.createElement("div"); d.className = "slot"; d.tabIndex = 0; d.setAttribute("role", "button");
+      d.setAttribute("aria-label", s ? "Remplacer la photo " + (i + 1) : "Ajouter la photo " + (i + 1));
+      if (s) {
+        var img = document.createElement("img"); img.src = s.preview || s.url; img.alt = "Photo " + (i + 1); d.appendChild(img);
+        var x = document.createElement("button"); x.type = "button"; x.className = "x"; x.textContent = "×"; x.setAttribute("aria-label", "Retirer la photo " + (i + 1));
+        x.addEventListener("click", function (ev) { ev.stopPropagation(); if (s.preview) URL.revokeObjectURL(s.preview); slots[i] = null; renderSlots(); });
+        d.appendChild(x);
+        var n = document.createElement("span"); n.className = "n"; n.textContent = i === 0 ? "Photo principale" : "Photo " + (i + 1); d.appendChild(n);
+      } else { d.textContent = "+ Photo " + (i + 1) + (i === 0 ? " (obligatoire)" : ""); }
+      var open = function () { pickIndex = i; $("fileIn").value = ""; $("fileIn").click(); };
+      d.addEventListener("click", open); d.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+      box.appendChild(d);
+    });
+  }
+  function resize(file) {
+    return new Promise(function (resolve, reject) {
+      var done = function (src, w, h, release) {
+        var k = Math.min(1, 1600 / Math.max(w, h)), cw = Math.round(w * k), ch = Math.round(h * k);
+        var c = document.createElement("canvas"); c.width = cw; c.height = ch; var g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, cw, ch); g.drawImage(src, 0, 0, cw, ch);
+        if (release) release();
+        c.toBlob(function (b) { b ? resolve(b) : reject(new Error("Photo illisible")); }, "image/jpeg", 0.82);
+      };
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: "from-image" }).then(function (bm) { done(bm, bm.width, bm.height, function () { bm.close && bm.close(); }); }).catch(function () { reject(new Error("Photo illisible")); });
+      } else {
+        var u = URL.createObjectURL(file), im = new Image();
+        im.onload = function () { done(im, im.naturalWidth, im.naturalHeight, function () { URL.revokeObjectURL(u); }); };
+        im.onerror = function () { URL.revokeObjectURL(u); reject(new Error("Photo illisible")); }; im.src = u;
+      }
+    });
+  }
+  $("fileIn").addEventListener("change", safe(function () {
+    var f = $("fileIn").files[0]; if (!f) return;
+    if (!/^image\//.test(f.type)) { showMsg("formMsg", "Choisissez un fichier image."); return; }
+    return resize(f).then(function (blob) {
+      var old = slots[pickIndex]; if (old && old.preview) URL.revokeObjectURL(old.preview);
+      slots[pickIndex] = { blob: blob, preview: URL.createObjectURL(blob) }; showMsg("formMsg", ""); renderSlots();
+    }).catch(function (e) { showMsg("formMsg", e.message); });
+  }));
+
+  /* ---------- formulaire ---------- */
+  function resetForm() {
+    editing = null; $("bienForm").reset(); slots.forEach(function (s) { if (s && s.preview) URL.revokeObjectURL(s.preview); }); slots = [null, null, null, null];
+    $("formTitle").textContent = "Ajouter un bien"; $("saveBtn").textContent = "Enregistrer et publier"; $("cancelBtn").hidden = true; showMsg("formMsg", ""); renderSlots();
+  }
+  function fillForm(b) {
+    resetForm(); editing = b;
+    $("f_cat").value = b.categorie; $("f_statut").value = b.statut; $("f_titre").value = b.titre; $("f_prix").value = b.prix == null ? "" : b.prix;
+    $("f_sup").value = b.superficie == null ? "" : b.superficie; $("f_loc").value = b.localisation; $("f_tf").value = b.tf || ""; $("f_desc").value = b.description || "";
+    (b.photos || []).slice(0, 4).forEach(function (u, i) { slots[i] = { url: u }; });
+    $("formTitle").textContent = "Modifier : " + b.ref; $("saveBtn").textContent = "Enregistrer les modifications"; $("cancelBtn").hidden = false; renderSlots();
+    $("formCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  $("cancelBtn").addEventListener("click", resetForm);
+
+  function pathOf(url) { var m = url.split("/object/public/" + BUCKET + "/"); return m[1] || null; }
+  function upload(path, blob) {
+    return api("/storage/v1/object/" + BUCKET + "/" + path, { method: "POST", headers: { "Content-Type": "image/jpeg", "cache-control": "31536000" }, body: blob }).then(function (r) {
+      if (!r.ok) return errText(r).then(function (t) { throw new Error("Photo non envoyée : " + t); });
+      return SB + "/storage/v1/object/public/" + BUCKET + "/" + path;
+    });
+  }
+  function removeFiles(paths) {
+    paths = paths.filter(Boolean); if (!paths.length) return Promise.resolve();
+    return api("/storage/v1/object/" + BUCKET, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prefixes: paths }) }).catch(function () {});
+  }
+
+  $("bienForm").addEventListener("submit", safe(function (e) {
+    e.preventDefault(); if (busy) return;
+    var titre = $("f_titre").value.trim(), loc = $("f_loc").value.trim(), statut = $("f_statut").value;
+    var prix = $("f_prix").value.trim(), sup = $("f_sup").value.trim();
+    if (titre.length < 3) { showMsg("formMsg", "Saisissez un titre (3 caractères minimum)."); return; }
+    if (loc.length < 2) { showMsg("formMsg", "Indiquez la localisation du bien."); return; }
+    if (prix !== "" && !(Number(prix) >= 0)) { showMsg("formMsg", "Le prix doit être un nombre positif."); return; }
+    if (sup !== "" && !(Number(sup) > 0)) { showMsg("formMsg", "La superficie doit être un nombre supérieur à 0."); return; }
+    var kept = slots.filter(Boolean);
+    if (!kept.length) { showMsg("formMsg", "Ajoutez au moins une photo."); return; }
+    busy = true; $("saveBtn").disabled = true; showMsg("formMsg", "");
+    var id = editing ? editing.id : (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+    var stamp = Date.now(), sent = [];
+    var chain = Promise.resolve([]);
+    slots.forEach(function (s, i) {
+      if (!s) return;
+      chain = chain.then(function (urls) {
+        if (s.url) return urls.concat(s.url);
+        var p = id + "/" + stamp + "-" + (i + 1) + ".jpg";
+        return upload(p, s.blob).then(function (u) { sent.push(p); return urls.concat(u); });
+      });
+    });
+    return chain.then(function (urls) {
+      var row = { categorie: $("f_cat").value, titre: titre, prix: prix === "" ? null : Math.round(Number(prix)), superficie: sup === "" ? null : Number(sup),
+        localisation: loc, tf: $("f_tf").value.trim() || null, description: $("f_desc").value.trim() || null, photos: urls, statut: statut };
+      var req = editing
+        ? api("/rest/v1/isab_biens?id=eq." + id, { method: "PATCH", headers: { "Content-Type": "application/json", Prefer: "return=representation" }, body: JSON.stringify(row) })
+        : api("/rest/v1/isab_biens", { method: "POST", headers: { "Content-Type": "application/json", Prefer: "return=representation" }, body: JSON.stringify(Object.assign({ id: id }, row)) });
+      return req.then(function (r) {
+        if (!r.ok) return errText(r).then(function (t) { return removeFiles(sent).then(function () { throw new Error(t); }); });
+        return r.json().then(function (rows) {
+          if (editing && (!rows || !rows.length)) throw new Error("Aucune modification enregistrée. Reconnectez-vous.");
+          var old = (editing && editing.photos || []).filter(function (u) { return urls.indexOf(u) < 0; }).map(pathOf);
+          return removeFiles(old);
+        });
+      });
+    }).then(function () {
+      toast(editing ? "Modifications enregistrées" : "Bien ajouté : il apparaît déjà sur le site"); resetForm(); return loadList();
+    }).catch(function (err) { showMsg("formMsg", "Enregistrement impossible : " + err.message); })
+      .then(function () { busy = false; $("saveBtn").disabled = false; });
+  }));
+
+  /* ---------- liste ---------- */
+  function loadList() {
+    showMsg("listMsg", "");
+    return api("/rest/v1/isab_biens?select=*&order=created_at.desc").then(function (r) {
+      if (!r.ok) return errText(r).then(function (t) { throw new Error(t); });
+      return r.json();
+    }).then(function (d) { biens = d; renderList(); }).catch(function (e) { showMsg("listMsg", "Impossible de charger les biens : " + e.message); $("list").textContent = ""; });
+  }
+  function patch(b, fields, okText) {
+    return api("/rest/v1/isab_biens?id=eq." + b.id, { method: "PATCH", headers: { "Content-Type": "application/json", Prefer: "return=representation" }, body: JSON.stringify(fields) }).then(function (r) {
+      if (!r.ok) return errText(r).then(function (t) { throw new Error(t); });
+      toast(okText); return loadList();
+    }).catch(function (e) { showMsg("listMsg", e.message); });
+  }
+  function renderList() {
+    var box = $("list"); box.textContent = "";
+    if (!biens.length) { var p = document.createElement("p"); p.className = "empty"; p.textContent = "Aucun bien pour le moment. Ajoutez le premier avec le formulaire ci-dessus."; box.appendChild(p); return; }
+    biens.forEach(function (b) {
+      var it = document.createElement("div"); it.className = "item";
+      var th = document.createElement("div"); th.className = "th"; if (b.photos && b.photos[0]) th.style.backgroundImage = "url('" + b.photos[0] + "')"; it.appendChild(th);
+      var info = document.createElement("div"), h = document.createElement("h3"); h.textContent = b.titre;
+      var bd = document.createElement("span"); bd.className = "badge " + b.statut; bd.textContent = STAT[b.statut]; h.appendChild(bd); info.appendChild(h);
+      var m = document.createElement("div"); m.className = "meta";
+      m.textContent = [b.ref, LABEL[b.categorie], b.prix != null ? fmt(b.prix) + " F CFA" : "Prix sur demande", b.superficie != null ? fmt(b.superficie) + " m²" : null, b.localisation, b.tf ? "TF : " + b.tf : null].filter(Boolean).join(" · ");
+      info.appendChild(m); it.appendChild(info);
+      var bt = document.createElement("div"); bt.className = "btns";
+      var mk = function (txt, cls, fn) { var x = document.createElement("button"); x.type = "button"; x.className = "btn small " + cls; x.textContent = txt; x.addEventListener("click", fn); bt.appendChild(x); return x; };
+      mk("Modifier", "line", function () { fillForm(b); });
+      if (b.statut !== "vendu") mk("Marquer vendu", "line", function () { patch(b, { statut: "vendu" }, "Marqué comme vendu"); });
+      if (b.statut !== "disponible") mk("Remettre en vente", "line", function () { patch(b, { statut: "disponible" }, "Bien visible sur le site"); });
+      if (b.statut !== "masque") mk("Masquer", "line", function () { patch(b, { statut: "masque" }, "Bien masqué"); });
+      var del = mk("Supprimer", "danger", function () {
+        if (del.dataset.sure !== "1") { del.dataset.sure = "1"; del.textContent = "Confirmer la suppression"; setTimeout(function () { del.dataset.sure = ""; del.textContent = "Supprimer"; }, 4000); return; }
+        api("/rest/v1/isab_biens?id=eq." + b.id, { method: "DELETE", headers: { Prefer: "return=representation" } }).then(function (r) {
+          if (!r.ok) return errText(r).then(function (t) { throw new Error(t); });
+          return r.json().then(function (rows) { if (!rows.length) throw new Error("Suppression refusée. Reconnectez-vous."); return removeFiles((b.photos || []).map(pathOf)); });
+        }).then(function () { toast("Bien supprimé"); if (editing && editing.id === b.id) resetForm(); return loadList(); }).catch(function (e) { showMsg("listMsg", e.message); });
+      });
+      it.appendChild(bt); box.appendChild(it);
+    });
+  }
+
+  /* ---------- mot de passe ---------- */
+  $("pwBtn").addEventListener("click", function () { $("np1").value = ""; $("np2").value = ""; showMsg("pwMsg", ""); $("pwDlg").showModal ? $("pwDlg").showModal() : ($("pwDlg").setAttribute("open", "")); });
+  $("pwCancel").addEventListener("click", function () { $("pwDlg").close(); });
+  $("pwSave").addEventListener("click", safe(function () {
+    var a = $("np1").value, b = $("np2").value;
+    if (a.length < 8) { showMsg("pwMsg", "8 caractères minimum."); return; }
+    if (a !== b) { showMsg("pwMsg", "Les deux mots de passe ne sont pas identiques."); return; }
+    return api("/auth/v1/user", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: a }) }).then(function (r) {
+      if (!r.ok) return errText(r).then(function (t) { throw new Error(t); });
+      $("pwDlg").close(); toast("Mot de passe modifié");
+    }).catch(function (e) { showMsg("pwMsg", e.message); });
+  }));
+
+  $("pwForm").addEventListener("submit", function (e) { e.preventDefault(); $("pwSave").click(); });
+  /* ---------- démarrage ---------- */
+  session = loadSession();
+  if (session) { refresh().then(start).catch(function () { saveSession(null); }); }
+})();
+</script>
+</body>
+</html>
