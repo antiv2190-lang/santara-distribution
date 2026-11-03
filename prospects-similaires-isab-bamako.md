@@ -22,7 +22,7 @@ Source : sites des entreprises, annuaires, Facebook (recherche web). Numéros no
 | # | Entreprise | Quartier | Numéros |
 |---|---|---|---|
 | 13 | RCS – Royal Construction et Services (site rcsgroupe.com) | Bako Djicoroni | 78 84 37 65 |
-| 14 | SOMAFREC Construction (depuis 1969) | Djikoroni Para | 20 21 59 70 (fixe) |
+| 14 | SOMAFREC Construction (depuis 1969) | Djikoroni Para | 20 21 59 70 (fixe) · e-mail : contact@somafrec.com |
 | 15 | EBV-SARL (site ebvconstructeur.com) | Kalabancoro | 69 31 51 77 |
 | 16 | BTR Build (site btr-build.com) | Chaussée de Sotuba | 78 94 48 04 |
 
