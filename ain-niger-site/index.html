@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Agence Immobilière du Niger – Immobilier, construction, forage, tontine auto à Niamey</title>
+<meta name="description" content="Agence Immobilière du Niger (AIN) à Niamey, Cité Chinoise : vente et location de biens, construction BTP, forage avec château d'eau, tontine et paiement échelonné moto/auto.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#04141C">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#04141C;--bg2:#06222D;--teal:#16C4DC;--teal-d:#0A7C8F;--gold:#F5B82E;--ink:#EAF8FB;--mut:#9CC3CC;--glass:rgba(5,26,36,.66);--line:rgba(255,255,255,.14);--wa:#1FA855;--head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;--body:"Inter","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:radial-gradient(ellipse at 70% 20%,#0B3A4A 0%,var(--bg) 60%);color:var(--ink);font-family:var(--body);line-height:1.55;overflow-x:hidden}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+body.no-gl #gl{display:none}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;left:-9999px}
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 5vw;background:linear-gradient(180deg,rgba(4,20,28,.92),rgba(4,20,28,0));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 2px rgba(22,196,220,.5)}
+.brand b{font:800 20px/1 var(--head);letter-spacing:.06em;display:block}
+.brand small{font-size:10.5px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase}
+.links{display:flex;gap:22px;font-size:14px;font-weight:500}
+.links a{text-decoration:none;color:var(--mut);padding:6px 0;border-bottom:2px solid transparent;transition:.25s}
+.links a:hover,.links a.on{color:#fff;border-color:var(--gold)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;text-decoration:none;font:700 15px/1 var(--body);padding:14px 22px;border-radius:999px;transition:transform .2s,box-shadow .2s;min-height:46px}
+.btn:hover{transform:translateY(-2px)}
+.btn-wa{background:var(--wa);color:#fff;box-shadow:0 8px 28px rgba(31,168,85,.38)}
+.btn-gold{background:var(--gold);color:#151100;box-shadow:0 8px 28px rgba(245,184,46,.3)}
+.btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--line)}
+.btn-sm{padding:10px 16px;min-height:40px;font-size:14px}
+/* sections */
+section.s{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:110px 6vw 70px}
+section.s.r{justify-content:flex-end}
+.panel{width:min(560px,100%);background:var(--glass);border:1px solid var(--line);border-radius:26px;padding:34px 34px 30px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 80px rgba(0,0,0,.35);transform-style:preserve-3d;will-change:transform;transition:transform .18s ease-out,opacity .7s,translate .7s}
+.rv{opacity:0;translate:0 40px}.rv.in{opacity:1;translate:0 0}
+.tag{display:inline-block;font:700 12px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.tag::before{content:"";display:inline-block;width:28px;height:2px;background:var(--gold);vertical-align:middle;margin-right:10px}
+h1,h2{font-family:var(--head);text-transform:uppercase;line-height:.95;letter-spacing:.01em}
+h1{font-size:clamp(54px,8.4vw,112px);font-weight:800}
+h2{font-size:clamp(40px,5.2vw,68px);font-weight:800;margin-bottom:14px}
+h1 em,h2 em{font-style:normal;color:var(--gold)}
+h1 span{color:var(--teal)}
+.lead{color:#C7E6EC;font-size:clamp(15.5px,1.5vw,18px);margin:16px 0 22px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.hint{margin-top:18px;font-size:13px;color:var(--mut);display:flex;gap:10px;align-items:center}
+.hint i{display:inline-block;width:22px;height:34px;border:2px solid var(--mut);border-radius:12px;position:relative}
+.hint i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:7px;margin-left:-2px;border-radius:2px;background:var(--gold);animation:sc 1.6s infinite}
+@keyframes sc{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(12px)}}
+.list{list-style:none;display:grid;gap:11px;margin:6px 0 22px}
+.list li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px}
+.list li::before{content:"";flex:none;width:22px;height:22px;margin-top:1px;border-radius:50%;background:radial-gradient(circle,var(--gold) 0 30%,transparent 32%),rgba(22,196,220,.18);border:1px solid rgba(22,196,220,.6)}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:4px 0 16px}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:10px 16px;font:600 14px/1 var(--body);cursor:pointer;transition:.2s;min-height:42px}
+.chip:hover{border-color:var(--teal)}
+.chip[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:#021016}
+.big{font:800 clamp(38px,5vw,56px)/1 var(--head);color:var(--gold);margin:4px 0 2px}
+.note{font-size:12.5px;color:var(--mut);margin-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 22px}
+.kpi{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13px;color:var(--mut)}
+.kpi b{display:block;color:#fff;font:700 15px/1.2 var(--body);margin-bottom:2px}
+.sim{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:16px;padding:16px;margin:4px 0 16px}
+.sim label{display:block;font-size:13px;color:var(--mut);margin:0 0 6px}
+.sim input[type=range]{width:100%;accent-color:var(--gold);margin:0 0 10px;min-height:30px}
+.sim output{font:800 36px/1 var(--head);color:var(--gold)}
+/* final */
+#final{position:relative;z-index:2;padding:90px 6vw 50px;background:linear-gradient(180deg,rgba(4,20,28,0),rgba(4,20,28,.86) 12%,rgba(4,20,28,.94))}
+.wrap{max-width:1100px;margin:0 auto}
+.two{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:start}
+.faq details{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden;transition:.25s}
+.faq details[open]{background:rgba(22,196,220,.1);border-color:rgba(22,196,220,.5)}
+.faq summary{list-style:none;cursor:pointer;padding:17px 56px 17px 20px;font-weight:600;position:relative;min-height:54px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:20px;top:50%;margin-top:-14px;font:400 26px/28px var(--body);color:var(--gold);transition:.25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{padding:0 20px 18px;color:#C7E6EC;font-size:15px}
+form{background:var(--glass);border:1px solid var(--line);border-radius:24px;padding:26px;display:grid;gap:12px}
+form h3,.card h3{font:800 28px/1 var(--head);text-transform:uppercase}
+input,select,textarea{width:100%;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:12px;padding:13px 14px;color:#fff;font:500 15px var(--body);min-height:46px}
+select option{color:#000}
+textarea{min-height:96px;resize:vertical}
+::placeholder{color:#8FB5BE}
+.card{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:20px;padding:22px;display:grid;gap:10px;margin-top:16px}
+.card a{color:var(--gold);text-decoration:none;font-weight:600}
+.card p{color:#C7E6EC;font-size:15px}
+footer{max-width:1100px;margin:46px auto 0;padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;font-size:13px;color:var(--mut)}
+footer button{background:none;border:0;color:var(--mut);text-decoration:underline;font:inherit;cursor:pointer;padding:6px 0}
+.maq{margin-top:14px;font-size:12.5px;color:var(--mut)}
+.dock{display:none}
+dialog{max-width:640px;width:calc(100% - 32px);border:1px solid var(--line);border-radius:22px;background:#071E29;color:var(--ink);padding:28px;max-height:84vh;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+dialog h3{font:800 30px/1 var(--head);text-transform:uppercase;margin-bottom:12px}
+dialog p{margin:0 0 10px;font-size:14.5px;color:#C7E6EC}
+dialog form{all:unset}
+#loader{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .7s,visibility .7s}
+#loader.off{opacity:0;visibility:hidden}
+#loader img{width:90px;height:90px;border-radius:50%;animation:pulse 1.3s infinite}
+#loader span{font:700 13px var(--body);letter-spacing:.3em;color:var(--mut);text-transform:uppercase}
+@keyframes pulse{50%{transform:scale(1.12);box-shadow:0 0 0 18px rgba(22,196,220,.12)}}
+@media(max-width:900px){
+ .links{display:none}
+ section.s,section.s.r{align-items:flex-start;justify-content:center;min-height:0;padding:50vh 14px 84px;padding:50svh 14px 84px}
+ #hero{padding-top:42vh;padding-top:42svh}
+ .panel{padding:24px 20px 22px;border-radius:22px;background:rgba(5,26,36,.78)}
+ .two{grid-template-columns:1fr}
+ .kpis{grid-template-columns:1fr 1fr 1fr}
+ .brand small{display:none}
+ .dock{display:flex;position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:30;gap:8px}
+ .dock a{flex:1}
+ #final{padding-bottom:100px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;translate:0 0}}
+</style>
+</head>
+<body>
+<div id="loader"><img src="logo.png" alt=""><span>Chargement</span></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<nav>
+  <a class="brand" href="#top" aria-label="Agence Immobilière du Niger, accueil"><img src="logo.png" alt="Logo AIN"><span><b>AIN</b><small>Agence Immobilière du Niger</small></span></a>
+  <div class="links" id="links">
+    <a href="#immobilier">Immobilier</a><a href="#btp">Construction</a><a href="#forage">Forage</a><a href="#auto">Tontine auto</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+  </div>
+  <a class="btn btn-wa btn-sm" id="navwa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+</nav>
+
+<main id="top">
+<section class="s" data-st="0" id="hero">
+  <div class="panel rv tilt">
+    <span class="tag">Niamey · Cité Chinoise</span>
+    <h1>Bâtir. <span>Forer.</span> <em>Rouler.</em></h1>
+    <p class="lead">Immobilier, construction BTP, forage avec château d'eau et tontine moto/auto : tout ce qu'il vous faut pour votre projet, au même endroit.</p>
+    <div class="cta"><a class="btn btn-wa" data-wa="Bonjour AIN, je voudrais des informations." href="#" target="_blank" rel="noopener">Écrire sur WhatsApp</a><a class="btn btn-ghost" href="#forage">Voir les tarifs forage</a></div>
+    <div class="hint"><i></i>Faites défiler : le décor change à chaque service</div>
+  </div>
+</section>
+
+<section class="s r" data-st="1" id="immobilier">
+  <div class="panel rv tilt">
+    <span class="tag">Immobilier</span>
+    <h2>Vente &amp; <em>location</em> de biens</h2>
+    <p class="lead">L'Agence Immobilière du Niger est spécialisée dans la vente et la location de biens immobiliers à Niamey : terrains, maisons, locaux.</p>
+    <ul class="list"><li>Vente de terrains et de maisons</li><li>Location de maisons et de locaux</li><li>Accompagnement jusqu'à la remise des clés</li></ul>
+    <div class="cta"><a class="btn btn-gold" data-wa="Bonjour AIN, je cherche un bien (achat ou location) à Niamey." href="#" target="_blank" rel="noopener">Je cherche un bien</a><a class="btn btn-ghost" data-wa="Bonjour AIN, je voudrais mettre un bien en vente ou en location." href="#" target="_blank" rel="noopener">Je confie mon bien</a></div>
+  </div>
+</section>
+
+<section class="s" data-st="2" id="btp">
+  <div class="panel rv tilt">
+    <span class="tag">Service BTP</span>
+    <h2>Construction <em>clé en main</em></h2>
+    <p class="lead">« Bâtir l'excellence, façonner l'avenir, offrir la qualité, l'innovation et la confiance. »</p>
+    <ul class="list"><li>Construction résidentielle</li><li>Construction commerciale</li><li>Suivi et exécution du chantier</li><li>Plan architectural</li></ul>
+    <div class="cta"><a class="btn btn-gold" data-wa="Bonjour AIN, je voudrais un devis pour un projet de construction." href="#" target="_blank" rel="noopener">Demander un devis</a></div>
+  </div>
+</section>
+
+<section class="s r" data-st="3" id="forage">
+  <div class="panel rv tilt">
+    <span class="tag">Hydraulique</span>
+    <h2>Forage, <em>installation complète</em></h2>
+    <ul class="list"><li>Creusement + tubage PVC</li><li>Pompe immergée (solaire ou électrique)</li><li>Cuve de stockage + support métallique</li><li>Installation plomberie et câblage</li><li><b>Bonus :</b> un robinet de sortie offert</li></ul>
+    <div class="chips" id="caps" role="group" aria-label="Capacité de la cuve">
+      <button class="chip" aria-pressed="false" data-c="1000" data-p="1600000">1 000 L</button>
+      <button class="chip" aria-pressed="false" data-c="2000" data-p="1850000">2 000 L</button>
+      <button class="chip" aria-pressed="true" data-c="3000" data-p="2100000">3 000 L</button>
+      <button class="chip" aria-pressed="false" data-c="4000" data-p="2350000">4 000 L</button>
+      <button class="chip" aria-pressed="false" data-c="5000" data-p="2600000">5 000 L</button>
+    </div>
+    <div class="big" id="fprice">2 100 000 FCFA</div>
+    <div class="note">Cuve <b id="fcap">3 000 L</b> : le château d'eau 3D s'adapte à votre choix. Tarifs affichés par l'agence ; devis gratuit.</div>
+    <div class="cta" style="margin-top:16px"><a class="btn btn-wa" id="fwa" href="#" target="_blank" rel="noopener">Devis gratuit sur WhatsApp</a></div>
+  </div>
+</section>
+
+<section class="s" data-st="4" id="auto">
+  <div class="panel rv tilt">
+    <span class="tag">Tontine moto / auto</span>
+    <h2>Achetez votre <em>voiture rêvée</em></h2>
+    <p class="lead">Paiement échelonné ou tontine : plusieurs avantages pour devenir propriétaire de votre moto ou de votre voiture.</p>
+    <div class="kpis"><div class="kpi"><b>Échelonné</b>payez en plusieurs fois</div><div class="kpi"><b>Tontine</b>épargne en groupe</div><div class="kpi"><b>Moto &amp; auto</b>au choix</div></div>
+    <div class="sim"><label for="months">Simulation indicative : durée de paiement</label><input id="months" type="range" min="3" max="36" value="12"><div><output id="mout">12 mois</output></div><label for="pr" style="margin-top:10px">Prix du véhicule visé (FCFA)</label><input id="pr" type="number" inputmode="numeric" min="0" step="50000" value="5000000"><div style="margin-top:10px">≈ <output id="mres">416 667 FCFA</output> / mois</div></div>
+    <p class="note" style="margin:0 0 14px">Calcul simple : prix ÷ nombre de mois, hors frais éventuels. Les conditions réelles sont fixées par l'agence.</p>
+    <div class="cta"><a class="btn btn-gold" data-wa="Bonjour AIN, je suis intéressé par la tontine / paiement échelonné pour une moto ou une auto." href="#" target="_blank" rel="noopener">Je veux ma voiture</a><a class="btn btn-ghost" href="tel:+22799220034">Appeler</a></div>
+  </div>
+</section>
+</main>
+
+<div id="final" data-st="5">
+  <div class="wrap">
+    <div class="two">
+      <div class="faq rv" id="faq">
+        <span class="tag">Questions fréquentes</span>
+        <h2>FAQ</h2>
+        <details><summary>Quels services propose l'agence ?</summary><p>Vente et location de biens immobiliers, construction (résidentielle et commerciale, plans, suivi de chantier), forage avec installation complète et château d'eau, et tontine / paiement échelonné pour moto et auto.</p></details>
+        <details><summary>Comment visiter un bien ?</summary><p>Écrivez-nous sur WhatsApp en indiquant le type de bien et le quartier souhaité. L'agence vous propose ensuite une visite.</p></details>
+        <details><summary>Que faut-il vérifier avant d'acheter un terrain ?</summary><p>Demandez toujours les documents du terrain (titre ou pièce équivalente) et faites-les vérifier auprès des services compétents avant tout paiement. L'agence vous accompagne dans cette démarche.</p></details>
+        <details><summary>Que comprend l'installation d'un forage ?</summary><p>Le creusement avec tubage PVC, la pompe immergée (solaire ou électrique), la cuve de stockage avec support métallique, la plomberie et le câblage. Un robinet de sortie est offert.</p></details>
+        <details><summary>Quelles capacités de cuve et quels prix ?</summary><p>1 000 L : 1 600 000 FCFA · 2 000 L : 1 850 000 FCFA · 3 000 L : 2 100 000 FCFA · 4 000 L : 2 350 000 FCFA · 5 000 L : 2 600 000 FCFA, selon les tarifs affichés par l'agence. Devis gratuit.</p></details>
+        <details><summary>Comment fonctionne la tontine moto / auto ?</summary><p>Vous choisissez un paiement échelonné ou une tontine. Les modalités (durée, montants, véhicule) sont expliquées et fixées avec l'agence : contactez-nous pour une simulation personnalisée.</p></details>
+        <details><summary>Le devis est-il payant ?</summary><p>Non, la demande de devis est gratuite et sans engagement.</p></details>
+        <details><summary>Comment vous joindre ?</summary><p>Par WhatsApp ou par téléphone au +227 99 22 00 34 ou au +227 81 53 53 00, ou par e-mail à agenceimoniger@gmail.com. Notre siège est à Niamey, Cité Chinoise.</p></details>
+      </div>
+      <div id="contact" class="rv">
+        <form id="devis" novalidate>
+          <span class="tag">Devis gratuit</span>
+          <h3>Parlez-nous de votre projet</h3>
+          <div><label class="sr" for="nom">Nom</label><input id="nom" placeholder="Votre nom" autocomplete="name"></div>
+          <div><label class="sr" for="svc">Service</label><select id="svc"><option>Immobilier (achat / location)</option><option>Construction BTP</option><option>Forage + château d'eau</option><option>Tontine moto / auto</option></select></div>
+          <div><label class="sr" for="msg">Message</label><textarea id="msg" placeholder="Votre besoin, le quartier, le budget…"></textarea></div>
+          <button class="btn btn-wa" type="submit">Envoyer sur WhatsApp</button>
+          <p class="note" style="margin:0">Votre demande s'ouvre dans WhatsApp : rien n'est enregistré sur ce site.</p>
+        </form>
+        <div class="card">
+          <h3>Nous trouver</h3>
+          <p>Siège : Niamey, Cité Chinoise</p>
+          <p>Téléphone / WhatsApp : <a href="tel:+22799220034">+227 99 22 00 34</a> · <a href="tel:+22781535300">+227 81 53 53 00</a></p>
+          <p>E-mail : <a href="mailto:agenceimoniger@gmail.com">agenceimoniger@gmail.com</a></p>
+          <p>Réseaux : Facebook, Instagram, TikTok · @AIN_NIGER SARL</p>
+          <a class="btn btn-ghost btn-sm" href="https://www.google.com/maps/search/?api=1&query=Cit%C3%A9+Chinoise+Niamey+Niger" target="_blank" rel="noopener">Voir l'itinéraire</a>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span>© Agence Immobilière du Niger (AIN SARL) · Niamey</span>
+      <span><button data-m="m1">Mentions légales</button> · <button data-m="m2">Confidentialité</button> · <button data-m="m3">Conditions</button></span>
+      <span class="maq">Échantillon de site réalisé par Diadie Diawara · WhatsApp +223 75 15 70 07</span>
+    </footer>
+  </div>
+</div>
+
+<div class="dock"><a class="btn btn-wa" data-wa="Bonjour AIN, je voudrais des informations." href="#" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-gold" href="tel:+22799220034">Appeler</a></div>
+
+<dialog id="m1"><h3>Mentions légales</h3><p><b>Éditeur :</b> Agence Immobilière du Niger (AIN SARL), siège à Niamey, Cité Chinoise. Téléphone : +227 99 22 00 34. E-mail : agenceimoniger@gmail.com.</p><p><b>N° d'immatriculation (RCCM) :</b> à renseigner par l'agence avant mise en ligne.</p><p><b>Création du site :</b> Diadie Diawara, Bamako.</p><p><b>Hébergement :</b> Vercel Inc., États-Unis.</p><p>Les tarifs de forage sont ceux affichés par l'agence ; ils peuvent évoluer et sont confirmés par devis.</p><form method="dialog"><button class="btn btn-gold btn-sm">Fermer</button></form></dialog>
+<dialog id="m2"><h3>Confidentialité</h3><p>Ce site ne dépose pas de compte utilisateur et n'enregistre pas vos messages. Le formulaire de devis ouvre simplement WhatsApp avec votre texte : la conversation est ensuite soumise aux conditions de WhatsApp.</p><p>Le lien « Voir l'itinéraire » ouvre Google Maps. Les polices sont chargées depuis Google Fonts.</p><p>Pour toute question : agenceimoniger@gmail.com.</p><form method="dialog"><button class="btn btn-gold btn-sm">Fermer</button></form></dialog>
+<dialog id="m3"><h3>Conditions</h3><p>Les informations de ce site sont données à titre indicatif. Les prix, disponibilités et délais sont confirmés par écrit avant tout engagement. La simulation de tontine / paiement échelonné est une division simple du prix par le nombre de mois ; les conditions réelles sont fixées par l'agence.</p><p>Avant tout achat immobilier, faites vérifier les documents du bien.</p><form method="dialog"><button class="btn btn-gold btn-sm">Fermer</button></form></dialog>
+
+<script src="three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var WA="22799220034";
+var $=function(s){return document.querySelector(s)},$$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var fmt=function(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g," ")};
+function waLink(t){return "https://wa.me/"+WA+"?text="+encodeURIComponent(t)}
+var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- UI ---------- */
+$$("[data-wa]").forEach(function(a){a.href=waLink(a.getAttribute("data-wa"))});
+$("#navwa").href=waLink("Bonjour AIN, je voudrais des informations.");
+$$("[data-m]").forEach(function(b){b.onclick=function(){var d=document.getElementById(b.getAttribute("data-m"));d.showModal?d.showModal():d.setAttribute("open","")}});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add("in")})},{threshold:.15});
+$$(".rv").forEach(function(n){io.observe(n)});
+$$(".tilt").forEach(function(c){
+  c.addEventListener("pointermove",function(e){if(e.pointerType!=="mouse"||reduce)return;var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform="perspective(900px) rotateY("+(x*7)+"deg) rotateX("+(-y*7)+"deg)"});
+  c.addEventListener("pointerleave",function(){c.style.transform=""});
+});
+$("#devis").addEventListener("submit",function(e){e.preventDefault();var n=$("#nom").value.trim(),s=$("#svc").value,m=$("#msg").value.trim();
+  window.open(waLink("Bonjour AIN, je suis "+(n||"un client")+". Service : "+s+"."+(m?" "+m:"")),"_blank","noopener")});
+/* forage */
+var cap=3000,price=2100000;
+function setCap(btn){$$("#caps .chip").forEach(function(c){c.setAttribute("aria-pressed",c===btn?"true":"false")});cap=+btn.dataset.c;price=+btn.dataset.p;
+  $("#fprice").textContent=fmt(price)+" FCFA";$("#fcap").textContent=fmt(cap)+" L";
+  $("#fwa").href=waLink("Bonjour AIN, je voudrais un devis pour un forage avec cuve de "+fmt(cap)+" L ("+fmt(price)+" FCFA affiché).");
+  if(world&&world.forage)world.forage.setCap(cap)}
+$$("#caps .chip").forEach(function(c){c.onclick=function(){setCap(c)}});
+$("#fwa").href=waLink("Bonjour AIN, je voudrais un devis pour un forage avec cuve de 3 000 L (2 100 000 FCFA affiché).");
+/* simulation */
+function sim(){var m=+$("#months").value,p=Math.max(0,+$("#pr").value||0);$("#mout").textContent=m+" mois";$("#mres").textContent=fmt(p/m)+" FCFA"}
+$("#months").oninput=sim;$("#pr").oninput=sim;sim();
+/* nav highlight */
+var secs=$$("[data-st]");
+
+/* ---------- 3D ---------- */
+var world=null;
+function start3D(){
+  var canvas=$("#gl"),renderer;
+  try{renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true,powerPreference:"high-performance"})}catch(e){document.body.classList.add("no-gl");return}
+  var T=THREE,small=Math.min(innerWidth,innerHeight)<620;
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,small?1.5:1.8));
+  renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+  var scene=new T.Scene();scene.fog=new T.FogExp2(0x04141c,.016);
+  var camera=new T.PerspectiveCamera(45,1,.1,400);
+  var TEAL=0x16c4dc,GOLD=0xf5b82e;
+  /* environment (softboxes) for reflections */
+  (function(){var es=new T.Scene();var g=new T.SphereGeometry(50,24,16),c=[],p=g.attributes.position;
+    for(var i=0;i<p.count;i++){var y=(p.getY(i)/50+1)/2,col=new T.Color().setHSL(.53,.55,.04+y*.38);c.push(col.r,col.g,col.b)}
+    g.setAttribute("color",new T.Float32BufferAttribute(c,3));es.add(new T.Mesh(g,new T.MeshBasicMaterial({vertexColors:true,side:T.BackSide})));
+    function box(w,h,x,y,z,col,k){var m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({color:new T.Color(col).multiplyScalar(k),side:T.DoubleSide}));m.position.set(x,y,z);m.lookAt(0,0,0);es.add(m)}
+    box(30,10,0,36,0,0xffffff,5);box(14,26,-38,10,10,0x9fefff,3);box(14,26,38,12,-8,0xfff1cf,3);box(40,6,0,4,-40,0x16c4dc,2.4);
+    var pm=new T.PMREMGenerator(renderer);scene.environment=pm.fromScene(es,.03).texture;pm.dispose()})();
+  var hemi=new T.HemisphereLight(0xaee9f5,0x06222d,.9);scene.add(hemi);
+  var sun=new T.DirectionalLight(0xffffff,2.2);scene.add(sun);scene.add(sun.target);
+  var lt=new T.PointLight(TEAL,90,40,1.6),lg=new T.PointLight(GOLD,60,36,1.6);scene.add(lt,lg);
+
+  function M(c,o){o=o||{};return new T.MeshStandardMaterial(Object.assign({color:c,metalness:.3,roughness:.5},o))}
+  function platform(r){var g=new T.Group();
+    var d=new T.Mesh(new T.CylinderGeometry(r,r+.35,.35,64),M(0x08303c,{metalness:.6,roughness:.35}));d.position.y=-.18;g.add(d);
+    var ring=new T.Mesh(new T.TorusGeometry(r,.06,8,96),new T.MeshBasicMaterial({color:TEAL}));ring.rotation.x=Math.PI/2;ring.position.y=.02;g.add(ring);
+    var ring2=new T.Mesh(new T.TorusGeometry(r*.62,.03,8,80),new T.MeshBasicMaterial({color:GOLD,transparent:true,opacity:.6}));ring2.rotation.x=Math.PI/2;ring2.position.y=.02;g.add(ring2);
+    g.userData.ring2=ring2;return g}
+  var rnd=(function(s){return function(){s=(s*16807)%2147483647;return (s-1)/2147483646}})(7);
+  function gridTex(){var c=document.createElement("canvas");c.width=c.height=256;var x=c.getContext("2d");x.fillStyle="#06222d";x.fillRect(0,0,256,256);x.strokeStyle="rgba(22,196,220,.35)";x.lineWidth=2;for(var i=0;i<=256;i+=32){x.beginPath();x.moveTo(i,0);x.lineTo(i,256);x.moveTo(0,i);x.lineTo(256,i);x.stroke()}var t=new T.CanvasTexture(c);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=T.SRGBColorSpace;return t}
+
+  var S=[],i;for(i=0;i<6;i++)S.push(new T.Vector3(i*52,0,0));
+  var groups=[];function station(i){var g=new T.Group();g.position.copy(S[i]);scene.add(g);groups[i]=g;return g}
+
+  /* 0 — ville */
+  var city=(function(){var g=station(0),N=9,pf=platform(10.5);g.add(pf);
+    var geo=new T.BoxGeometry(1,1,1);geo.translate(0,.5,0);var im=new T.InstancedMesh(geo,M(0xffffff,{metalness:.55,roughness:.3}),N*N);var d=new T.Object3D(),col=new T.Color(),items=[];
+    for(var a=0;a<N;a++)for(var b=0;b<N;b++){var x=(a-(N-1)/2)*2,z=(b-(N-1)/2)*2,dist=Math.hypot(x,z);if(dist>8.6){items.push(null);continue}
+      var h=.8+rnd()*3.2*(1-dist/12)+(dist<2.2?2:0);items.push({x:x,z:z,h:h,ph:rnd()*6.28,w:.95+rnd()*.3});
+      col.setHSL(.52+rnd()*.05,.55,.35+Math.min(.4,h/9));im.setColorAt(a*N+b,col)}
+    g.add(im);
+    var tower=new T.Mesh(new T.CylinderGeometry(.5,.8,10,6),M(0xdffaff,{metalness:.7,roughness:.15}));tower.position.y=5;g.add(tower);
+    var beam=new T.Mesh(new T.CylinderGeometry(.05,.05,5,8),new T.MeshBasicMaterial({color:GOLD}));beam.position.y=12.5;g.add(beam);
+    var orb=new T.Mesh(new T.SphereGeometry(.34,24,16),new T.MeshBasicMaterial({color:GOLD}));orb.position.y=10.2;g.add(orb);
+    var grid=new T.Mesh(new T.CircleGeometry(10.2,64),new T.MeshBasicMaterial({map:(function(){var t=gridTex();t.repeat.set(5,5);return t})()}));grid.rotation.x=-Math.PI/2;grid.position.y=.01;g.add(grid);
+    g.userData.update=function(t){for(var k=0;k<items.length;k++){var it=items[k];if(!it)continue;var hh=it.h*(1+.18*Math.sin(t*.9+it.ph));d.position.set(it.x,0,it.z);d.scale.set(it.w,hh,it.w);d.updateMatrix();im.setMatrixAt(k,d.matrix)}
+      im.instanceMatrix.needsUpdate=true;g.rotation.y=t*.08;orb.position.y=10.2+Math.sin(t*2)*.25;pf.userData.ring2.rotation.z=t*.4};
+    return g})();
+
+  /* 1 — maison + terrain à vendre */
+  var house=(function(){var g=station(1);g.add(platform(8.6));
+    var land=new T.Mesh(new T.BoxGeometry(11,.14,11),M(0x14584a,{roughness:.9,metalness:0}));land.position.y=.07;g.add(land);
+    var pts=[[-5.4,-5.4],[5.4,-5.4],[5.4,5.4],[-5.4,5.4],[-5.4,-5.4]].map(function(p){return new T.Vector3(p[0],.22,p[1])});
+    g.add(new T.Line(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color:0xffffff})));
+    pts.slice(0,4).forEach(function(p){var s=new T.Mesh(new T.SphereGeometry(.2,16,12),new T.MeshBasicMaterial({color:GOLD}));s.position.copy(p);g.add(s);var s2=new T.Mesh(new T.CylinderGeometry(.04,.04,1.1,8),M(0xffffff));s2.position.set(p.x,.7,p.z);g.add(s2)});
+    var body=new T.Mesh(new T.BoxGeometry(5,2.6,3.6),M(0xf4efe6,{roughness:.6,metalness:.05}));body.position.set(0,1.45,-.3);g.add(body);
+    var roof=new T.Mesh(new T.ConeGeometry(4.2,1.9,4),M(0x0a7c8f,{roughness:.4,metalness:.4}));roof.rotation.y=Math.PI/4;roof.scale.set(1.12,1,.78);roof.position.set(0,3.7,-.3);g.add(roof);
+    var door=new T.Mesh(new T.BoxGeometry(.8,1.5,.08),M(0x3a2a1c));door.position.set(0,.95,1.55);g.add(door);
+    [[-1.6,1.7],[1.6,1.7]].forEach(function(p){var w=new T.Mesh(new T.BoxGeometry(1,.9,.08),M(0x9fefff,{metalness:.9,roughness:.05,emissive:0x0a5a6a,emissiveIntensity:.6}));w.position.set(p[0],p[1],1.55);g.add(w)});
+    var pillar=new T.Mesh(new T.BoxGeometry(5.4,.2,.9),M(0xdddddd));pillar.position.set(0,.1+.12,1.9);g.add(pillar);
+    function tree(x,z,s){var tr=new T.Mesh(new T.CylinderGeometry(.1*s,.14*s,.9*s,8),M(0x5a3a22));tr.position.set(x,.5*s,z);g.add(tr);var l=new T.Mesh(new T.ConeGeometry(.75*s,1.8*s,10),M(0x1f9e5a,{roughness:.8,metalness:0}));l.position.set(x,1.6*s,z);g.add(l)}
+    tree(-4,3.6,1.1);tree(4.2,3,.9);tree(-4.2,-3.4,1);tree(3.8,-4,.8);
+    var c=document.createElement("canvas");c.width=512;c.height=256;var x=c.getContext("2d");x.fillStyle="#F5B82E";x.fillRect(0,0,512,256);x.fillStyle="#04141C";x.font="800 86px 'Barlow Condensed',Impact,sans-serif";x.textAlign="center";x.fillText("À VENDRE",256,120);x.font="700 44px sans-serif";x.fillText("AIN · Niamey",256,200);
+    var tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;var sign=new T.Mesh(new T.BoxGeometry(2.2,1.1,.08),new T.MeshStandardMaterial({map:tx,roughness:.5}));sign.position.set(3.4,1.9,3.6);g.add(sign);
+    var post=new T.Mesh(new T.CylinderGeometry(.06,.06,2.4,8),M(0xcccccc));post.position.set(3.4,1.2,3.55);g.add(post);
+    g.userData.update=function(t){g.rotation.y=Math.sin(t*.25)*.5+.3;sign.rotation.y=Math.sin(t*1.2)*.08;g.children[0].userData.ring2.rotation.z=-t*.4};
+    return g})();
+
+  /* 2 — chantier + grue */
+  var site=(function(){var g=station(2);var pf=platform(9);g.add(pf);
+    var floors=[],FL=4;var concrete=M(0xcfd8dc,{roughness:.8,metalness:.05}),glass=M(0x7fe8f5,{metalness:.9,roughness:.08,transparent:true,opacity:.55});
+    var bld=new T.Group();bld.position.set(-1.5,0,0);g.add(bld);
+    for(var f=0;f<FL;f++){var fg=new T.Group();fg.position.y=f*1.7;
+      var slab=new T.Mesh(new T.BoxGeometry(4.6,.2,3.4),concrete);slab.position.y=.1;fg.add(slab);
+      [[-2.1,-1.5],[2.1,-1.5],[-2.1,1.5],[2.1,1.5],[0,-1.5],[0,1.5]].forEach(function(p){var c=new T.Mesh(new T.BoxGeometry(.22,1.5,.22),concrete);c.position.set(p[0],.95,p[1]);fg.add(c)});
+      var gl=new T.Mesh(new T.BoxGeometry(4.2,1.3,.05),glass);gl.position.set(0,.95,1.5);fg.add(gl);
+      var rail=new T.Mesh(new T.BoxGeometry(4.6,.06,3.4),new T.MeshBasicMaterial({color:GOLD,wireframe:true,transparent:true,opacity:.0}));fg.add(rail);
+      bld.add(fg);floors.push(fg)}
+    var cr=new T.Group();cr.position.set(3.2,0,-1.2);g.add(cr);var cm=M(GOLD,{metalness:.35,roughness:.45});
+    var mast=new T.Group();for(var q=0;q<12;q++){var seg=new T.Mesh(new T.BoxGeometry(.5,.8,.5),new T.MeshStandardMaterial({color:GOLD,wireframe:true,metalness:.3}));seg.position.y=.4+q*.8;mast.add(seg)}
+    var mcore=new T.Mesh(new T.BoxGeometry(.12,9.6,.12),cm);mcore.position.y=4.8;[[-.22,-.22],[.22,-.22],[-.22,.22],[.22,.22]].forEach(function(p){var l=mcore.clone();l.position.set(p[0],4.8,p[1]);mast.add(l)});cr.add(mast);
+    var jib=new T.Group();jib.position.y=9.9;cr.add(jib);
+    var arm=new T.Mesh(new T.BoxGeometry(7.6,.3,.3),cm);arm.position.x=1.2;jib.add(arm);
+    var cw=new T.Mesh(new T.BoxGeometry(1,.8,.8),M(0x444c52));cw.position.x=-2.2;cw.position.y=-.2;jib.add(cw);
+    var tr=new T.Group();jib.add(tr);var trol=new T.Mesh(new T.BoxGeometry(.4,.2,.4),M(0x222));tr.add(trol);
+    var cable=new T.Mesh(new T.CylinderGeometry(.02,.02,1,6),M(0xdddddd));tr.add(cable);
+    var hook=new T.Mesh(new T.BoxGeometry(.6,.4,.6),M(0xdd3b2a));tr.add(hook);
+    var load=new T.Mesh(new T.BoxGeometry(.7,.5,.7),concrete);tr.add(load);
+    g.userData.update=function(t){var cyc=(t*.35)%(FL+1.6);
+      floors.forEach(function(fg,k){var p=Math.min(1,Math.max(0,cyc-k));fg.scale.y=Math.max(.001,p);fg.visible=p>0.001;fg.position.y=k*1.7*Math.min(1,Math.max(.001,1))});
+      jib.rotation.y=Math.sin(t*.35)*.6+.4;var run=2.6+Math.sin(t*.7)*1.6;tr.position.set(run,-.2,0);var len=3.4+Math.sin(t*1.1)*1.2;cable.scale.y=len;cable.position.y=-len/2;hook.position.y=-len-.1;load.position.y=-len-.55;load.visible=((cyc*2)|0)%2===0;
+      g.rotation.y=t*.1;pf.userData.ring2.rotation.z=t*.3};
+    return g})();
+
+  /* 3 — forage + château d'eau */
+  var forage=(function(){var g=station(3);g.add(platform(8.4));
+    var tankG=new T.Group();tankG.position.set(0,0,0);g.add(tankG);
+    var steel=M(0x1a74c9,{metalness:.6,roughness:.35});
+    [[-1.1,-1.1],[1.1,-1.1],[-1.1,1.1],[1.1,1.1]].forEach(function(p){var l=new T.Mesh(new T.CylinderGeometry(.09,.09,4,10),steel);l.position.set(p[0],2,p[1]);tankG.add(l)});
+    [1,2.6].forEach(function(y){var fr=new T.Mesh(new T.BoxGeometry(2.4,.08,2.4),steel);fr.position.y=y;tankG.add(fr)});
+    var plat=new T.Mesh(new T.CylinderGeometry(1.7,1.7,.14,40),steel);plat.position.y=4.05;tankG.add(plat);
+    var shell=new T.Mesh(new T.CylinderGeometry(1.5,1.5,2.4,48,1,true),new T.MeshPhysicalMaterial({color:0x111111,metalness:.7,roughness:.2,transparent:true,opacity:.28,side:T.DoubleSide,clearcoat:1}));shell.position.y=5.3;tankG.add(shell);
+    var rim=new T.Mesh(new T.TorusGeometry(1.5,.05,8,48),M(0x222));rim.rotation.x=Math.PI/2;[4.1,6.5].forEach(function(y){var r=rim.clone();r.position.y=y;tankG.add(r)});
+    var dome=new T.Mesh(new T.SphereGeometry(1.5,40,16,0,Math.PI*2,0,Math.PI/2),M(0x111418,{metalness:.7,roughness:.25}));dome.position.y=6.5;tankG.add(dome);
+    var water=new T.Mesh(new T.CylinderGeometry(1.42,1.42,2.3,40),new T.MeshPhysicalMaterial({color:0x16c4dc,transparent:true,opacity:.78,roughness:.05,metalness:.1,emissive:0x0a5a6a,emissiveIntensity:.5}));water.geometry.translate(0,1.15,0);water.position.y=4.12;tankG.add(water);
+    var logoT=new T.TextureLoader().load("logo.png");logoT.colorSpace=T.SRGBColorSpace;var badge=new T.Mesh(new T.CircleGeometry(.62,40),new T.MeshBasicMaterial({map:logoT,transparent:true}));badge.position.set(0,5.4,1.52);tankG.add(badge);
+    /* forage + pompe + solaire */
+    var well=new T.Mesh(new T.CylinderGeometry(.34,.4,.9,24),M(0xcfd8dc));well.position.set(-3.6,.45,1.4);g.add(well);
+    var cap=new T.Mesh(new T.CylinderGeometry(.46,.46,.16,24),M(0x333));cap.position.set(-3.6,.95,1.4);g.add(cap);
+    var curve=new T.CatmullRomCurve3([new T.Vector3(-3.6,.9,1.4),new T.Vector3(-3.6,1.7,1.4),new T.Vector3(-2.2,1.7,.9),new T.Vector3(-1.1,2.3,.6),new T.Vector3(-1.1,4,.6)]);
+    g.add(new T.Mesh(new T.TubeGeometry(curve,40,.1,10),M(0x16c4dc,{metalness:.3,roughness:.3,emissive:0x0a5a6a,emissiveIntensity:.6})));
+    var pump=new T.Mesh(new T.BoxGeometry(.9,.7,.7),M(0x2b3a44));pump.position.set(-3.0,.35,-.4);g.add(pump);
+    var led=new T.Mesh(new T.SphereGeometry(.07,12,8),new T.MeshBasicMaterial({color:0x37ff8b}));led.position.set(-2.55,.55,-.4);g.add(led);
+    var sol=new T.Group();sol.position.set(3.6,0,-1.8);sol.rotation.y=-.5;g.add(sol);
+    var cvs=document.createElement("canvas");cvs.width=cvs.height=128;var x=cvs.getContext("2d");x.fillStyle="#0b2f55";x.fillRect(0,0,128,128);x.strokeStyle="#6fb5ff";x.lineWidth=2;for(var k=0;k<=128;k+=32){x.beginPath();x.moveTo(k,0);x.lineTo(k,128);x.moveTo(0,k);x.lineTo(128,k);x.stroke()}
+    var stx=new T.CanvasTexture(cvs);stx.colorSpace=T.SRGBColorSpace;
+    var panel=new T.Mesh(new T.BoxGeometry(2.4,.08,1.5),new T.MeshStandardMaterial({map:stx,metalness:.7,roughness:.2}));panel.position.y=1.2;panel.rotation.x=-.8;sol.add(panel);
+    var leg=new T.Mesh(new T.CylinderGeometry(.05,.05,1.2,8),M(0xaaaaaa));leg.position.set(0,.6,.1);sol.add(leg);
+    var sun=new T.Mesh(new T.SphereGeometry(.45,24,16),new T.MeshBasicMaterial({color:GOLD}));sun.position.set(5.4,6.6,-3);g.add(sun);
+    var rays=new T.Mesh(new T.TorusGeometry(.8,.04,6,40),new T.MeshBasicMaterial({color:GOLD,transparent:true,opacity:.6}));rays.position.copy(sun.position);g.add(rays);
+    /* gouttes */
+    var N=70,pos=new Float32Array(N*3),vel=[];for(var n=0;n<N;n++){pos[n*3]=0;pos[n*3+1]=-9;pos[n*3+2]=0;vel.push(Math.random())}
+    var pg=new T.BufferGeometry();pg.setAttribute("position",new T.BufferAttribute(pos,3));var drops=new T.Points(pg,new T.PointsMaterial({color:0x9fefff,size:.13,transparent:true,opacity:.9}));g.add(drops);
+    var tap=new T.Mesh(new T.CylinderGeometry(.07,.07,.5,10),M(0xdddddd,{metalness:.9}));tap.rotation.z=Math.PI/2;tap.position.set(1.7,4.4,0);tankG.add(tap);
+    var level=.75,target=.75,scl=1,tscl=1;
+    function setCap(c){target=.35+.65*(c/5000);tscl=.8+.28*(c/5000)}
+    g.userData.setCap=setCap;setCap(3000);
+    g.userData.update=function(t,dt){level+=(target-level)*Math.min(1,dt*3);scl+=(tscl-scl)*Math.min(1,dt*3);water.scale.y=level;tankG.scale.setScalar(scl);
+      for(var n=0;n<N;n++){vel[n]+=dt*.9;if(vel[n]>1.6){vel[n]=Math.random()*.2;}var u=vel[n];pos[n*3]=1.7*scl+u*.5+.15*Math.sin(n);pos[n*3+1]=4.4*scl-u*u*2.2*(4.4*scl/4.4)*1.4;pos[n*3+2]=Math.sin(n*3.1)*.08;if(pos[n*3+1]<.05){pos[n*3+1]=.05}}
+      pg.attributes.position.needsUpdate=true;led.material.color.setHex(Math.sin(t*5)>0?0x37ff8b:0x0a5a2a);rays.rotation.z=t*.6;rays.scale.setScalar(1+Math.sin(t*2)*.1);
+      g.rotation.y=Math.sin(t*.3)*.6-.2};
+    return g.userData.setCap&&g})();
+  forage.setCap=forage.userData.setCap;
+
+  /* 4 — voiture 360° */
+  var car=(function(){var g=station(4);var pf=platform(7);g.add(pf);
+    var turn=new T.Group();g.add(turn);
+    var sh=new T.Shape();sh.moveTo(-2.15,.38);sh.lineTo(-2.2,.85);sh.quadraticCurveTo(-2.2,1.02,-2.05,1.07);sh.lineTo(-1.6,1.2);sh.bezierCurveTo(-1.25,1.55,-.45,1.66,.2,1.62);sh.bezierCurveTo(.75,1.58,1.1,1.3,1.5,1.06);sh.lineTo(2.05,.94);sh.quadraticCurveTo(2.22,.9,2.24,.7);sh.lineTo(2.22,.4);sh.lineTo(-2.15,.38);
+    var bg=new T.ExtrudeGeometry(sh,{depth:1.7,bevelEnabled:true,bevelSize:.12,bevelThickness:.12,bevelSegments:5,curveSegments:24});bg.translate(0,0,-.85);
+    var paint=new T.MeshPhysicalMaterial({color:0xf2f6f9,metalness:.65,roughness:.22,clearcoat:1,clearcoatRoughness:.05,envMapIntensity:1.5});
+    var body=new T.Mesh(bg,paint);turn.add(body);
+    var gs=new T.Shape();gs.moveTo(-1.5,1.13);gs.lineTo(-1.2,1.48);gs.bezierCurveTo(-.7,1.57,-.2,1.58,.2,1.55);gs.bezierCurveTo(.65,1.5,.95,1.3,1.3,1.08);gs.lineTo(-1.5,1.13);
+    var gg=new T.ExtrudeGeometry(gs,{depth:1.84,bevelEnabled:false});gg.translate(0,0,-.92);
+    var glass=new T.Mesh(gg,new T.MeshPhysicalMaterial({color:0x0a1820,metalness:.95,roughness:.04,clearcoat:1,envMapIntensity:2}));turn.add(glass);
+    var lower=new T.Mesh(new T.BoxGeometry(4.5,.22,1.95),M(0x0d1418,{roughness:.7}));lower.position.set(0,.4,0);turn.add(lower);
+    var stripe=new T.Mesh(new T.BoxGeometry(4.3,.04,1.98),new T.MeshBasicMaterial({color:TEAL}));stripe.position.set(0,.62,0);turn.add(stripe);
+    var lh=new T.MeshBasicMaterial({color:0xdffcff});[[.58],[-.58]].forEach(function(z){var h=new T.Mesh(new T.BoxGeometry(.12,.14,.5),lh);h.position.set(2.3,.84,z[0]);turn.add(h);var tl=new T.Mesh(new T.BoxGeometry(.1,.12,.5),new T.MeshBasicMaterial({color:0xff2a2a}));tl.position.set(-2.3,.86,z[0]);turn.add(tl)});
+    var beamM=new T.Mesh(new T.ConeGeometry(.9,4,24,1,true),new T.MeshBasicMaterial({color:0xdffcff,transparent:true,opacity:.08,side:T.DoubleSide,depthWrite:false}));beamM.rotation.z=-Math.PI/2;beamM.position.set(4.3,.8,0);turn.add(beamM);
+    var wheels=[];[[1.4,.95],[1.4,-.95],[-1.4,.95],[-1.4,-.95]].forEach(function(p){var w=new T.Group();w.position.set(p[0],.45,p[1]);var tire=new T.Mesh(new T.CylinderGeometry(.46,.46,.3,32),M(0x0b0b0b,{roughness:.9,metalness:0}));tire.rotation.x=Math.PI/2;w.add(tire);
+      var rim=new T.Mesh(new T.CylinderGeometry(.3,.3,.32,24),M(0xcfd8dc,{metalness:.95,roughness:.15}));rim.rotation.x=Math.PI/2;w.add(rim);
+      for(var s=0;s<5;s++){var sp=new T.Mesh(new T.BoxGeometry(.5,.05,.34),M(0x8a969c,{metalness:.9}));sp.rotation.z=s*Math.PI/5;w.add(sp)}
+      turn.add(w);wheels.push(w);
+      var arch=new T.Mesh(new T.CircleGeometry(.56,32),new T.MeshBasicMaterial({color:0x020507}));arch.position.set(p[0],.5,p[1]>0?.99:-.99);arch.rotation.y=p[1]>0?0:Math.PI;turn.add(arch)});
+    /* traînées de vitesse */
+    var streaks=new T.Group();g.add(streaks);for(var k=0;k<26;k++){var a=k/26*Math.PI*2,r=4.6+rnd()*2,st=new T.Mesh(new T.BoxGeometry(.04,.04,1.2+rnd()*2.5),new T.MeshBasicMaterial({color:k%3?TEAL:GOLD,transparent:true,opacity:.55}));st.position.set(Math.cos(a)*r,.3+rnd()*3.2,Math.sin(a)*r);st.rotation.y=-a;streaks.add(st)}
+    g.userData.update=function(t,dt){turn.rotation.y=t*.62;wheels.forEach(function(w){w.rotation.z-=dt*3});streaks.rotation.y=-t*.9;turn.position.y=.05+Math.sin(t*1.8)*.02;pf.userData.ring2.rotation.z=t*.9};
+    return g})();
+
+  /* 5 — final : logo flottant */
+  var fin=(function(){var g=station(5);g.add(platform(7));
+    var tx=new T.TextureLoader().load("logo.png");tx.colorSpace=T.SRGBColorSpace;
+    var lg=new T.Mesh(new T.CircleGeometry(2.6,64),new T.MeshBasicMaterial({map:tx,transparent:true,side:T.DoubleSide}));lg.position.y=3.4;g.add(lg);
+    var halo=new T.Mesh(new T.TorusGeometry(3.1,.05,8,96),new T.MeshBasicMaterial({color:TEAL}));halo.position.y=3.4;g.add(halo);
+    var halo2=new T.Mesh(new T.TorusGeometry(3.7,.03,8,96),new T.MeshBasicMaterial({color:GOLD,transparent:true,opacity:.7}));halo2.position.y=3.4;g.add(halo2);
+    var cubes=new T.Group();g.add(cubes);for(var k=0;k<28;k++){var a=k/28*Math.PI*2,c=new T.Mesh(new T.BoxGeometry(.32,.32,.32),M(k%2?TEAL:GOLD,{metalness:.6,roughness:.3,emissive:k%2?0x0a5a6a:0x6a4a00,emissiveIntensity:.5}));c.position.set(Math.cos(a)*5,1+rnd()*5,Math.sin(a)*5);c.userData.p=rnd()*6;cubes.add(c)}
+    g.userData.update=function(t){lg.rotation.y=Math.sin(t*.7)*.5;halo.rotation.x=t*.5;halo2.rotation.y=t*.4;halo2.rotation.x=1.2;cubes.rotation.y=t*.25;cubes.children.forEach(function(c){c.rotation.x=t+c.userData.p;c.rotation.y=t*1.3;c.position.y+=Math.sin(t*1.5+c.userData.p)*.004});g.children[0].userData.ring2.rotation.z=t*.5};
+    return g})();
+
+  /* poussière lumineuse globale */
+  var dust=(function(){var N=small?260:520,p=new Float32Array(N*3),cl=new Float32Array(N*3),c=new T.Color();for(var n=0;n<N;n++){p[n*3]=-30+rnd()*340;p[n*3+1]=rnd()*16;p[n*3+2]=-22+rnd()*44;c.setHex(rnd()>.7?GOLD:TEAL);cl[n*3]=c.r;cl[n*3+1]=c.g;cl[n*3+2]=c.b}
+    var g=new T.BufferGeometry();g.setAttribute("position",new T.BufferAttribute(p,3));g.setAttribute("color",new T.BufferAttribute(cl,3));var pts=new T.Points(g,new T.PointsMaterial({size:.12,vertexColors:true,transparent:true,opacity:.75,depthWrite:false,blending:T.AdditiveBlending}));scene.add(pts);return pts})();
+
+  var world_={forage:forage};world=world_;
+
+  /* caméra */
+  var cams=[{p:[13,9.5,19],l:[0,3.2,0],side:1},{p:[11,7,14.5],l:[0,2.2,0],side:-1},{p:[-12,9.5,16.5],l:[0,4.2,0],side:1},{p:[10,7.4,16],l:[0,3.4,0],side:-1},{p:[-9.5,5,11.5],l:[0,.9,0],side:1},{p:[0,5,14],l:[0,3.2,0],side:0}];
+  var mouse={x:0,y:0},f=0,tf=0,shift=0,W=1,H=1;
+  addEventListener("pointermove",function(e){mouse.x=e.clientX/innerWidth*2-1;mouse.y=e.clientY/innerHeight*2-1},{passive:true});
+  function resize(){W=innerWidth;H=innerHeight;renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix()}
+  addEventListener("resize",resize);resize();
+  function target(){var y=scrollY+H*.5,A=[],B=[],k;
+    secs.forEach(function(el){var hh=Math.min(el.offsetHeight,H)/2;A.push(el.offsetTop+hh);B.push(Math.max(el.offsetTop+hh,el.offsetTop+el.offsetHeight-hh))});
+    if(y<=A[0])return 0;for(k=0;k<A.length;k++){if(y<=B[k])return k;if(k<A.length-1&&y<A[k+1])return k+(y-B[k])/(A[k+1]-B[k])}return A.length-1}
+  var tmpP=new T.Vector3(),tmpL=new T.Vector3(),clock=new T.Clock(),tt=0,navLinks=$$("#links a");
+  function sm(u){return u*u*(3-2*u)}
+  function frame(){requestAnimationFrame(frame);var rd=Math.min(.3,clock.getDelta()),dt=Math.min(.05,rd);tt+=reduce?dt*.3:dt;
+    tf=target();f+=(tf-f)*Math.min(1,rd*3.2);
+    var a=Math.min(5,Math.floor(f)),b=Math.min(5,a+1),u=sm(f-a),portrait=W<H*.95,k=portrait?1.38:1;
+    var ca=cams[a],cb=cams[b];
+    var ang=mouse.x*.35+Math.sin(tt*.25)*.12;
+    function pos(c,s,out){var x=c.p[0]*k,z=c.p[2]*k,ca_=Math.cos(ang),sa=Math.sin(ang);out.set(S[s].x+x*ca_+z*sa,c.p[1]*(portrait?1.05:1)-mouse.y*1.2,z*ca_-x*sa)}
+    pos(ca,a,tmpP);var pb=new T.Vector3();pos(cb,b,pb);tmpP.lerp(pb,u);tmpP.y+=Math.sin(u*Math.PI)*7;
+    tmpL.set(S[a].x+ca.l[0],ca.l[1],ca.l[2]);tmpL.lerp(new T.Vector3(S[b].x+cb.l[0],cb.l[1],cb.l[2]),u);
+    camera.position.copy(tmpP);camera.lookAt(tmpL);camera.fov=45+Math.sin(u*Math.PI)*12;camera.updateProjectionMatrix();
+    var sideT=portrait?0:ca.side+(cb.side-ca.side)*u;shift+=(sideT-shift)*Math.min(1,rd*4);
+    camera.setViewOffset(W,H,-shift*W*.15,portrait?H*.16:0,W,H);
+    sun.position.set(tmpL.x+8,14,8);sun.target.position.copy(tmpL);lt.position.set(tmpL.x-6,5,6);lg.position.set(tmpL.x+7,6,-5);
+    for(var i=0;i<groups.length;i++){var gi=groups[i];if(!gi)continue;var vis=Math.abs(i-f)<1.6;gi.visible=vis;if(vis&&gi.userData.update)gi.userData.update(tt,dt)}
+    dust.rotation.y=Math.sin(tt*.05)*.02;dust.position.y=Math.sin(tt*.3)*.4;
+    renderer.render(scene,camera);
+    var idx=Math.round(f);navLinks.forEach(function(l){var h=l.getAttribute("href");var on=(idx===1&&h==="#immobilier")||(idx===2&&h==="#btp")||(idx===3&&h==="#forage")||(idx===4&&h==="#auto")||(idx===5&&(h==="#faq"||h==="#contact")&&false);l.classList.toggle("on",on)})}
+  frame();
+  window.__ain={scene:scene,get f(){return f}};
+}
+try{start3D()}catch(e){console.error(e);document.body.classList.add("no-gl")}
+window.addEventListener("load",function(){setTimeout(function(){$("#loader").classList.add("off")},350)});
+setTimeout(function(){$("#loader").classList.add("off")},4000);
+})();
+</script>
+</body>
+</html>
