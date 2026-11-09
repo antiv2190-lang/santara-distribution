@@ -1,14 +1,26 @@
 {
-  "sec_user_agent": "Santara Distribution diawaradiadie1998@gmail.com",
-  "project": {
-    "location": "Bamako, Mali",
-    "themes": ["youth employment", "women's economic inclusion", "innovation"],
-    "beneficiaries_to_verify": 1200,
-    "ask_usd_range_to_verify": [30000, 1000000],
-    "funding_types": ["grants", "impact investors"],
-    "languages": ["fr", "en"],
-    "partner_organisation": "DES = Diawara Energies SAS (company; activity, registration and track record to verify)",
-    "sector": "solar, mini-grids, digital solutions, biotechnology (stated by user; scale and track record to verify)"
+  "startup": {
+    "name": "Diawara Energies SAS",
+    "one_liner": "Installe des kits solaires et des mini-r\u00e9seaux \u00e0 Bamako, et forme des jeunes et des femmes comme techniciens et revendeurs",
+    "sector": "solar energy, mini-grids",
+    "stage": "operating since 2023, solo founder",
+    "geography": "Bamako, Mali",
+    "raise": 30000,
+    "instrument": "grant or impact funding"
   },
-  "assumptions_note": "Fields marked to_verify are hypotheses, to be confirmed by the user."
+  "founder": {
+    "name": "Diadie Diawara",
+    "email": "diawaradiadie1998@gmail.com",
+    "company_address": ""
+  },
+  "sec_user_agent": "Diadie Diawara diawaradiadie1998@gmail.com",
+  "outreach": {
+    "daily_cap": 20,
+    "followup_days": [
+      3,
+      7
+    ],
+    "max_touches": 3,
+    "business_days": true
+  }
 }

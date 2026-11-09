@@ -1,0 +1,123 @@
+{
+  "created_by": "seed-plan",
+  "tagline": "L'\u00e9nergie solaire, et des m\u00e9tiers pour les jeunes et les femmes.",
+  "brand": {
+    "brand": "#2F6FEB",
+    "ink": "#0E1B33",
+    "accent": "#FFB020"
+  },
+  "sections": [
+    {
+      "key": "executive_summary",
+      "title": "Executive summary",
+      "text": "Diawara Energies SAS, cr\u00e9\u00e9e en 2023 \u00e0 Bamako, installe des kits solaires et des mini-r\u00e9seaux et forme des jeunes et des femmes comme techniciens et revendeurs. Nous demandons 30 000 $ pour passer d'une activit\u00e9 men\u00e9e par un seul fondateur \u00e0 une petite \u00e9quipe form\u00e9e localement. [\u00c0 compl\u00e9ter : nombre d'installations et de clients \u00e0 ce jour.]",
+      "pitch": "\u00c9nergie solaire \u00e0 Bamako, avec des m\u00e9tiers pour les jeunes et les femmes.",
+      "points": [
+        "Fond\u00e9e en 2023",
+        "Kits solaires et mini-r\u00e9seaux",
+        "Formation de techniciens et revendeurs"
+      ]
+    },
+    {
+      "key": "problem",
+      "title": "Problem",
+      "text": "Beaucoup de foyers et de petits commerces maliens n'ont pas d'\u00e9lectricit\u00e9 fiable ou abordable. En m\u00eame temps, les jeunes et les femmes ont peu d'acc\u00e8s \u00e0 des m\u00e9tiers qualifi\u00e9s dans l'\u00e9nergie. [\u00c0 compl\u00e9ter : chiffres sourc\u00e9s sur l'acc\u00e8s \u00e0 l'\u00e9lectricit\u00e9 et le ch\u00f4mage des jeunes au Mali, avec leur source.]",
+      "pitch": "Pas d'\u00e9lectricit\u00e9 fiable, et peu de m\u00e9tiers qualifi\u00e9s pour les jeunes et les femmes.",
+      "points": []
+    },
+    {
+      "key": "solution",
+      "title": "Solution",
+      "text": "Nous installons des kits solaires et des mini-r\u00e9seaux, et nous formons des jeunes et des femmes comme techniciens et comme revendeurs. Chaque installation cr\u00e9e de l'\u00e9nergie pour un client et un revenu pour une personne form\u00e9e. Nous d\u00e9veloppons aussi des solutions num\u00e9riques et de biotechnologie. [\u00c0 pr\u00e9ciser : lesquelles, et \u00e0 quel stade.]",
+      "pitch": "Installer du solaire et former ceux qui l'installent et le vendent.",
+      "points": [
+        "Kits solaires",
+        "Mini-r\u00e9seaux",
+        "Formation techniciens et revendeurs"
+      ]
+    },
+    {
+      "key": "market",
+      "title": "Market",
+      "text": "Le march\u00e9 est celui des foyers et petits commerces de Bamako et de sa r\u00e9gion sans acc\u00e8s fiable \u00e0 l'\u00e9lectricit\u00e9. [\u00c0 compl\u00e9ter avec /seed-market : taille du march\u00e9, chaque entr\u00e9e avec une source.]",
+      "pitch": "Foyers et commerces de Bamako sans \u00e9lectricit\u00e9 fiable.",
+      "points": []
+    },
+    {
+      "key": "competition",
+      "title": "Competition",
+      "text": "Les concurrents sont d'autres vendeurs de kits solaires, des d\u00e9veloppeurs de mini-r\u00e9seaux et le r\u00e9seau public. [\u00c0 compl\u00e9ter : noms, prix, et ce qui nous diff\u00e9rencie, avec sources. Pas de lecture App Store : /seed-scout ne s'applique pas ici.]",
+      "pitch": "Notre diff\u00e9rence : la formation locale des jeunes et des femmes.",
+      "points": []
+    },
+    {
+      "key": "business_model",
+      "title": "Business model",
+      "text": "Revenus : vente et installation de kits, services sur les mini-r\u00e9seaux, et formation. [\u00c0 compl\u00e9ter : prix et marges r\u00e9els.] Les projections viendront de vos propres hypoth\u00e8ses.",
+      "pitch": "Vente et installation, services de mini-r\u00e9seaux, formation.",
+      "points": []
+    },
+    {
+      "key": "go_to_market",
+      "title": "Go-to-market",
+      "text": "Nous vendons par nos techniciens et revendeurs form\u00e9s, quartier par quartier, avec l'aide d'associations de femmes et de jeunes. [\u00c0 compl\u00e9ter : canaux et partenaires r\u00e9els.]",
+      "pitch": "Des revendeurs form\u00e9s localement, quartier par quartier.",
+      "points": [
+        "Revendeurs form\u00e9s",
+        "Associations de femmes et de jeunes",
+        "Bouche-\u00e0-oreille local"
+      ]
+    },
+    {
+      "key": "financial_plan",
+      "title": "Financial plan",
+      "text": "Fondateur unique, soci\u00e9t\u00e9 cr\u00e9\u00e9e en 2023. [\u00c0 compl\u00e9ter : chiffre d'affaires, co\u00fbts et tr\u00e9sorerie actuels. Aucune projection n'est invent\u00e9e ici.]",
+      "pitch": "Plan financier \u00e0 construire avec les chiffres r\u00e9els.",
+      "points": []
+    },
+    {
+      "key": "use_of_funds",
+      "title": "Use of funds",
+      "text": "Proposition de r\u00e9partition des 30 000 $, \u00e0 valider par le fondateur : \u00e9quipement et stocks de kits ; formation d'une premi\u00e8re promotion de jeunes et de femmes ; outils et d\u00e9placements ; suivi des r\u00e9sultats. [Montants \u00e0 fixer ensemble.]",
+      "pitch": "30 000 $ pour du mat\u00e9riel, une premi\u00e8re promotion form\u00e9e et le suivi.",
+      "points": []
+    }
+  ],
+  "team": [
+    {
+      "name": "Diadie Diawara",
+      "role": "Founder",
+      "line": "Fondateur et seul dirigeant de Diawara Energies SAS depuis 2023."
+    }
+  ],
+  "numbers": {
+    "currency": "USD",
+    "raise": 30000,
+    "instrument": "grant or impact funding",
+    "stage": "operating since 2023, solo founder"
+  },
+  "flags": [
+    "No seed/model.json: run /seed-model first, then build again.",
+    "No seed/market.json: run /seed-market first, then build again.",
+    "No seed/competitors.json: run /seed-scout first, then build again."
+  ],
+  "notes": [
+    "Executive summary text: 30 is in none of the seed/ files. Check it.",
+    "Use of funds text: 30 is in none of the seed/ files. Check it.",
+    "Use of funds pitch: 30 is in none of the seed/ files. Check it."
+  ],
+  "built": "2026-11-09",
+  "startup": {
+    "name": "Diawara Energies SAS",
+    "one_liner": "Installe des kits solaires et des mini-r\u00e9seaux \u00e0 Bamako, et forme des jeunes et des femmes comme techniciens et revendeurs",
+    "sector": "solar energy, mini-grids",
+    "stage": "operating since 2023, solo founder",
+    "geography": "Bamako, Mali",
+    "raise": 30000,
+    "instrument": "grant or impact funding"
+  },
+  "founder": {
+    "name": "Diadie Diawara",
+    "email": "diawaradiadie1998@gmail.com"
+  }
+}
