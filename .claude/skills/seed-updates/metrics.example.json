@@ -1,0 +1,48 @@
+{
+  "_about": "seed/metrics.json for Leashly, the reel's FICTIONAL startup (a one-city pilot before the seed). One entry a month with the numbers at month end. cash is the bank balance at month end; money_in is new funding that arrived that month (it is not counted as burn). Replace everything with your own.",
+  "company": "Leashly",
+  "currency": "USD",
+  "metrics": [
+    {"key": "revenue", "label": "Revenue", "unit": "usd"},
+    {"key": "walks", "label": "Walks completed", "unit": "count"},
+    {"key": "active_owners", "label": "Active owners", "unit": "count"},
+    {"key": "gmv", "label": "GMV (what owners paid)", "unit": "usd"},
+    {"key": "backup_saves", "label": "Walks saved by a backup walker", "unit": "count"},
+    {"key": "cancel_rate", "label": "Walker cancellations", "unit": "pct", "better": "down"}
+  ],
+  "headline": ["revenue", "walks", "active_owners"],
+  "months": [
+    {
+      "month": "2026-09",
+      "values": {"revenue": 4425, "walks": 1180, "active_owners": 142, "gmv": 29500, "backup_saves": 21, "cancel_rate": 3.1},
+      "cash": 214000,
+      "money_in": 0
+    },
+    {
+      "month": "2026-10",
+      "values": {"revenue": 5325, "walks": 1420, "active_owners": 171, "gmv": 35500, "backup_saves": 26, "cancel_rate": 2.8},
+      "cash": 196500,
+      "money_in": 0
+    },
+    {
+      "month": "2026-11",
+      "values": {"revenue": 6600, "walks": 1760, "active_owners": 210, "gmv": 44000, "backup_saves": 31, "cancel_rate": 2.4},
+      "cash": 177800,
+      "money_in": 0,
+      "highlights": [
+        "Backup walkers saved 31 walks that would have been cancelled, and no owner was left waiting.",
+        "Two weekends of dog-park pop-ups brought in 38 new owners at no paid cost.",
+        "Finished the seed deck and the 36-month model, and booked the first investor calls."
+      ],
+      "lowlights": [
+        "Walker cancellations are down to 2.4%, still above our 2% goal.",
+        "Card fees on small tips cost more than we planned. We now round tips into one weekly payout."
+      ],
+      "asks": [
+        "Intros to property managers of dog-friendly apartment buildings in Austin.",
+        "A senior engineer who has built a two-sided marketplace.",
+        "Seed investors who back consumer marketplaces: we are raising $1.5M."
+      ]
+    }
+  ]
+}

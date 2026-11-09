@@ -1,0 +1,24 @@
+{
+  "_about": "seed/config.json: the one file every seed skill may read. This copy is filled in for Leashly, the reel's FICTIONAL startup. Replace every value with yours. raise is a number in dollars. The founder's email is the address outreach goes out from: use your real work address in your own copy, never someone else's.",
+  "startup": {
+    "name": "Leashly",
+    "one_liner": "A dog-walking app with flat prices and a backup walker on every walk",
+    "sector": "pet care marketplace",
+    "stage": "seed",
+    "geography": "United States",
+    "raise": 1500000,
+    "instrument": "post-money SAFE"
+  },
+  "founder": {
+    "name": "Your Name",
+    "email": "you@leashly.example",
+    "company_address": "100 Example Street, Austin, TX 78701"
+  },
+  "sec_user_agent": "Your Name you@leashly.example",
+  "outreach": {
+    "daily_cap": 20,
+    "followup_days": [3, 7],
+    "max_touches": 3,
+    "business_days": true
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "_about": "The Pitch Coach's question bank. A question with {placeholders} is tailored: it is asked only when seed/ has the numbers to fill it. tests = what the investor is really checking. strong = what a strong answer has. hint = your own numbers to have ready.",
+  "categories": ["market", "competition", "traction", "unit economics", "team", "why now", "risks", "the ask"],
+  "questions": [
+    {"id": "market-som", "category": "market", "q": "Your SOM is {som_share} of a {sam} SAM in {som_years} years. What gets you the first 1,000 customers?", "tests": "whether the market slide connects to a real go-to-market", "strong": "one channel, its cost per customer, and how many customers it has already produced", "hint": "TAM {tam}, SAM {sam}, SOM {som}."},
+    {"id": "market-assumption", "category": "market", "q": "Your market size rests on an assumption ({assumption}). Where does that number come from?", "tests": "whether you know which of your numbers are guesses", "strong": "the source, or an honest 'it is an assumption' and how you will test it", "hint": "Every assumption is listed by market.py show."},
+    {"id": "market-1", "category": "market", "q": "Who exactly is the customer, and how many of them are there?", "tests": "focus", "strong": "one customer, one number, one source"},
+    {"id": "market-2", "category": "market", "q": "Why is this a venture-scale market and not a nice small business?", "tests": "the size of the outcome", "strong": "the path from your first city to a large yearly revenue, with numbers"},
+    {"id": "market-3", "category": "market", "q": "What happens to demand in a recession?", "tests": "resilience", "strong": "how your customer behaved in the last downturn, with a number"},
+
+    {"id": "comp-switch", "category": "competition", "q": "{c1_name} has {c1_ratings} ratings. Why will {customers} switch?", "tests": "whether your edge is big enough to beat habit", "strong": "the pain, with evidence, and the moment someone switches", "hint": "{c1_count} of {c1_low} recent 1-2 star {c1_name} reviews mention {c1_weak}."},
+    {"id": "comp-copy", "category": "competition", "q": "{c1_name}'s reviews are about {c1_weak}. What stops {c1_name} from fixing that next quarter?", "tests": "defensibility", "strong": "why the incumbent's business model makes the fix costly for them", "hint": "{c1_count} of {c1_low} low reviews mention {c1_weak}."},
+    {"id": "comp-second", "category": "competition", "q": "{c2_name} users complain about {c2_weak}. How do you make sure that never happens to you?", "tests": "operations, not slogans", "strong": "the mechanism, what it costs, and what happens when it fails", "hint": "{c2_count} of {c2_low} recent 1-2 star {c2_name} reviews mention {c2_weak}."},
+    {"id": "comp-1", "category": "competition", "q": "Who else is building this right now?", "tests": "whether you know the landscape", "strong": "names, what they do differently, and why you win anyway"},
+    {"id": "comp-2", "category": "competition", "q": "What is your unfair advantage?", "tests": "something hard to copy", "strong": "one specific thing: a channel, data, a cost, a team fact"},
+    {"id": "comp-3", "category": "competition", "q": "Why hasn't the market leader already done this?", "tests": "whether you understand the incumbent's incentives", "strong": "the cost or conflict that stops them, with a number"},
+
+    {"id": "traction-1", "category": "traction", "q": "What have you proven so far?", "tests": "evidence over vision", "strong": "numbers: users, revenue, retention, a waitlist, a pilot, with dates"},
+    {"id": "traction-2", "category": "traction", "q": "How fast are you growing, week over week?", "tests": "momentum", "strong": "one growth rate over a stated period"},
+    {"id": "traction-3", "category": "traction", "q": "What does a customer who stays look like, and why do they stay?", "tests": "retention", "strong": "a cohort number and the reason in the customer's words"},
+    {"id": "traction-4", "category": "traction", "q": "What did you learn that surprised you?", "tests": "learning speed", "strong": "a specific finding and what you changed because of it"},
+
+    {"id": "ue-take", "category": "unit economics", "q": "What does your {take_rate} take rate leave after {provider_pay}?", "tests": "whether the business makes money per order", "strong": "revenue and contribution per order, in dollars", "hint": "Per {unit}: {price} price, you keep {revenue_per_order}, {contribution_per_order} after costs."},
+    {"id": "ue-ltv", "category": "unit economics", "q": "Your LTV:CAC is {ltv_cac}. What CAC did you assume, and what have you actually paid?", "tests": "whether the model is grounded", "strong": "the assumed CAC, the real CAC so far, and the channel", "hint": "CAC {cac}, LTV {ltv}, paid back in {cac_payback} months."},
+    {"id": "ue-breakeven", "category": "unit economics", "q": "You break even in month {breakeven_month}. What has to be true for that?", "tests": "which assumptions carry the model", "strong": "the two or three drivers and how sensitive breakeven is to each", "hint": "Peak burn {peak_burn}; year 1 revenue {revenue_y1}, year 3 {revenue_y3}."},
+    {"id": "ue-1", "category": "unit economics", "q": "What is your gross margin, and how does it change at scale?", "tests": "margin structure", "strong": "the margin today and the one cost that falls with scale"},
+    {"id": "ue-2", "category": "unit economics", "q": "How do you set your price, and what happens if you raise it 20%?", "tests": "pricing power", "strong": "how you tested price and what customers did"},
+    {"id": "ue-3", "category": "unit economics", "q": "What does it cost you to get one customer today, and through which channel?", "tests": "real acquisition cost", "strong": "a dollar figure from real spend, the channel, and the payback in months"},
+
+    {"id": "team-1", "category": "team", "q": "Why are you the team to build this?", "tests": "founder-market fit", "strong": "a specific past result that maps to this problem"},
+    {"id": "team-2", "category": "team", "q": "Who is your next key hire, and why?", "tests": "self-awareness", "strong": "the gap, the role and when it starts"},
+    {"id": "team-3", "category": "team", "q": "How do the founders split decisions, and what happens when you disagree?", "tests": "team stability", "strong": "a real example"},
+    {"id": "team-4", "category": "team", "q": "Are you full time, and how much runway do you personally have?", "tests": "commitment", "strong": "a straight yes and a date"},
+
+    {"id": "now-1", "category": "why now", "q": "Why now? Why couldn't this have been built five years ago?", "tests": "timing", "strong": "one change in the world, with a date or a number"},
+    {"id": "now-2", "category": "why now", "q": "What changes in the next two years that makes this bigger?", "tests": "tailwinds", "strong": "a trend with a source"},
+    {"id": "now-3", "category": "why now", "q": "What would make this a bad time to start?", "tests": "honesty", "strong": "the headwind, named, and why you start anyway"},
+
+    {"id": "risk-runway", "category": "risks", "q": "The model shows a peak burn of {peak_burn} a month. What do you cut if the raise takes six months longer?", "tests": "discipline", "strong": "the cut list in order, and the runway it buys", "hint": "Runway in the model: {runway} months."},
+    {"id": "risk-1", "category": "risks", "q": "What is the single biggest risk to this company?", "tests": "clear thinking", "strong": "one risk, named plainly, and the test that retires it"},
+    {"id": "risk-2", "category": "risks", "q": "What has to go right that you do not control?", "tests": "dependencies", "strong": "the dependency and your plan B"},
+    {"id": "risk-3", "category": "risks", "q": "What regulation, liability or insurance issue could hurt you?", "tests": "diligence", "strong": "the specific rule or exposure and how you handle it"},
+
+    {"id": "ask-funds", "category": "the ask", "q": "You are raising {raise}. Walk me through where it goes and what it gets you.", "tests": "whether the money buys a milestone", "strong": "the use of funds and the milestone it reaches before the next round", "hint": "Biggest line: {top_fund} ({top_fund_amount})."},
+    {"id": "ask-investor", "category": "the ask", "q": "{inv_first}'s record: {inv_deal}. How is {startup} different, and do you want {inv_firm} to lead?", "tests": "whether you did your homework on this investor", "strong": "what you know about their deal, the difference in one line, and a clear yes on the role you want", "hint": "{inv_name} writes {inv_check} checks."},
+    {"id": "ask-1", "category": "the ask", "q": "Who else is in the round, and who is leading?", "tests": "momentum and the round's shape", "strong": "names or the honest state, and the close date"},
+    {"id": "ask-2", "category": "the ask", "q": "What valuation or cap are you raising at, and why?", "tests": "realism", "strong": "the number and the comparable rounds behind it"},
+    {"id": "ask-3", "category": "the ask", "q": "What milestones will you hit before you raise again?", "tests": "a plan for the next round", "strong": "two or three numbers with dates"}
+  ]
+}

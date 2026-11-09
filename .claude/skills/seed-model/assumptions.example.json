@@ -1,0 +1,52 @@
+{
+  "_about": "Leashly, the reel's FICTIONAL startup: a dog-walking app with flat $25 walks and a backup walker on every walk. Every number here is an assumption you replace with your own. Money is in the currency below; percents are written as percents (15 means 15%).",
+  "company": "Leashly",
+  "currency": "USD",
+  "unit": "walk",
+  "units": "walks",
+  "start_month": "2027-01",
+  "cash_at_start": 0,
+  "raise": 1500000,
+  "raise_month": 1,
+  "price": 25,
+  "take_rate_pct": 15,
+  "cost_per_order": [
+    {"label": "card processing (2.9% + $0.30)", "pct_of_price": 2.9, "fixed": 0.30},
+    {"label": "backup walker on standby", "fixed": 0.50}
+  ],
+  "customers": {
+    "starting": 210,
+    "new_month_1": 150,
+    "new_growth_pct": [10, 5, 2],
+    "churn_monthly_pct": 7,
+    "orders_per_customer_month": 8
+  },
+  "cac": 60,
+  "payroll_overhead_pct": 20,
+  "payroll": [
+    {"role": "Founder, CEO", "monthly": 9000, "start_month": 1},
+    {"role": "Founder, CTO", "monthly": 9000, "start_month": 1},
+    {"role": "City lead, city 1", "monthly": 6000, "start_month": 1},
+    {"role": "Engineer", "monthly": 11000, "start_month": 2},
+    {"role": "Walker support", "monthly": 4500, "start_month": 3},
+    {"role": "City lead, city 2", "monthly": 6000, "start_month": 5},
+    {"role": "City lead, city 3", "monthly": 6000, "start_month": 9},
+    {"role": "Engineer", "monthly": 11000, "start_month": 13},
+    {"role": "Walker support", "monthly": 4500, "start_month": 15}
+  ],
+  "opex": [
+    {"label": "software and hosting", "monthly": 2500},
+    {"label": "walker insurance", "monthly": 3000},
+    {"label": "legal and accounting", "monthly": 1500}
+  ],
+  "one_off": [
+    {"label": "city 2 launch", "month": 5, "cost": 25000},
+    {"label": "city 3 launch", "month": 9, "cost": 25000}
+  ],
+  "use_of_funds": {
+    "Product and engineering": 600000,
+    "City launches (3 cities)": 450000,
+    "Marketing": 300000,
+    "Operations and insurance": 150000
+  }
+}

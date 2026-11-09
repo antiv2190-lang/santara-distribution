@@ -1,0 +1,52 @@
+# The Closer's email template (seed-closer). Everything above the first
+# "=== ... ===" line is a note for you and is never sent. To make your own,
+# copy this file to seed/template.txt: the Closer uses that copy when it exists.
+#
+# Placeholders the Closer fills: {first_name} {name} {firm} {personal_line}
+# {startup} {one_liner} {one_liner_sentence} {tagline} {raise} {stage}
+# {instrument} {sector} {geography} {sender} {sender_first} {title}
+# {company_address} {signature} {optout} {intro_subject} {intro_day} {extra}
+# {ask}. Write a literal brace as {{ or }}.
+#
+# Keep {personal_line} in the intro and {optout} and {signature} in every
+# section: the Closer refuses a draft without them. Follow-ups stay under 80
+# words before the opt-out line.
+
+=== intro ===
+Subject: {startup}: {tagline}
+
+Hi {first_name},
+
+{personal_line}
+
+{startup} is {one_liner_sentence}.
+
+We're raising a {raise} {stage}. Open to a 20-minute call next week?
+
+{optout}
+
+{signature}
+
+=== followup 1 ===
+Subject: Re: {intro_subject}
+
+Hi {first_name},
+
+Bumping this up: my note from {intro_day} about {startup}, {one_liner_sentence}. {extra}
+
+Open to 20 minutes next week?
+
+{optout}
+
+{signature}
+
+=== followup 2 ===
+Subject: Re: {intro_subject}
+
+Hi {first_name},
+
+Quick one, and my last note on this: {ask}
+
+{optout}
+
+{signature}
