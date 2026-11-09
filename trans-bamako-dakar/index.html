@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trans Bamako-Dakar</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2a24;--mut:#66726b;--brand:#0f6b4a;--brand2:#e8a317;--line:#e1ddd2;--bad:#b3261e;--ok:#1b7f3b}
+@media (prefers-color-scheme:dark){:root{--bg:#121714;--card:#1b231f;--ink:#eef2ee;--mut:#9aa8a0;--brand:#3fbf8a;--brand2:#f0b43a;--line:#2c3832}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--brand);color:#fff;padding:14px 16px}
+header h1{margin:0;font-size:1.15rem}
+header p{margin:2px 0 0;font-size:.85rem;opacity:.9}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button{flex:none;border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 14px;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer}
+nav button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+main{max-width:860px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 8px;font-size:1.25rem}h3{margin:0 0 6px;font-size:1rem}
+.mut{color:var(--mut);font-size:.9rem}
+label{display:block;margin:10px 0 4px;font-weight:600;font-size:.9rem}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.btn{display:inline-block;margin-top:14px;background:var(--brand);color:#fff;border:0;padding:12px 18px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:var(--brand2);color:#1d1d1d}.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:7px 11px;margin:0;font-size:.85rem}
+.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:600}
+.libre{background:#d6f2df;color:#115c2b}.bientot_libre{background:#fdf0c9;color:#7a5600}.occupe{background:#f8d9d6;color:#8a1c14}.inconnu{background:#e4e4e4;color:#555}
+.hero{background:linear-gradient(135deg,var(--brand),#0a4a34);color:#fff;border:0}
+.hero .btn{background:var(--brand2);color:#1d1d1d}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.stat{text-align:center}.stat b{font-size:1.6rem;display:block}
+.price{font-size:1.3rem;font-weight:700;color:var(--brand)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.scroll{overflow-x:auto}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:8px;opacity:0;transition:.3s;pointer-events:none}
+.toast.on{opacity:1}
+a.wa{color:var(--ok);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <h1>🚛 Trans Bamako-Dakar</h1>
+  <p>Bamako ⇄ Dakar · Bamako ⇄ Abidjan — plateaux, remorques 40 t, carrosseries</p>
+</header>
+<nav id="nav">
+  <button data-t="home" class="on">Accueil</button>
+  <button data-t="carrier">Je suis transporteur</button>
+  <button data-t="avail">Ma disponibilité</button>
+  <button data-t="client">J'ai une marchandise</button>
+  <button data-t="admin">Admin</button>
+</nav>
+<main>
+
+<section id="home" class="on">
+  <div class="card hero">
+    <h2>Le bon camion, au bon moment, au bon prix.</h2>
+    <p>Nous connectons les demandeurs de transport aux transporteurs vérifiés et disponibles sur les corridors Bamako-Dakar et Bamako-Abidjan.</p>
+    <button class="btn" data-go="client">Demander un camion</button>
+    <button class="btn ghost" style="color:#fff;border-color:#fff" data-go="carrier">Inscrire mon camion</button>
+  </div>
+  <div class="grid3">
+    <div class="card stat"><b id="s-free">0</b><span class="mut">camions libres</span></div>
+    <div class="card stat"><b id="s-trucks">0</b><span class="mut">camions inscrits</span></div>
+    <div class="card stat"><b id="s-req">0</b><span class="mut">demandes</span></div>
+  </div>
+  <div class="card">
+    <h3>Nos avantages</h3>
+    <p>✅ Transporteurs vérifiés (papiers et assurance contrôlés)<br>
+    💳 Paiement sécurisé : fonds libérés à la livraison<br>
+    📍 Suivi et preuve de livraison<br>
+    📞 Un seul interlocuteur, réponse rapide<br>
+    ⭐ Priorité aux transporteurs fiables et réactifs</p>
+  </div>
+</section>
+
+<section id="carrier">
+  <div class="card">
+    <h2>Inscrire mon camion</h2>
+    <p class="mut">Gratuit. Votre numéro WhatsApp sert à vous envoyer les demandes.</p>
+    <form id="f-carrier">
+      <div class="row">
+        <div><label>Nom complet</label><input name="full_name" required></div>
+        <div><label>Société (facultatif)</label><input name="company"></div>
+      </div>
+      <div class="row">
+        <div><label>Téléphone WhatsApp</label><input name="phone" type="tel" placeholder="+223 …" required></div>
+        <div><label>Ville actuelle</label>
+          <select name="city"><option>Bamako</option><option>Dakar</option><option>Abidjan</option><option>Kayes</option><option>Sikasso</option><option>Autre</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Type de camion</label>
+          <select name="type"><option value="plateau">Camion plateau</option><option value="remorque_40t">Remorque 40 tonnes</option><option value="carrosserie">Carrosserie</option></select></div>
+        <div><label>Capacité (tonnes)</label><input name="capacity" type="number" min="1" step="0.5" value="40" required></div>
+      </div>
+      <label>Immatriculation</label><input name="plate" required>
+      <label>Trajets acceptés</label>
+      <div class="row">
+        <label style="font-weight:400"><input type="checkbox" name="c" value="bamako-dakar" checked style="width:auto"> Bamako ⇄ Dakar</label>
+        <label style="font-weight:400"><input type="checkbox" name="c" value="bamako-abidjan" checked style="width:auto"> Bamako ⇄ Abidjan</label>
+      </div>
+      <button class="btn">Enregistrer mon camion</button>
+    </form>
+  </div>
+</section>
+
+<section id="avail">
+  <div class="card">
+    <h2>Signaler ma disponibilité</h2>
+    <p class="mut">Saisissez votre numéro, puis choisissez votre statut. Sans mise à jour pendant 48 h, votre camion passe en « inconnu » et n'est plus proposé.</p>
+    <label>Votre téléphone</label><input id="av-phone" type="tel" placeholder="+223 …">
+    <button class="btn ghost sm" id="av-find" style="margin-top:10px">Retrouver mes camions</button>
+    <div id="av-list" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<section id="client">
+  <div class="card">
+    <h2>Demander un camion</h2>
+    <form id="f-client">
+      <div class="row">
+        <div><label>Votre nom</label><input name="client_name" required></div>
+        <div><label>Téléphone WhatsApp</label><input name="client_phone" type="tel" required></div>
+      </div>
+      <div class="row">
+        <div><label>Trajet</label>
+          <select name="corridor">
+            <option value="bamako-dakar">Bamako → Dakar</option><option value="dakar-bamako">Dakar → Bamako</option>
+            <option value="bamako-abidjan">Bamako → Abidjan</option><option value="abidjan-bamako">Abidjan → Bamako</option>
+          </select></div>
+        <div><label>Type de camion</label>
+          <select name="truck_type"><option value="plateau">Plateau</option><option value="remorque_40t">Remorque 40 t</option><option value="carrosserie">Carrosserie</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Marchandise</label><input name="goods" required placeholder="Ciment, riz, conteneur…"></div>
+        <div><label>Poids (tonnes)</label><input name="weight" type="number" min="1" step="0.5" required></div>
+      </div>
+      <label>Date de chargement</label><input name="pickup_date" type="date" required>
+      <button class="btn alt">Voir les camions et le prix</button>
+    </form>
+  </div>
+  <div id="result"></div>
+</section>
+
+<section id="admin">
+  <div class="card">
+    <h2>Tableau de bord</h2>
+    <button class="btn sm ghost" id="seed">Charger des données de démo</button>
+    <button class="btn sm ghost" id="csv">Exporter CSV</button>
+    <button class="btn sm ghost" id="reset">Tout effacer</button>
+    <p class="mut" id="adm-note"></p>
+  </div>
+  <div class="card"><h3>Camions</h3><div class="scroll" id="adm-trucks"></div></div>
+  <div class="card"><h3>Demandes clients</h3><div class="scroll" id="adm-reqs"></div></div>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- Barème indicatif en FCFA (à calibrer avec des prix réels du marché) ----
+const TARIFS = {
+  'bamako-dakar':   {plateau:[900000,1400000], remorque_40t:[1500000,2300000], carrosserie:[1100000,1700000]},
+  'bamako-abidjan': {plateau:[800000,1250000], remorque_40t:[1300000,2000000], carrosserie:[950000,1500000]}
+};
+const COMMISSION = 0.08;
+const LABEL = {plateau:'Plateau',remorque_40t:'Remorque 40 t',carrosserie:'Carrosserie'};
+const STATUS = {libre:'🟢 Libre',bientot_libre:'🟡 Bientôt libre',occupe:'🔴 Occupé',inconnu:'⚪ Inconnu'};
+const KEY = 'tbd_v1';
+const STALE_MS = 48*3600*1000;
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{carriers:[],trucks:[],requests:[]}}catch(e){return {carriers:[],trucks:[],requests:[]}}}
+function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){toast('Stockage indisponible')}}
+const uid=()=>Math.random().toString(36).slice(2,10);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fcfa=n=>new Intl.NumberFormat('fr-FR').format(Math.round(n/1000)*1000)+' FCFA';
+const digits=p=>String(p).replace(/\D/g,'');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)}
+
+// Un statut non mis à jour depuis 48 h devient « inconnu »
+function effStatus(t){return Date.now()-t.updated>STALE_MS?'inconnu':t.status}
+function corridorBase(c){return c.includes('dakar')?'bamako-dakar':'bamako-abidjan'}
+
+// ---- Navigation ----
+function show(t){
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  window.scrollTo(0,0); render();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+
+// ---- Inscription transporteur ----
+$('#f-carrier').onsubmit=e=>{
+  e.preventDefault();
+  const f=new FormData(e.target), d=load();
+  const phone=digits(f.get('phone'));
+  const corridors=f.getAll('c');
+  if(phone.length<8) return toast('Numéro invalide');
+  if(!corridors.length) return toast('Choisissez au moins un trajet');
+  let car=d.carriers.find(c=>c.phone===phone);
+  if(!car){car={id:uid(),phone,full_name:f.get('full_name'),company:f.get('company'),city:f.get('city'),verified:false};d.carriers.push(car)}
+  d.trucks.push({id:uid(),carrier_id:car.id,type:f.get('type'),capacity:+f.get('capacity'),plate:f.get('plate'),corridors,status:'libre',city:f.get('city'),updated:Date.now()});
+  save(d); e.target.reset(); toast('Camion enregistré ✔'); show('avail'); $('#av-phone').value=phone; findMine();
+};
+
+// ---- Disponibilité ----
+function findMine(){
+  const d=load(), phone=digits($('#av-phone').value);
+  const car=d.carriers.find(c=>c.phone===phone), box=$('#av-list');
+  if(!car){box.innerHTML='<p class="mut">Aucun camion trouvé pour ce numéro.</p>';return}
+  const mine=d.trucks.filter(t=>t.carrier_id===car.id);
+  box.innerHTML=mine.map(t=>`<div class="card"><b>${esc(LABEL[t.type])}</b> · ${esc(t.plate)} · ${t.capacity} t
+    <span class="tag ${effStatus(t)}">${STATUS[effStatus(t)]}</span>
+    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn sm" data-s="libre" data-id="${t.id}">🟢 Libre</button>
+      <button class="btn sm alt" data-s="bientot_libre" data-id="${t.id}">🟡 Bientôt libre</button>
+      <button class="btn sm ghost" data-s="occupe" data-id="${t.id}">🔴 Occupé</button></div></div>`).join('');
+  box.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{
+    const d2=load(), t=d2.trucks.find(x=>x.id===b.dataset.id);
+    t.status=b.dataset.s; t.updated=Date.now(); save(d2); toast('Disponibilité mise à jour'); findMine();
+  });
+}
+$('#av-find').onclick=findMine;
+
+// ---- Demande client + matching ----
+$('#f-client').onsubmit=e=>{
+  e.preventDefault();
+  const f=new FormData(e.target), d=load();
+  const req={id:uid(),client_name:f.get('client_name'),client_phone:digits(f.get('client_phone')),corridor:f.get('corridor'),
+    truck_type:f.get('truck_type'),goods:f.get('goods'),weight:+f.get('weight'),pickup_date:f.get('pickup_date'),created:Date.now(),status:'nouvelle'};
+  d.requests.push(req); save(d); renderMatches(req); toast('Demande enregistrée ✔');
+};
+function renderMatches(req){
+  const d=load(), base=corridorBase(req.corridor);
+  const [lo,hi]=TARIFS[base][req.truck_type];
+  const order={libre:0,bientot_libre:1,occupe:2,inconnu:3};
+  const list=d.trucks.filter(t=>t.type===req.truck_type && t.capacity>=req.weight && t.corridors.includes(base) && effStatus(t)!=='inconnu' && effStatus(t)!=='occupe')
+    .sort((a,b)=>order[effStatus(a)]-order[effStatus(b)]);
+  const rows=list.map(t=>{
+    const car=d.carriers.find(c=>c.id===t.carrier_id)||{};
+    const msg=encodeURIComponent(`Bonjour, demande Trans Bamako-Dakar : ${req.goods} (${req.weight} t), ${req.corridor.replace('-',' → ')}, chargement le ${req.pickup_date}. Êtes-vous disponible ?`);
+    return `<div class="card"><b>${esc(car.full_name)}</b> ${car.verified?'✅ vérifié':''}<br>
+      ${esc(LABEL[t.type])} · ${t.capacity} t · ${esc(t.city)} · <span class="tag ${effStatus(t)}">${STATUS[effStatus(t)]}</span><br>
+      <a class="wa" href="https://wa.me/${car.phone}?text=${msg}" target="_blank" rel="noopener">Contacter sur WhatsApp</a></div>`}).join('');
+  $('#result').innerHTML=`<div class="card"><h3>Fourchette de prix estimée</h3>
+    <div class="price">${fcfa(lo)} – ${fcfa(hi)}</div>
+    <p class="mut">Indicatif, selon le trajet, le type de camion et la demande. Commission plateforme incluse (${COMMISSION*100} %). Prix final confirmé par nos équipes.</p></div>
+    <h3>${list.length?list.length+' camion(s) disponible(s)':'Aucun camion disponible pour le moment'}</h3>
+    ${list.length?rows:'<div class="card mut">Votre demande est enregistrée. Nous vous recontactons dès qu\'un transporteur se libère.</div>'}`;
+  $('#result').scrollIntoView({behavior:'smooth'});
+}
+
+// ---- Admin ----
+function render(){
+  const d=load();
+  $('#s-trucks').textContent=d.trucks.length;
+  $('#s-free').textContent=d.trucks.filter(t=>effStatus(t)==='libre').length;
+  $('#s-req').textContent=d.requests.length;
+  $('#adm-note').textContent='Mode démo : données stockées dans ce navigateur uniquement.';
+  $('#adm-trucks').innerHTML=d.trucks.length?`<table><tr><th>Transporteur</th><th>Camion</th><th>Statut</th><th>Vérifié</th></tr>${d.trucks.map(t=>{
+    const c=d.carriers.find(x=>x.id===t.carrier_id)||{};
+    return `<tr><td>${esc(c.full_name)}<br><span class="mut">${esc(c.phone)}</span></td><td>${esc(LABEL[t.type])} ${t.capacity} t<br><span class="mut">${esc(t.plate)}</span></td>
+    <td><span class="tag ${effStatus(t)}">${STATUS[effStatus(t)]}</span></td>
+    <td><input type="checkbox" style="width:auto" ${c.verified?'checked':''} data-v="${c.id}"></td></tr>`}).join('')}</table>`:'<p class="mut">Aucun camion.</p>';
+  document.querySelectorAll('[data-v]').forEach(i=>i.onchange=()=>{const d2=load();const c=d2.carriers.find(x=>x.id===i.dataset.v);c.verified=i.checked;save(d2)});
+  $('#adm-reqs').innerHTML=d.requests.length?`<table><tr><th>Client</th><th>Trajet</th><th>Marchandise</th><th>Date</th></tr>${d.requests.slice().reverse().map(r=>
+    `<tr><td>${esc(r.client_name)}<br><span class="mut">${esc(r.client_phone)}</span></td><td>${esc(r.corridor)}<br>${esc(LABEL[r.truck_type])}</td><td>${esc(r.goods)}<br>${r.weight} t</td><td>${esc(r.pickup_date)}</td></tr>`).join('')}</table>`:'<p class="mut">Aucune demande.</p>';
+}
+$('#seed').onclick=()=>{
+  const d=load(), now=Date.now();
+  const demo=[['Moussa Traoré','22370000001','Bamako','remorque_40t',40,'ML-1234-A','libre'],
+    ['Abdoulaye Diallo','22370000002','Bamako','plateau',25,'ML-5678-B','bientot_libre'],
+    ['Ibrahima Sow','22177000003','Dakar','carrosserie',20,'SN-9012-C','libre'],
+    ['Seydou Koné','22507000004','Abidjan','remorque_40t',40,'CI-3456-D','occupe']];
+  demo.forEach(x=>{const id=uid();d.carriers.push({id,phone:x[1],full_name:x[0],city:x[2],verified:true});
+    d.trucks.push({id:uid(),carrier_id:id,type:x[3],capacity:x[4],plate:x[5],corridors:['bamako-dakar','bamako-abidjan'],status:x[6],city:x[2],updated:now})});
+  save(d); render(); toast('Données de démo ajoutées');
+};
+$('#reset').onclick=()=>{if(confirm('Effacer toutes les données ?')){save({carriers:[],trucks:[],requests:[]});render()}};
+$('#csv').onclick=()=>{
+  const d=load();
+  const cell=v=>{v=String(v??'');if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
+  const rows=[['client','telephone','trajet','camion','marchandise','poids_t','date']].concat(d.requests.map(r=>[r.client_name,r.client_phone,r.corridor,r.truck_type,r.goods,r.weight,r.pickup_date]));
+  const blob=new Blob([rows.map(r=>r.map(cell).join(',')).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='demandes.csv';a.click();
+};
+render();
+</script>
+</body>
+</html>
