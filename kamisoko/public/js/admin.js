@@ -15,7 +15,7 @@
   const fmt = n => new Intl.NumberFormat('fr-FR').format(n).replace(/[  ]/g, ' ') + ' FCFA';
   const dt = s => new Date(s).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   const root = $('#app');
-  let S = { csrf: '', user: null, meta: null, tab: 'dash', products: [], orders: [], settings: null };
+  let S = { csrf: '', user: null, meta: null, tab: 'dash', products: [], looks: [], orders: [], settings: null };
 
   function toast(msg, kind = '') { const t = h('div', { class: 'toast ' + kind, text: msg }); $('#toasts').append(t); setTimeout(() => t.remove(), 4000); }
   async function api(path, method = 'GET', body) {
@@ -74,8 +74,8 @@
     try {
       const me = await api('/me'); S.user = me.user; S.csrf = me.csrf; S.meta = me;
       if (me.user.mustChange) { shell(passwordPanel(true), true); return; }
-      const [products, orders, settings] = await Promise.all([api('/products'), api('/orders'), api('/settings')]);
-      Object.assign(S, { products, orders, settings }); render();
+      const [products, looks, orders, settings] = await Promise.all([api('/products'), api('/looks'), api('/orders'), api('/settings')]);
+      Object.assign(S, { products, looks, orders, settings }); render();
     } catch (e) { if (!S.user) renderLogin(); else toast(e.message, 'err-t'); }
   }
   function shell(content, forced) {
@@ -86,11 +86,11 @@
       h('div', { class: 'bar' }, h('span', { class: 'brand' }, h('img', { src: '/img/logo.svg', alt: '' }), 'Administration'),
         h('a', { class: 'btn btn-ghost btn-sm', href: '/', target: '_blank', rel: 'noopener', text: 'Voir la boutique' }),
         h('button', { class: 'btn btn-sm', type: 'button', text: 'Déconnexion', onclick: async () => { try { await api('/logout', 'POST'); } catch { /* déjà déconnecté */ } S = { ...S, user: null, csrf: '' }; renderLogin(); } })),
-      forced ? null : h('nav', { class: 'tabs', 'aria-label': 'Sections' }, tab('dash', '📊', 'Accueil'), tab('prod', '👕', 'Produits'), tab('ord', '🧾', 'Commandes', newCount || ''), tab('set', '⚙️', 'Boutique'), tab('sec', '🔒', 'Sécurité')),
+      forced ? null : h('nav', { class: 'tabs', 'aria-label': 'Sections' }, tab('dash', '📊', 'Accueil'), tab('prod', '👕', 'Produits'), tab('look', '✨', 'Looks'), tab('ord', '🧾', 'Commandes', newCount || ''), tab('set', '⚙️', 'Boutique'), tab('sec', '🔒', 'Sécurité')),
       h('main', {}, content)));
   }
   function render() {
-    const views = { dash: viewDash, prod: viewProducts, ord: viewOrders, set: viewSettings, sec: viewSecurity };
+    const views = { dash: viewDash, prod: viewProducts, look: viewLooks, ord: viewOrders, set: viewSettings, sec: viewSecurity };
     shell(views[S.tab](), false);
   }
 
@@ -129,7 +129,7 @@
 
   function productForm(p) {
     const edit = !!p; const d = p || { name: '', category: 'jeans', garment: 'jeans', colors: [], sizes: [], priceRetail: '', priceWholesale: '', wholesaleMin: 6, description: '', image: null, stock: 'in', featured: false, visible: true };
-    const M = S.meta; let image = d.image;
+    const M = S.meta;
     const err = h('p', { class: 'err', role: 'alert' });
     const f = {
       name: h('input', { class: 'input', id: 'f-name', value: d.name, maxlength: 80, required: true }),
@@ -144,26 +144,37 @@
       featured: h('input', { type: 'checkbox', checked: d.featured }), visible: h('input', { type: 'checkbox', checked: d.visible })
     };
     const colorBoxes = Object.entries(M.palette).map(([name, hex]) => { const i = h('input', { type: 'checkbox', value: name, checked: d.colors.includes(name) }); const dot = h('span', { class: 'dot' }); dot.style.background = hex; return h('label', { class: 'chip' }, i, h('span', {}, dot, name)); });
-    const preview = h('img', { alt: 'Aperçu', width: 120, height: 120 });
-    const setPreview = () => { const first = colorBoxes.map(l => l.firstChild).find(i => i.checked); preview.src = image ? (image.startsWith('data:') ? image : '/uploads/' + image) : `/img/garment/${f.garment.value}.svg?c=${encodeURIComponent(first ? M.palette[first.value] : '#3f6a9e')}`; };
-    let pendingData = null;
-    const fileIn = h('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp', class: 'vh', id: 'f-file', onchange: async e => {
-      const file = e.target.files[0]; if (!file) return;
-      try { // redimensionnement + ré-encodage JPEG côté navigateur : allège la photo et élimine métadonnées/contenu piégé
-        const bmp = await createImageBitmap(file); const sc = Math.min(1, 1000 / Math.max(bmp.width, bmp.height));
-        const c = document.createElement('canvas'); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
-        c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); pendingData = c.toDataURL('image/jpeg', 0.82); image = pendingData; setPreview();
-      } catch { toast('Image illisible. Essayez une autre photo.', 'err-t'); }
+    let gal = (d.gallery && d.gallery.length ? d.gallery : (d.image ? [{ file: d.image, url: '/uploads/' + d.image, color: null }] : [])).map(g => ({ ...g }));
+    const preview = h('img', { alt: 'Aperçu', width: 120, height: 150 });
+    const galBox = h('div', { class: 'gal' });
+    const setPreview = () => { const first = colorBoxes.map(l => l.firstChild).find(i => i.checked); preview.src = gal[0] ? (gal[0].data || gal[0].url) : `/img/garment/${f.garment.value}.svg?c=${encodeURIComponent(first ? M.palette[first.value] : '#3f6a9e')}`; };
+    const drawGal = () => {
+      galBox.replaceChildren(...gal.map((g, i) => h('div', { class: 'gal-item' }, h('img', { src: g.data || g.url, alt: 'Photo ' + (i + 1) }),
+        h('select', { class: 'input', 'aria-label': 'Couleur de la photo ' + (i + 1), onchange: e => { g.color = e.target.value || null; } }, h('option', { value: '', text: 'Toutes couleurs' }), Object.keys(M.palette).map(c => h('option', { value: c, text: c, selected: g.color === c }))),
+        h('div', { class: 'acts' }, i > 0 && h('button', { class: 'btn btn-ghost btn-sm', type: 'button', text: '★ Principale', onclick: () => { gal.unshift(...gal.splice(i, 1)); drawGal(); } }),
+          h('button', { class: 'btn btn-danger btn-sm', type: 'button', text: 'Retirer', onclick: () => { gal.splice(i, 1); drawGal(); } })))));
+      setPreview();
+    };
+    const fileIn = h('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp', multiple: true, class: 'vh', id: 'f-file', onchange: async e => {
+      for (const file of [...e.target.files]) {
+        if (gal.length >= 8) { toast('8 photos maximum par produit.', 'err-t'); break; }
+        try { // redimensionnement + ré-encodage JPEG côté navigateur : allège la photo et élimine métadonnées/contenu piégé
+          const bmp = await createImageBitmap(file); const sc = Math.min(1, 1000 / Math.max(bmp.width, bmp.height));
+          const c = document.createElement('canvas'); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+          c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); gal.push({ data: c.toDataURL('image/jpeg', 0.82), color: null });
+        } catch { toast('Image illisible : ' + file.name, 'err-t'); }
+      }
+      e.target.value = ''; drawGal();
     } });
     const dlg = h('dialog', { 'aria-labelledby': 'pf-title' },
       h('div', { class: 'dlg-head' }, h('h2', { id: 'pf-title', text: edit ? 'Modifier le produit' : 'Nouveau produit' }), h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Fermer', text: '✕', onclick: () => dlg.close() })),
       h('form', { class: 'dlg-body form-grid', novalidate: true, onsubmit: e => { e.preventDefault(); err.textContent = ''; const btn = $('button[type=submit]', e.target);
         busy(btn, async () => {
           try {
-            if (pendingData) { const up = await api('/upload', 'POST', { data: pendingData }); image = up.file; }
+            for (const g of gal) if (g.data) { const up = await api('/upload', 'POST', { data: g.data }); g.file = up.file; g.url = up.url; delete g.data; }
             const body = { name: f.name.value, category: f.category.value, garment: f.garment.value, priceRetail: +f.retail.value, priceWholesale: +f.whole.value, wholesaleMin: +f.min.value,
               sizes: f.sizes.value.split(',').map(s => s.trim()).filter(Boolean), colors: colorBoxes.map(l => l.firstChild).filter(i => i.checked).map(i => i.value),
-              description: f.desc.value, stock: f.stock.value, featured: f.featured.checked, visible: f.visible.checked, image };
+              description: f.desc.value, stock: f.stock.value, featured: f.featured.checked, visible: f.visible.checked, gallery: gal.map(g => ({ file: g.file, color: g.color })) };
             const saved = await api(edit ? '/products/' + p.id : '/products', edit ? 'PUT' : 'POST', body);
             if (edit) Object.assign(p, saved); else S.products.unshift(saved);
             dlg.close(); render(); toast(edit ? 'Produit modifié' : 'Produit ajouté — il est en ligne', 'ok-t');
@@ -178,15 +189,43 @@
       h('fieldset', { class: 'fs' }, h('legend', { text: 'Couleurs disponibles (la 1re coche colore l’illustration)' }), h('div', { class: 'chips' }, colorBoxes)),
       h('div', { class: 'field' }, h('label', { for: 'f-s', text: 'Tailles (séparées par des virgules)' }), f.sizes),
       h('div', { class: 'field' }, h('label', { for: 'f-d', text: 'Description' }), f.desc),
-      h('div', { class: 'field' }, h('span', { text: 'Photo du produit' }), h('div', { class: 'photo-box' }, preview,
-        h('div', { class: 'toolbar' }, fileIn, h('label', { class: 'btn btn-ghost btn-sm', for: 'f-file', text: '📷 Choisir une photo' }),
-          h('button', { class: 'btn btn-ghost btn-sm', type: 'button', text: 'Utiliser l’illustration', onclick: () => { image = null; pendingData = null; setPreview(); } }))),
-        h('small', { class: 'muted', text: 'Sans photo, une illustration du vêtement est affichée. Les photos sont réduites automatiquement.' })),
+      h('div', { class: 'field' }, h('span', { text: 'Photos du produit' }), h('div', { class: 'photo-box' }, preview,
+        h('div', { class: 'toolbar' }, fileIn, h('label', { class: 'btn btn-ghost btn-sm', for: 'f-file', text: '📷 Ajouter des photos' }))),
+        galBox, h('small', { class: 'muted', text: 'Associez une couleur à chaque photo : sur la boutique, choisir la couleur affiche la bonne photo. Sans photo, une illustration est affichée.' })),
       h('div', { class: 'form-grid two' }, h('div', { class: 'field' }, h('label', { for: 'f-st', text: 'Stock' }), f.stock),
         h('div', { class: 'field' }, h('label', { class: 'switch' }, f.featured, 'Mettre en vedette'), h('label', { class: 'switch' }, f.visible, 'Visible dans la boutique'))),
       err, h('button', { class: 'btn btn-lg', type: 'submit', text: edit ? 'Enregistrer' : 'Ajouter à la boutique' })));
     document.body.append(dlg); dlg.addEventListener('close', () => dlg.remove()); dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
-    [f.garment, ...colorBoxes.map(l => l.firstChild)].forEach(i => i.addEventListener('change', setPreview)); setPreview(); dlg.showModal();
+    [f.garment, ...colorBoxes.map(l => l.firstChild)].forEach(i => i.addEventListener('change', setPreview)); drawGal(); dlg.showModal();
+  }
+
+  // ---------- Looks (collection « runway ») ----------
+  function viewLooks() {
+    const list = h('div', { class: 'plist' });
+    const draw = () => list.replaceChildren(...S.looks.map(l => h('div', { class: 'prow' }, h('img', { src: l.img, alt: '', loading: 'lazy' }),
+      h('div', {}, h('div', { class: 'nm', text: l.name }), h('div', { class: 'sub', text: `${l.collection} · ${l.products.map(id => (S.products.find(p => p.id === id) || {}).name).filter(Boolean).join(' + ')}` })),
+      h('div', { class: 'acts' }, h('button', { class: 'btn btn-sm', type: 'button', text: 'Modifier', onclick: () => lookForm(l) }),
+        h('button', { class: 'btn btn-sm btn-danger', type: 'button', text: 'Supprimer', onclick: e => { if (confirm(`Supprimer le look « ${l.name} » ?`)) busy(e.target, async () => { await api('/looks/' + l.id, 'DELETE'); S.looks = S.looks.filter(x => x !== l); draw(); toast('Look supprimé', 'ok-t'); }); } })))));
+    draw();
+    return h('div', {}, h('h2', { class: 'view', text: 'Looks de la collection' }),
+      h('p', { class: 'muted', text: 'Les looks forment le carrousel animé de la page d’accueil : chaque look met en avant 1 à 4 pièces, que le client peut commander en un clic.' }),
+      h('div', { class: 'toolbar' }, h('button', { class: 'btn', type: 'button', text: '＋ Nouveau look', onclick: () => lookForm() })), list);
+  }
+  function lookForm(l) {
+    const edit = !!l; const d = l || { name: '', collection: 'COLLECTION 2026', description: '', products: [] }; const err = h('p', { class: 'err', role: 'alert' });
+    const name = h('input', { class: 'input', id: 'l-n', value: d.name, maxlength: 60, required: true }), coll = h('input', { class: 'input', id: 'l-c', value: d.collection, maxlength: 40 }), desc = h('textarea', { class: 'input', id: 'l-d', maxlength: 300, rows: 3, value: d.description });
+    const boxes = S.products.map(p => { const i = h('input', { type: 'checkbox', value: p.id, checked: d.products.includes(p.id) }); return h('label', { class: 'chip' }, i, h('span', { text: p.name })); });
+    boxes.forEach(b => b.firstChild.addEventListener('change', () => { if (boxes.filter(x => x.firstChild.checked).length > 4) { b.firstChild.checked = false; toast('4 pièces maximum par look.', 'err-t'); } }));
+    const dlg = h('dialog', { 'aria-labelledby': 'lf-title' }, h('div', { class: 'dlg-head' }, h('h2', { id: 'lf-title', text: edit ? 'Modifier le look' : 'Nouveau look' }), h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Fermer', text: '✕', onclick: () => dlg.close() })),
+      h('form', { class: 'dlg-body form-grid', novalidate: true, onsubmit: e => { e.preventDefault(); err.textContent = ''; busy($('button[type=submit]', e.target), async () => {
+        try { const body = { name: name.value, collection: coll.value, description: desc.value, products: boxes.filter(b => b.firstChild.checked).map(b => b.firstChild.value) };
+          const saved = await api(edit ? '/looks/' + l.id : '/looks', edit ? 'PUT' : 'POST', body); if (edit) Object.assign(l, saved); else S.looks.push(saved); dlg.close(); render(); toast('Look enregistré', 'ok-t'); }
+        catch (ex) { err.textContent = ex.message; } }); } },
+      h('div', { class: 'field' }, h('label', { for: 'l-n', text: 'Nom du look' }), name), h('div', { class: 'field' }, h('label', { for: 'l-c', text: 'Collection (titre affiché)' }), coll),
+      h('div', { class: 'field' }, h('label', { for: 'l-d', text: 'Description' }), desc),
+      h('fieldset', { class: 'fs' }, h('legend', { text: 'Pièces du look (1 à 4) — la photo de la 1re pièce illustre le look' }), h('div', { class: 'chips' }, boxes)),
+      err, h('button', { class: 'btn btn-lg', type: 'submit', text: 'Enregistrer' })));
+    document.body.append(dlg); dlg.addEventListener('close', () => dlg.remove()); dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); }); dlg.showModal();
   }
 
   // ---------- Commandes ----------

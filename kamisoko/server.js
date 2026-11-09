@@ -28,7 +28,7 @@ function normalizePhone(raw) {
   return d.length >= 8 && d.length <= 15 ? d : null;
 }
 
-function cleanProduct(b, base = {}) {
+function cleanProduct(b, base = {}, uploads) {
   const name = clean(b.name, 80); if (name.length < 2) throw bad('Le nom du produit est obligatoire.');
   if (!CATEGORIES[b.category]) throw bad('Catégorie invalide.');
   if (!GARMENTS[b.garment]) throw bad('Type d’illustration invalide.');
@@ -46,8 +46,17 @@ function cleanProduct(b, base = {}) {
     else if (typeof b.image === 'string' && IMG_RE.test(b.image)) image = b.image;
     else throw bad('Image invalide.');
   }
+  let gallery = base.gallery || [];
+  if ('gallery' in b) {
+    if (!Array.isArray(b.gallery)) throw bad('Galerie invalide.');
+    gallery = b.gallery.slice(0, 8).map(g => {
+      if (!g || typeof g.file !== 'string' || !IMG_RE.test(g.file) || !fs.existsSync(path.join(uploads, g.file))) throw bad('Photo introuvable : renvoyez-la.');
+      return { file: g.file, color: PALETTE[g.color] ? g.color : null };
+    });
+    image = gallery.length ? gallery[0].file : null;
+  }
   return { ...base, name, category: b.category, garment: b.garment, colors, sizes, priceRetail, priceWholesale, wholesaleMin,
-    description: cleanMultiline(b.description, 600), image, stock: b.stock, featured: !!b.featured, visible: b.visible !== false,
+    description: cleanMultiline(b.description, 600), image, gallery, stock: b.stock, featured: !!b.featured, visible: b.visible !== false,
     updatedAt: new Date().toISOString() };
 }
 
@@ -65,7 +74,7 @@ function createApp(opts = {}) {
   const log = opts.quiet ? () => {} : console.log;
   let bootstrapNote = null;
 
-  if (store.isNew) store.init(seed());
+  if (store.isNew) { store.init(seed()); seed.installImages(store.uploads); }
   if (!store.db.users.length) {
     const username = clean(opts.adminUser || process.env.ADMIN_USERNAME || 'kamissoko', 40).toLowerCase() || 'kamissoko';
     let pw = opts.adminPassword || process.env.ADMIN_PASSWORD, generated = false;
@@ -78,6 +87,8 @@ function createApp(opts = {}) {
     log(generated ? ` Mot de passe : ${pw}   (affiché UNE SEULE FOIS — il faudra le changer à la 1re connexion)` : ' Mot de passe : celui de la variable ADMIN_PASSWORD (changement obligatoire à la 1re connexion)');
     log('=====================================================================\n');
   }
+
+  if (!store.db.looks) { store.db.looks = seed().looks; store.save(); } // migration : anciennes bases sans looks
 
   const sessions = new sec.Sessions();
   const limits = {
@@ -141,6 +152,12 @@ function createApp(opts = {}) {
     res.set({ 'Content-Type': 'image/svg+xml; charset=utf-8', 'Cache-Control': 'public, max-age=86400', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'" });
     res.send(garments.render(type, c));
   });
+  app.get('/img/figure.svg', (req, res) => {
+    const g = String(req.query.g || '').split(',').slice(0, 2), c = String(req.query.c || '').split(',');
+    if (!g.length || !g.every(x => GARMENTS[x])) return res.status(404).end();
+    res.set({ 'Content-Type': 'image/svg+xml; charset=utf-8', 'Cache-Control': 'public, max-age=86400', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'" });
+    res.send(garments.renderFigure(g.map((type, i) => ({ type, color: c[i] }))));
+  });
   app.get('/uploads/:file', (req, res) => {
     const f = req.params.file; if (!IMG_RE.test(f)) return res.status(404).end();
     const p = path.join(store.uploads, f); if (!fs.existsSync(p)) return res.status(404).end();
@@ -155,13 +172,23 @@ function createApp(opts = {}) {
 
   // ---------- API publique ----------
   const imgUrl = p => p.image ? `/uploads/${p.image}` : `/img/garment/${p.garment}.svg?c=${encodeURIComponent(PALETTE[p.colors[0]] || '#3f6a9e')}`;
+  const galleryUrls = p => (p.gallery || []).map(g => ({ url: `/uploads/${g.file}`, color: g.color }));
   const pub = p => ({ id: p.id, name: p.name, category: p.category, garment: p.garment, colors: p.colors, sizes: p.sizes,
     priceRetail: p.priceRetail, priceWholesale: p.priceWholesale, wholesaleMin: p.wholesaleMin, description: p.description,
-    stock: p.stock, featured: p.featured, img: imgUrl(p), createdAt: p.createdAt });
+    stock: p.stock, featured: p.featured, img: imgUrl(p), gallery: galleryUrls(p), createdAt: p.createdAt });
+  const lookImg = l => { // { src, photo } : image du look > photo du 1er produit > tenue illustrée
+    if (l.image) return { src: `/uploads/${l.image}`, photo: false };
+    const ps = l.products.map(id => store.db.products.find(p => p.id === id)).filter(Boolean);
+    if (ps[0] && ps[0].image) return { src: `/uploads/${ps[0].image}`, photo: true };
+    const two = ps.slice(0, 2);
+    return { src: `/img/figure.svg?g=${two.map(p => p.garment).join(',')}&c=${two.map(p => encodeURIComponent(PALETTE[p.colors[0]] || '#3f6a9e')).join(',')}`, photo: false };
+  };
+  const publicLooks = () => store.db.looks.map(l => ({ ...l, products: l.products.filter(id => store.db.products.some(p => p.id === id && p.visible)) }))
+    .filter(l => l.products.length).map((l, i) => ({ id: l.id, number: i + 1, name: l.name, collection: l.collection, description: l.description, products: l.products, img: lookImg(l).src, photo: lookImg(l).photo }));
   app.get('/api/catalog', (req, res) => {
     res.set('Cache-Control', 'no-cache');
     res.json({ settings: store.db.settings, categories: CATEGORIES, palette: PALETTE,
-      products: store.db.products.filter(p => p.visible).map(pub) });
+      products: store.db.products.filter(p => p.visible).map(pub), looks: publicLooks() });
   });
 
   app.post('/api/orders', limits.order.middleware('commandes'), (req, res) => {
@@ -289,26 +316,26 @@ function createApp(opts = {}) {
       revenue: d.orders.filter(o => ['confirmé', 'livré'].includes(o.status)).reduce((s, o) => s + o.total, 0) });
   });
 
-  const adminProduct = p => ({ ...p, img: imgUrl(p) });
+  const adminProduct = p => ({ ...p, img: imgUrl(p), gallery: (p.gallery || []).map(g => ({ ...g, url: `/uploads/${g.file}` })) });
   admin.get('/products', (req, res) => res.json(store.db.products.map(adminProduct)));
   admin.post('/products', (req, res) => {
     if (store.db.products.length >= 1000) throw bad('Limite de produits atteinte.');
-    const p = cleanProduct(req.body || {}, { id: store.id(), createdAt: new Date().toISOString() });
+    const p = cleanProduct(req.body || {}, { id: store.id(), createdAt: new Date().toISOString() }, store.uploads);
     store.db.products.unshift(p); store.save(); store.audit(req.user.username, 'produit ajouté', req.ip, p.name); res.status(201).json(adminProduct(p));
   });
   const gc = () => { // supprime les photos plus utilisées par aucun produit
-    const used = new Set(store.db.products.map(p => p.image).filter(Boolean));
+    const used = new Set([...store.db.products, ...store.db.looks].flatMap(p => [p.image, ...(p.gallery || []).map(g => g.file)]).filter(Boolean));
     for (const f of fs.readdirSync(store.uploads)) if (IMG_RE.test(f) && !used.has(f)) fs.rmSync(path.join(store.uploads, f), { force: true });
   };
   admin.put('/products/:id', (req, res) => {
     const i = store.db.products.findIndex(p => p.id === req.params.id); if (i < 0) throw new HttpError(404, 'Produit introuvable.');
     const body = req.body || {}; if (body.image && !fs.existsSync(path.join(store.uploads, String(body.image)))) throw bad('Photo introuvable : renvoyez-la.');
-    store.db.products[i] = cleanProduct(body, store.db.products[i]); store.save(); gc();
+    store.db.products[i] = cleanProduct(body, store.db.products[i], store.uploads); store.save(); gc();
     store.audit(req.user.username, 'produit modifié', req.ip, store.db.products[i].name); res.json(adminProduct(store.db.products[i]));
   });
   admin.delete('/products/:id', (req, res) => {
     const i = store.db.products.findIndex(p => p.id === req.params.id); if (i < 0) throw new HttpError(404, 'Produit introuvable.');
-    const [p] = store.db.products.splice(i, 1); store.save(); gc(); store.audit(req.user.username, 'produit supprimé', req.ip, p.name); res.json({ ok: true });
+    const [p] = store.db.products.splice(i, 1); store.db.looks.forEach(l => { l.products = l.products.filter(x => x !== p.id); }); store.save(); gc(); store.audit(req.user.username, 'produit supprimé', req.ip, p.name); res.json({ ok: true });
   });
   admin.post('/upload', limits.upload.middleware('envois de photos'), (req, res) => {
     const m = /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(req.body?.data || ''));
@@ -318,6 +345,28 @@ function createApp(opts = {}) {
     const file = crypto.randomBytes(12).toString('hex') + '.' + ext;
     fs.writeFileSync(path.join(store.uploads, file), buf, { mode: 0o600 });
     res.status(201).json({ file, url: `/uploads/${file}` });
+  });
+
+  const cleanLook = (b, base = {}) => {
+    const name = clean(b.name, 60); if (name.length < 2) throw bad('Le nom du look est obligatoire.');
+    const products = [...new Set(Array.isArray(b.products) ? b.products : [])].filter(id => store.db.products.some(p => p.id === id)).slice(0, 4);
+    if (!products.length) throw bad('Choisissez au moins une pièce pour ce look.');
+    let image = base.image || null;
+    if ('image' in b) { if (!b.image) image = null; else if (typeof b.image === 'string' && IMG_RE.test(b.image) && fs.existsSync(path.join(store.uploads, b.image))) image = b.image; else throw bad('Image invalide.'); }
+    return { ...base, name, collection: clean(b.collection, 40) || 'COLLECTION', description: cleanMultiline(b.description, 300), products, image };
+  };
+  admin.get('/looks', (req, res) => res.json(store.db.looks.map(l => ({ ...l, img: lookImg(l).src }))));
+  admin.post('/looks', (req, res) => {
+    if (store.db.looks.length >= 30) throw bad('Limite de looks atteinte (30).');
+    const l = cleanLook(req.body || {}, { id: store.id() }); store.db.looks.push(l); store.save(); store.audit(req.user.username, 'look ajouté', req.ip, l.name); res.status(201).json({ ...l, img: lookImg(l).src });
+  });
+  admin.put('/looks/:id', (req, res) => {
+    const i = store.db.looks.findIndex(l => l.id === req.params.id); if (i < 0) throw new HttpError(404, 'Look introuvable.');
+    store.db.looks[i] = cleanLook(req.body || {}, store.db.looks[i]); store.save(); gc(); store.audit(req.user.username, 'look modifié', req.ip, store.db.looks[i].name); res.json({ ...store.db.looks[i], img: lookImg(store.db.looks[i]).src });
+  });
+  admin.delete('/looks/:id', (req, res) => {
+    const i = store.db.looks.findIndex(l => l.id === req.params.id); if (i < 0) throw new HttpError(404, 'Look introuvable.');
+    const [l] = store.db.looks.splice(i, 1); store.save(); gc(); store.audit(req.user.username, 'look supprimé', req.ip, l.name); res.json({ ok: true });
   });
 
   admin.get('/orders', (req, res) => res.json(store.db.orders));

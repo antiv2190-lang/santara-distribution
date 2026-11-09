@@ -16,15 +16,20 @@ Au **premier démarrage**, un compte administrateur est créé (identifiant `kam
 
 Perte d'accès ? Sur le serveur : `npm run reset-admin` (nouveau mot de passe temporaire, 2FA coupée).
 
+## Design « runway »
+Page d'accueil en carrousel de **looks** (clavier ← →, glisser au doigt, molette horizontale, boutons Préc./Suiv.), colonne des pièces du look, favoris, tiroir panier. Mouvements : apparition au défilement, zoom doux et 2ᵉ photo en fondu au survol, galerie produit en fondu, photo qui « vole » vers le panier, total du panier animé. Tout se désactive avec le réglage système « réduire les animations ».
+Les polices du modèle (Syncopate, Cormorant, Jost) ne sont pas chargées depuis Internet (CSP stricte) : des polices système de remplacement sont utilisées. Pour les avoir, hébergez les fichiers `.woff2` dans `public/fonts/` et ajoutez des `@font-face`.
+
 ## Côté client (boutique)
 - Catalogue filtrable (catégories, recherche, tri), bascule **Prix détail / Prix de gros**.
 - Fiche produit : taille, couleur, quantité — le **prix de gros s'applique automatiquement** dès la quantité minimale, avec un message qui incite à compléter ("plus que 3 pièces…").
 - Panier mémorisé sur l'appareil → **« Commander sur WhatsApp »** : la commande est enregistrée puis un message prêt à envoyer s'ouvre vers le WhatsApp de la boutique.
 - FAQ, bandeau d'annonce, bouton WhatsApp flottant, bandeau cookies/confidentialité (aucun traceur).
-- Images : illustrations vectorielles générées (jeans, t-shirt, chemise, robe, boubou, veste, sweat, short…) ou **vraies photos** ajoutées par le commerçant.
+- **Photos réelles** : le catalogue de départ contient vos photos (5 jeans, maillot, 2 polos en 5 coloris). Chaque produit peut avoir jusqu'à 8 photos, chacune liée à une couleur : choisir la couleur affiche la bonne photo. Les fichiers sources sont dans `seed-images/`.
+- Images sans photo : illustrations vectorielles générées (jeans, t-shirt, chemise, robe, boubou, veste, sweat, short…) ou **vraies photos** ajoutées par le commerçant.
 
 ## Côté commerçant (/admin)
-Tableau de bord · Produits (ajout/modification/masquage/suppression, photo depuis le téléphone, stock) · Commandes (statuts, bouton « écrire au client » WhatsApp) · Réglages (numéros, slogan, annonce, FAQ) · Sécurité (mot de passe, **double authentification TOTP**, journal d'activité).
+Tableau de bord · Looks (carrousel de la page d'accueil) · Produits (ajout/modification/masquage/suppression, photo depuis le téléphone, stock) · Commandes (statuts, bouton « écrire au client » WhatsApp) · Réglages (numéros, slogan, annonce, FAQ) · Sécurité (mot de passe, **double authentification TOTP**, journal d'activité).
 
 ## Sécurité (ce qui est réellement en place)
 | Menace | Protection |

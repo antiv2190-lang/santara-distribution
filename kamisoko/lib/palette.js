@@ -7,7 +7,7 @@ const PALETTE = {
   'Jaune': '#e3b23c', 'Orange': '#e0762c', 'Rose': '#e58fae', 'Violet': '#6d4a9a'
 };
 const CATEGORIES = {
-  jeans: 'Jeans', tshirts: 'T-shirts', chemises: 'Chemises', pantalons: 'Pantalons',
+  jeans: 'Jeans', polos: 'Polos', maillots: 'Maillots', ensembles: 'Ensembles', tshirts: 'T-shirts', chemises: 'Chemises', pantalons: 'Pantalons',
   robes: 'Robes & boubous', vestes: 'Vestes & sweats', shorts: 'Shorts', enfants: 'Enfants'
 };
 const GARMENTS = {

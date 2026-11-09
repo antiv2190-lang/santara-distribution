@@ -32,7 +32,11 @@ test('en-têtes de sécurité et fichiers sensibles inaccessibles', async () => 
 test('catalogue public : produits visibles, aucun secret', async () => {
   const r = await call('GET', '/api/catalog'); assert.equal(r.status, 200); assert.ok(r.json.products.length >= 10);
   assert.doesNotMatch(r.text, /hash|totp|password/i); assert.ok(r.json.products.every(p => p.img.startsWith('/img/garment/') || p.img.startsWith('/uploads/')));
-  const svg = await call('GET', r.json.products[0].img); assert.match(svg.headers.get('content-type'), /svg/); assert.match(svg.text, /<svg/);
+  const ill = r.json.products.find(p => p.img.startsWith('/img/garment/')); const svg = await call('GET', ill.img); assert.match(svg.headers.get('content-type'), /svg/); assert.match(svg.text, /<svg/);
+  const photo = r.json.products.find(p => p.gallery.length > 1); assert.ok(photo, 'produit multi-photos (polos)'); for (const g of photo.gallery) assert.equal((await call('GET', g.url)).status, 200);
+  assert.ok(r.json.looks.length >= 5 && r.json.looks.every(l => l.products.length && l.img));
+  const fig = await call('GET', '/img/figure.svg?g=tshirt,jeans&c=%23ffffff,%233f6a9e'); assert.match(fig.text, /<svg/); assert.equal((await call('GET', '/img/figure.svg?g=evil')).status, 404);
+  assert.doesNotMatch((await call('GET', '/img/figure.svg?g=jeans&c=%22%3E%3Cscript%3E')).text, /<script/);
   assert.equal((await call('GET', '/img/garment/evil.svg')).status, 404);
   assert.doesNotMatch((await call('GET', '/img/garment/jeans.svg?c=%22onload=alert(1)')).text, /onload/);
 });
@@ -84,6 +88,31 @@ test('produits : création, validation, XSS neutralisé', async () => {
   const cat = await call('GET', '/api/catalog'); assert.ok(cat.json.products.some(p => p.id === pid));
   assert.equal((await call('PUT', '/api/admin/products/' + pid, prod({ visible: false }))).status, 200);
   assert.ok(!(await call('GET', '/api/catalog')).json.products.some(p => p.id === pid), 'produit masqué absent du catalogue');
+});
+
+let lookId;
+test('looks : création, validation, nettoyage à la suppression d’un produit', async () => {
+  const bad = async b => (await call('POST', '/api/admin/looks', b)).status;
+  assert.equal(await bad({ name: '', products: [pid] }), 400); assert.equal(await bad({ name: 'Test', products: [] }), 400); assert.equal(await bad({ name: 'Test', products: ['inconnu'] }), 400);
+  assert.equal(await bad({ name: 'Test', products: [pid], image: '../x.png' }), 400);
+  await call('PUT', '/api/admin/products/' + pid, prod({ visible: true }));
+  const ok = await call('POST', '/api/admin/looks', { name: '<b>Look</b> test', collection: 'ÉTÉ', description: 'ok', products: [pid, pid] }); assert.equal(ok.status, 201); lookId = ok.json.id;
+  assert.doesNotMatch(JSON.stringify(ok.json), /[<>]/); assert.deepEqual(ok.json.products, [pid]);
+  assert.ok((await call('GET', '/api/catalog')).json.looks.some(l => l.name.includes('Look')));
+  assert.equal((await call('PUT', '/api/admin/looks/' + lookId, { name: 'Renommé', products: [pid] })).status, 200);
+  assert.equal((await call('PUT', '/api/admin/looks/nope', { name: 'x', products: [pid] })).status, 404);
+});
+
+test('galerie produit : photos validées, couleurs limitées à la palette', async () => {
+  const png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), crypto.randomBytes(64)]);
+  const up = await call('POST', '/api/admin/upload', { data: 'data:image/png;base64,' + png.toString('base64') });
+  const withG = g => call('PUT', '/api/admin/products/' + pid, prod({ gallery: g }));
+  assert.equal((await withG([{ file: '../../etc/passwd', color: null }])).status, 400); assert.equal((await withG([{ file: 'aaaaaaaaaaaaaaaaaaaaaaaa.png', color: null }])).status, 400);
+  const r = await withG([{ file: up.json.file, color: 'Noir' }, { file: up.json.file, color: '<hack>' }]); assert.equal(r.status, 200);
+  assert.equal(r.json.image, up.json.file); assert.equal(r.json.gallery[1].color, null);
+  assert.equal((await call('PUT', '/api/admin/looks/' + lookId, { name: 'Renommé', products: [pid] })).status, 200);
+  assert.equal((await withG([])).json.image, null);
+  assert.equal((await call('DELETE', '/api/admin/looks/' + lookId, {})).status, 200);
 });
 
 test('upload photo : magic bytes vérifiés', async () => {

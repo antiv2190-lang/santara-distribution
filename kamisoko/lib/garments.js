@@ -96,4 +96,22 @@ function render(type, color) {
 ${shape(c, dark(c, lum > 0.62 ? 0.55 : 0.38), light(c, 0.35))}
 </svg>`;
 }
-module.exports = { render, TYPES: Object.keys(SHAPES), HEX };
+const BOTTOMS = ['jeans', 'pants', 'shorts'], FULL = ['dress', 'boubou'];
+// Tenue (look) : 1 ou 2 vêtements sur fond transparent, format portrait 300x560.
+function renderFigure(items) {
+  const list = items.filter(i => SHAPES[i.type]).slice(0, 2).map(i => ({ type: i.type, c: HEX.test(i.color || '') ? i.color.toLowerCase() : '#3f6a9e' }));
+  const draw = (it, tr) => `<g transform="${tr}">${SHAPES[it.type](it.c, dark(it.c, 0.38), light(it.c, 0.35))}</g>`;
+  let body = '';
+  const full = list.find(i => FULL.includes(i.type));
+  if (full || list.length === 1) body = draw(full || list[0], 'translate(-40 90) scale(.95)');
+  else if (list.length === 2) {
+    const upper = list.find(i => !BOTTOMS.includes(i.type)) || list[0]; const lower = list.find(i => i !== upper);
+    body = draw(upper, 'translate(18 15) scale(.66)') + draw(lower, 'translate(18 275) scale(.66)');
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 560" width="300" height="560" role="img">
+<ellipse cx="150" cy="535" rx="95" ry="9" fill="#000" opacity=".14"/>
+${body}
+</svg>`;
+}
+module.exports = { render, renderFigure, TYPES: Object.keys(SHAPES), HEX };

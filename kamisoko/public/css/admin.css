@@ -35,3 +35,9 @@ h2.view { font-size: 1.7rem; margin: var(--s3) 0 var(--s4); }
 .switch { display: flex; gap: var(--s3); align-items: center; cursor: pointer; } .switch input { width: 24px; height: 24px; accent-color: var(--brand); }
 .muted { color: var(--ink-2); }
 @media (max-width: 520px) { .bar .brand { font-size: 0; gap: 0; } .bar .brand img { width: 36px; } .bar .btn-sm { padding: 0 var(--s3); } }
+
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s3); margin-top: var(--s3); }
+.gal-item { display: grid; gap: var(--s2); background: #faf8f4; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--s2); }
+.gal-item img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px; } .gal-item .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.photo-box img { aspect-ratio: 4/5; width: 96px; height: auto; }
+@media (max-width: 520px) { .tabs button { font-size: .68rem; } }
