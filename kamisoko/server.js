@@ -335,9 +335,10 @@ function createApp(opts = {}) {
   admin.put('/settings', (req, res) => {
     const b = req.body || {}; const whatsapp = normalizePhone(b.whatsapp); if (!whatsapp) throw bad('Numéro WhatsApp invalide.');
     const phone2 = b.phone2 ? normalizePhone(b.phone2) : ''; if (b.phone2 && !phone2) throw bad('Second numéro invalide.');
+    const phone3 = b.phone3 ? normalizePhone(b.phone3) : ''; if (b.phone3 && !phone3) throw bad('Troisième numéro invalide.');
     const faq = (Array.isArray(b.faq) ? b.faq : []).slice(0, 20).map(f => ({ q: clean(f?.q, 200), a: cleanMultiline(f?.a, 800) })).filter(f => f.q && f.a);
     const shopName = clean(b.shopName, 60); if (shopName.length < 2) throw bad('Nom de la boutique obligatoire.');
-    store.db.settings = { shopName, tagline: clean(b.tagline, 120), place: clean(b.place, 120), whatsapp, phone2,
+    store.db.settings = { shopName, tagline: clean(b.tagline, 120), place: clean(b.place, 120), address: clean(b.address, 200), whatsapp, phone2, phone3,
       announcement: clean(b.announcement, 220), hours: clean(b.hours, 120), faq };
     store.save(); store.audit(req.user.username, 'réglages modifiés', req.ip); res.json(store.db.settings);
   });

@@ -150,3 +150,6 @@
   .cookie .btn-sm { min-height: 40px; padding: 0 var(--s3); }
   .announce { font-size: .82rem; padding: 6px 12px; }
 }
+
+.addr { display: flex; gap: var(--s2); align-items: flex-start; margin-top: var(--s4); font-weight: 600; max-width: 32em; }
+.addr .icon { color: var(--gold); margin-top: 2px; }

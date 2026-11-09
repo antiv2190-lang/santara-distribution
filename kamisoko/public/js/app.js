@@ -48,9 +48,12 @@
     $$('[data-bind="tagline"]').forEach(e => e.textContent = s.tagline || '');
     $$('[data-bind="waDisplay"]').forEach(e => e.textContent = display(s.whatsapp));
     $$('[data-bind="phone2Display"]').forEach(e => e.textContent = display(s.phone2));
+    $$('[data-bind="phone3Display"]').forEach(e => e.textContent = display(s.phone3));
+    $('#addr').textContent = s.address || ''; $('#addrBox').hidden = !s.address;
     $$('[data-wa]').forEach(a => a.href = waLink(`Bonjour ${s.shopName} 👋 Je souhaite des informations sur vos articles.`));
     $('#callBtn').href = 'tel:+' + s.whatsapp;
     if (s.phone2) { $('#call2Btn').hidden = false; $('#call2Btn').href = 'tel:+' + s.phone2; }
+    if (s.phone3) { $('#call3Btn').hidden = false; $('#call3Btn').href = 'tel:+' + s.phone3; }
     const a = $('#announce'); a.textContent = s.announcement || ''; a.hidden = !s.announcement;
     const hr = $('#hours'); hr.textContent = s.hours ? 'Horaires : ' + s.hours : ''; hr.hidden = !s.hours;
     $('#year').textContent = new Date().getFullYear();

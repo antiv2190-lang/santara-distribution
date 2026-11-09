@@ -213,8 +213,8 @@
   function viewSettings() {
     const s = S.settings; const err = h('p', { class: 'err', role: 'alert' });
     const fld = (id, label, val, max, hint) => { const i = h('input', { class: 'input', id, value: val || '', maxlength: max }); return [h('div', { class: 'field' }, h('label', { for: id, text: label }), i, hint && h('small', { class: 'muted', text: hint })), i]; };
-    const [a1, shopName] = fld('s-n', 'Nom de la boutique', s.shopName, 60), [a2, tagline] = fld('s-t', 'Slogan', s.tagline, 120), [a3, place] = fld('s-p', 'Emplacement', s.place, 120),
-      [a4, wa] = fld('s-w', 'Numéro WhatsApp (avec indicatif)', s.whatsapp, 20, 'Ex. 22376271472 — les commandes arrivent sur ce numéro.'), [a5, ph2] = fld('s-2', 'Second numéro (facultatif)', s.phone2, 20),
+    const [a1, shopName] = fld('s-n', 'Nom de la boutique', s.shopName, 60), [a2, tagline] = fld('s-t', 'Slogan', s.tagline, 120), [a3, place] = fld('s-p', 'Emplacement', s.place, 120), [a3b, address] = fld('s-ad', 'Adresse complète', s.address, 200),
+      [a4, wa] = fld('s-w', 'Numéro WhatsApp (avec indicatif)', s.whatsapp, 20, 'Ex. 22376271472 — les commandes arrivent sur ce numéro.'), [a5, ph2] = fld('s-2', 'Second numéro (facultatif)', s.phone2, 20), [a5b, ph3] = fld('s-3', 'Troisième numéro (facultatif)', s.phone3, 20),
       [a6, ann] = fld('s-a', 'Bandeau d’annonce (en haut du site)', s.announcement, 220, 'Laissez vide pour le masquer.'), [a7, hours] = fld('s-h', 'Horaires (facultatif)', s.hours, 120);
     const faqBox = h('div', { class: 'form-grid' }); let faq = s.faq.map(x => ({ ...x }));
     const drawFaq = () => faqBox.replaceChildren(...faq.map((x, i) => h('div', { class: 'faq-edit' },
@@ -223,10 +223,10 @@
       h('button', { class: 'btn btn-danger btn-sm', type: 'button', text: 'Retirer cette question', onclick: () => { faq.splice(i, 1); drawFaq(); } }))));
     drawFaq(); const btn = h('button', { class: 'btn btn-lg', type: 'submit', text: 'Enregistrer' });
     return h('form', { novalidate: true, onsubmit: e => { e.preventDefault(); err.textContent = ''; busy(btn, async () => {
-      try { S.settings = await api('/settings', 'PUT', { shopName: shopName.value, tagline: tagline.value, place: place.value, whatsapp: wa.value, phone2: ph2.value, announcement: ann.value, hours: hours.value, faq }); faq = S.settings.faq.map(x => ({ ...x })); toast('Boutique mise à jour', 'ok-t'); }
+      try { S.settings = await api('/settings', 'PUT', { shopName: shopName.value, tagline: tagline.value, place: place.value, address: address.value, whatsapp: wa.value, phone2: ph2.value, phone3: ph3.value, announcement: ann.value, hours: hours.value, faq }); faq = S.settings.faq.map(x => ({ ...x })); toast('Boutique mise à jour', 'ok-t'); }
       catch (ex) { err.textContent = ex.message; } }); } },
       h('h2', { class: 'view', text: 'Réglages de la boutique' }),
-      h('div', { class: 'panel' }, h('h3', { text: 'Identité & contact' }), a1, a2, a3, a4, a5, a6, a7),
+      h('div', { class: 'panel' }, h('h3', { text: 'Identité & contact' }), a1, a2, a3, a3b, a4, a5, a5b, a6, a7),
       h('div', { class: 'panel' }, h('h3', { text: 'Questions fréquentes (FAQ)' }), faqBox, h('button', { class: 'btn btn-ghost', type: 'button', text: '＋ Ajouter une question', onclick: () => { if (faq.length < 20) { faq.push({ q: '', a: '' }); drawFaq(); } } })),
       err, btn);
   }

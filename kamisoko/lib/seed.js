@@ -10,8 +10,10 @@ module.exports = () => ({
     shopName: 'Kamissoko & Frères',
     tagline: 'Vendeur grossiste et détaillant de prêt-à-porter',
     place: 'Commerçant au Grand Marché de Bamako',
+    address: 'Chez Oumar Kamissoko, Immeuble Simaga, Grand Marché de Bamako, près du Marché Rose',
     whatsapp: '22376271472',
     phone2: '22366271472',
+    phone3: '22376631436',
     announcement: 'Prix de gros dès la quantité minimale indiquée sur chaque article — commandez directement sur WhatsApp.',
     hours: '',
     faq: [
