@@ -1,3 +1,13 @@
 {
-  "sec_user_agent": "Santara Distribution diawaradiadie1998@gmail.com"
+  "sec_user_agent": "Santara Distribution diawaradiadie1998@gmail.com",
+  "project": {
+    "location": "Bamako, Mali",
+    "themes": ["youth employment", "women's economic inclusion", "innovation"],
+    "beneficiaries_to_verify": 1200,
+    "ask_usd_range_to_verify": [30000, 1000000],
+    "funding_types": ["grants", "impact investors"],
+    "languages": ["fr", "en"],
+    "partner_organisation": "DES (details to verify)"
+  },
+  "assumptions_note": "Fields marked to_verify are hypotheses, to be confirmed by the user."
 }
