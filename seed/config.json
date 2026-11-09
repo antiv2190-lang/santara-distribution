@@ -7,7 +7,8 @@
     "ask_usd_range_to_verify": [30000, 1000000],
     "funding_types": ["grants", "impact investors"],
     "languages": ["fr", "en"],
-    "partner_organisation": "DES (details to verify)"
+    "partner_organisation": "DES = Diawara Energies SAS (company; activity, registration and track record to verify)",
+    "sector": "energy (to verify: solar, biogas, etc.)"
   },
   "assumptions_note": "Fields marked to_verify are hypotheses, to be confirmed by the user."
 }

@@ -1,18 +1,158 @@
 {
-  "read_on": "2026-11-09",
-  "note": "First pass from web search snippets only. Every deadline, amount and eligibility rule is TO VERIFY on the official page. No funding is guaranteed.",
-  "funders": [
-    {"name":"FACEJ (Swisscontact, financed by Royal Danish Embassy)","type":"grant / business-creation fund","themes":"youth business creation, Bamako, green projects (Guichet 4)","ticket":"phase 2: 17bn FCFA total for ~1,500 businesses (per-business amount to verify)","eligibility":"Malian youth who finished technical/vocational/higher education; beneficiary-level fund (to verify if an organisation can apply)","fit":80,"source":"https://www.swisscontact.org/en/projects/facej"},
-    {"name":"EC DG INTPA: youth training-to-employment call (15-35)","type":"grant call","themes":"training to employment for youth, Malian NGOs and private actors","ticket":"to verify","eligibility":"to verify; deadline not shown","fit":75,"source":"https://www.developmentaid.org/grants/view/1630752/formation-insertion-adosses-a-des-opportunites-economiques-reelles"},
-    {"name":"PMU-Mali Foundation, call AAP-HIMO 26-001","type":"grant call","themes":"rapid jobs for youth and women","ticket":"up to 40m FCFA per initiative","eligibility":"year and deadline to verify","fit":72,"source":"https://focusgn.com/africa/pmu-mali-foundation-job-creation-fund-youth-women"},
-    {"name":"Mastercard Foundation Africa Growth Fund (anchor of funds below)","type":"impact capital via funds","themes":"early-stage SMEs, women and youth entrepreneurs","ticket":"US$200m vehicle; invests through funds, not directly in projects","eligibility":"for-profit SMEs through partner funds","fit":65,"source":"https://www.avca.africa/news-insights/member-news/mastercard-foundation-africa-growth-fund-anchors-nigeria-based-impact-fund/"},
-    {"name":"Sabou Capital","type":"impact equity fund","themes":"women and youth, West/Central Africa (Cameroon, Cote d'Ivoire, Senegal, Nigeria)","ticket":"US$300k-2m","eligibility":"early/growth-stage companies; Mali not listed; final close targeted Q3 2027","fit":50,"source":"https://africa.com/how-sabou-capital-is-unlocking-economic-growth-through-young-women-and-youth-across-west-and-central-africa/"},
-    {"name":"SEFAA (managed by Sahel Capital)","type":"structured debt + some equity","themes":"agri-SMEs, jobs for women and youth, 13 countries","ticket":"to verify","eligibility":"agribusiness only; Mali coverage to verify","fit":45,"source":"https://news.fundsforngos.org/2025/08/27/sahel-capital-lands-10m-funding-from-mastercard-foundation-to-boost-african-agri-smes/"},
-    {"name":"WIDU.africa","type":"diaspora co-financed grant","themes":"micro/small enterprises in Bamako, Kayes, Sikasso","ticket":"up to EUR 3,000 first application","eligibility":"needs a diaspora sponsor","fit":40,"source":"https://widu.africa/mali"},
-    {"name":"AGRA youth innovation competition (older call)","type":"grant award","themes":"youth-led agriculture ideas","ticket":"ceiling US$100,000","eligibility":"youth-led MSMEs registered in Mali; likely closed, verify","fit":35,"source":"https://agra.org/?p=16031"}
-  ],
-  "closed_or_not_open": [
-    {"name":"UNHCR/Mastercard Foundation Mali call","note":"deadline 24-May-2026, passed","source":"https://www2.fundsforngos.org/accounts-and-finance/unhcr-inclusive-education-and-empowerment-grant-for-organizations-mali/"},
-    {"name":"TEF-UNDP Mali programme","note":"2020-2022 programme","source":"https://www.tonyelumelufoundation.org/news/tony-elumelu-foundation-tef-and-undp-announce-recovery-programme-for-mali-opens-applications-to-empower-10000-young-malian-entrepreneurs"}
-  ]
+ "read_on": "2026-11-09",
+ "note": "First pass from web search snippets only. Every deadline, amount and eligibility rule is TO VERIFY on the official page. No funding is guaranteed.",
+ "funders": [
+  {
+   "name": "FACEJ (Swisscontact, financed by Royal Danish Embassy)",
+   "type": "grant / business-creation fund",
+   "themes": "youth business creation, Bamako, green projects (Guichet 4)",
+   "ticket": "phase 2: 17bn FCFA total for ~1,500 businesses (per-business amount to verify)",
+   "eligibility": "Malian youth who finished technical/vocational/higher education; beneficiary-level fund (to verify if an organisation can apply)",
+   "fit": 80,
+   "source": "https://www.swisscontact.org/en/projects/facej"
+  },
+  {
+   "name": "OPEC Fund: access to sustainable energy services (Mali, Niger, Senegal)",
+   "type": "grant",
+   "themes": "renewable energy services for rural SMEs run by women",
+   "ticket": "to verify",
+   "eligibility": "to verify; open status unknown",
+   "fit": 78,
+   "source": "https://opecfund.org/operations/list/access-to-sustainable-energy-services"
+  },
+  {
+   "name": "EC DG INTPA: youth training-to-employment call (15-35)",
+   "type": "grant call",
+   "themes": "training to employment for youth, Malian NGOs and private actors",
+   "ticket": "to verify",
+   "eligibility": "to verify; deadline not shown",
+   "fit": 75,
+   "source": "https://www.developmentaid.org/grants/view/1630752/formation-insertion-adosses-a-des-opportunites-economiques-reelles"
+  },
+  {
+   "name": "PMU-Mali Foundation, call AAP-HIMO 26-001",
+   "type": "grant call",
+   "themes": "rapid jobs for youth and women",
+   "ticket": "up to 40m FCFA per initiative",
+   "eligibility": "year and deadline to verify",
+   "fit": 72,
+   "source": "https://focusgn.com/africa/pmu-mali-foundation-job-creation-fund-youth-women"
+  },
+  {
+   "name": "Africa GreenTec / GreenMax results-based financing window",
+   "type": "RBF grants and forgivable loans",
+   "themes": "green mini-grids",
+   "ticket": "CEI Africa awarded up to USD 1.89m to one Mali developer (WeLight); open status unknown",
+   "eligibility": "mini-grid developers; to verify",
+   "fit": 70,
+   "source": "https://sun-connect.org/cei-africa-foundation-awards-welight-an-rbf-grant-to-densify-5-gmgs-and-build-9-new-gmgs-in-rural-mali/"
+  },
+  {
+   "name": "Energy Access Ventures Fund (BII)",
+   "type": "early/growth equity",
+   "themes": "energy access; backed SolarX (Mali)",
+   "ticket": "to verify",
+   "eligibility": "energy businesses serving underserved households",
+   "fit": 68,
+   "source": "https://www.bii.co.uk/en/our-impact/fund-header/energy-access-ventures-fund/"
+  },
+  {
+   "name": "Hummingbird One (Oikocredit, Charm Impact)",
+   "type": "debt",
+   "themes": "early-stage clean energy and clean cooking, sub-Saharan Africa",
+   "ticket": "US$50k-500k loans; US$12m target, first close US$6.25m",
+   "eligibility": "to verify",
+   "fit": 66,
+   "source": "https://africasustainabilitymatters.com/oikocredit-backs-12-million-hummingbird-one-fund-to-accelerate-african-clean-energy-and-clean-cooking-startups/"
+  },
+  {
+   "name": "Mastercard Foundation Africa Growth Fund (anchor of funds below)",
+   "type": "impact capital via funds",
+   "themes": "early-stage SMEs, women and youth entrepreneurs",
+   "ticket": "US$200m vehicle; invests through funds, not directly in projects",
+   "eligibility": "for-profit SMEs through partner funds",
+   "fit": 65,
+   "source": "https://www.avca.africa/news-insights/member-news/mastercard-foundation-africa-growth-fund-anchors-nigeria-based-impact-fund/"
+  },
+  {
+   "name": "VentureBuilder (with Cordaid, USADF)",
+   "type": "flexible early-stage financing + advisory",
+   "themes": "African-owned energy distribution enterprises; backed Energy+ (Mali)",
+   "ticket": "to verify",
+   "eligibility": "African-owned and managed; to verify",
+   "fit": 64,
+   "source": "https://usadf.gov/press-release/436"
+  },
+  {
+   "name": "Sabou Capital",
+   "type": "impact equity fund",
+   "themes": "women and youth, West/Central Africa (Cameroon, Cote d'Ivoire, Senegal, Nigeria)",
+   "ticket": "US$300k-2m",
+   "eligibility": "early/growth-stage companies; Mali not listed; final close targeted Q3 2027",
+   "fit": 50,
+   "source": "https://africa.com/how-sabou-capital-is-unlocking-economic-growth-through-young-women-and-youth-across-west-and-central-africa/"
+  },
+  {
+   "name": "BOAD package for Mali (energy transition and SMEs)",
+   "type": "public development bank financing",
+   "themes": "energy, SMEs; 102bn FCFA approved March 2026",
+   "ticket": "channels via state/banks; direct access to verify",
+   "eligibility": "to verify",
+   "fit": 50,
+   "source": "https://www.capmad.com/post/boad-commits-over-102-billion-cfa-francs-in-mali-for-energy-education-and-smes"
+  },
+  {
+   "name": "SEFAA (managed by Sahel Capital)",
+   "type": "structured debt + some equity",
+   "themes": "agri-SMEs, jobs for women and youth, 13 countries",
+   "ticket": "to verify",
+   "eligibility": "agribusiness only; Mali coverage to verify",
+   "fit": 45,
+   "source": "https://news.fundsforngos.org/2025/08/27/sahel-capital-lands-10m-funding-from-mastercard-foundation-to-boost-african-agri-smes/"
+  },
+  {
+   "name": "WIDU.africa",
+   "type": "diaspora co-financed grant",
+   "themes": "micro/small enterprises in Bamako, Kayes, Sikasso",
+   "ticket": "up to EUR 3,000 first application",
+   "eligibility": "needs a diaspora sponsor",
+   "fit": 40,
+   "source": "https://widu.africa/mali"
+  },
+  {
+   "name": "AFRIGREEN Debt Impact Fund",
+   "type": "senior debt",
+   "themes": "clean energy; Mali among target countries",
+   "ticket": "large (EUR 15m to SolarX)",
+   "eligibility": "too large for early stage; later-stage option",
+   "fit": 40,
+   "source": "https://carbon-pulse.com/492275/?site=cpp"
+  },
+  {
+   "name": "AGRA youth innovation competition (older call)",
+   "type": "grant award",
+   "themes": "youth-led agriculture ideas",
+   "ticket": "ceiling US$100,000",
+   "eligibility": "youth-led MSMEs registered in Mali; likely closed, verify",
+   "fit": 35,
+   "source": "https://agra.org/?p=16031"
+  }
+ ],
+ "closed_or_not_open": [
+  {
+   "name": "UNHCR/Mastercard Foundation Mali call",
+   "note": "deadline 24-May-2026, passed",
+   "source": "https://www2.fundsforngos.org/accounts-and-finance/unhcr-inclusive-education-and-empowerment-grant-for-organizations-mali/"
+  },
+  {
+   "name": "TEF-UNDP Mali programme",
+   "note": "2020-2022 programme",
+   "source": "https://www.tonyelumelufoundation.org/news/tony-elumelu-foundation-tef-and-undp-announce-recovery-programme-for-mali-opens-applications-to-empower-10000-young-malian-entrepreneurs"
+  },
+  {
+   "name": "Joint SDG Fund: Mali Energy Transition Acceleration Program",
+   "note": "period Feb 2025 - Mar 2026, appears ended",
+   "source": "https://jointsdgfund.org/programme/malis-energy-transition-acceleration-program"
+  }
+ ]
 }
