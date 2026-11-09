@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kamissoko &amp; Frères — Prêt-à-porter en gros et détail · Grand Marché de Bamako</title>
+<meta name="description" content="Kamissoko & Frères, commerçant au Grand Marché de Bamako : jeans, t-shirts, chemises, robes et boubous en gros et en détail. Commandez sur WhatsApp : +223 76 27 14 72.">
+<meta name="theme-color" content="#173a6b">
+<link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/store.css">
+</head>
+<body>
+<a class="skip" href="#catalogue">Aller au catalogue</a>
+<div id="announce" class="announce" role="note" hidden></div>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#accueil" aria-label="Kamissoko et Frères — accueil">
+      <img src="/img/logo.svg" alt="" width="44" height="44">
+      <span><strong data-bind="shopName">Kamissoko &amp; Frères</strong><small>Grand Marché de Bamako</small></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#catalogue">Catalogue</a><a href="#commander">Comment commander</a><a href="#faq">Questions</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn btn-wa btn-sm hide-sm" data-wa href="#" target="_blank" rel="noopener noreferrer">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.300 1.200-1.800 1.200-.5.1-1 .2-3.300-.7-2.800-1.100-4.600-4-4.700-4.200-.1-.2-1.100-1.500-1.100-2.800s.7-2 .9-2.300c.2-.3.5-.3.700-.3h.5c.2 0 .4 0 .6.500l.9 2.100c.1.200.1.400 0 .6l-.4.600-.4.400c-.1.100-.3.300-.1.600.2.300.8 1.300 1.700 2.100 1.100 1 2.100 1.300 2.400 1.500.3.100.5.100.6-.1l.9-1.100c.2-.3.400-.2.700-.1l1.900.9c.3.100.5.200.6.300.1.200.1.700-.1 1.300z"/></svg>
+        WhatsApp</a>
+      <button class="cart-btn" id="cartBtn" type="button" aria-label="Ouvrir le panier">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4H4v2h2l3.600 7.600-1.400 2.400c-.5 1 .2 2 1.300 2H19v-2H9.400l1.100-2h6.500c.8 0 1.400-.4 1.700-1l3.600-6.500A1 1 0 0 0 21 5H6.200L5.300 3H7zM10 20a1.500 1.500 0 1 0 0 3 1.500 1.500 0 0 0 0-3zm8 0a1.500 1.500 0 1 0 0 3 1.500 1.500 0 0 0 0-3z"/></svg>
+        <span class="vh">Panier :</span><span id="cartCount" class="cart-count" hidden>0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="accueil">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">Commerçant au Grand Marché de Bamako</p>
+        <h1>Prêt-à-porter <em>en gros</em> et en détail</h1>
+        <p class="lead">Jeans, t-shirts, chemises, robes, boubous… Choisissez vos articles en ligne, envoyez votre commande en un message WhatsApp.</p>
+        <div class="hero-cta">
+          <a class="btn btn-light btn-lg" href="#catalogue">Voir le catalogue</a>
+          <a class="btn btn-wa btn-lg" data-wa href="#" target="_blank" rel="noopener noreferrer">Écrire sur WhatsApp</a>
+        </div>
+        <ul class="hero-points">
+          <li><b>Prix de gros</b> dès la quantité minimale</li>
+          <li><b>Détail</b> accepté, sans minimum</li>
+          <li><b>Réponse rapide</b> sur WhatsApp</li>
+        </ul>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <img class="art a1" src="/img/garment/jeans.svg?c=%233f6a9e" alt="" width="300" height="300">
+        <img class="art a2" src="/img/garment/tshirt.svg?c=%23c0392b" alt="" width="300" height="300">
+        <img class="art a3" src="/img/garment/boubou.svg?c=%231f2f55" alt="" width="300" height="300">
+      </div>
+    </div>
+    <div class="band" aria-hidden="true"></div>
+  </section>
+
+  <section class="section" id="catalogue" aria-labelledby="h-cat">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="h-cat">Notre catalogue</h2>
+        <p class="muted" id="resultCount" aria-live="polite"></p>
+      </div>
+      <div class="tools">
+        <label class="search"><span class="vh">Rechercher un article</span>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+          <input id="q" class="input" type="search" placeholder="Rechercher : jean, chemise, boubou…" autocomplete="off" maxlength="60">
+        </label>
+        <div class="seg" role="radiogroup" aria-label="Prix à afficher">
+          <label><input type="radio" name="mode" value="detail" checked><span>Prix détail</span></label>
+          <label><input type="radio" name="mode" value="gros"><span>Prix de gros</span></label>
+        </div>
+        <label class="sort"><span class="vh">Trier</span>
+          <select id="sort" class="input"><option value="featured">Sélection</option><option value="new">Nouveautés</option><option value="asc">Prix croissant</option><option value="desc">Prix décroissant</option></select>
+        </label>
+      </div>
+      <div id="cats" class="cats" role="group" aria-label="Catégories"></div>
+      <div id="grid" class="grid" aria-busy="true"><p class="muted">Chargement du catalogue…</p></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="commander" aria-labelledby="h-how">
+    <div class="wrap">
+      <h2 id="h-how">Commander, c’est simple</h2>
+      <ol class="steps">
+        <li><span class="n">1</span><h3>Choisissez</h3><p>Parcourez le catalogue, sélectionnez taille, couleur et quantité. Le prix de gros s’applique tout seul.</p></li>
+        <li><span class="n">2</span><h3>Envoyez</h3><p>Ajoutez votre nom et votre téléphone, puis appuyez sur « Commander sur WhatsApp ».</p></li>
+        <li><span class="n">3</span><h3>Confirmez</h3><p>Nous vérifions la disponibilité et le total avec vous sur WhatsApp, puis organisons la remise.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="h-faq">
+    <div class="wrap narrow">
+      <h2 id="h-faq">Questions fréquentes</h2>
+      <div id="faqList" class="faq"></div>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact" aria-labelledby="h-contact">
+    <div class="wrap contact-grid">
+      <div>
+        <h2 id="h-contact">Parlons de votre commande</h2>
+        <p class="lead2" data-bind="place">Commerçant au Grand Marché de Bamako</p>
+        <p class="muted2" data-bind="tagline"></p>
+        <p id="hours" class="muted2" hidden></p>
+      </div>
+      <div class="contact-cards">
+        <a class="btn btn-wa btn-lg btn-block" data-wa href="#" target="_blank" rel="noopener noreferrer">WhatsApp : <span data-bind="waDisplay"></span></a>
+        <a class="btn btn-light btn-lg btn-block" id="callBtn" href="#">Appeler : <span data-bind="waDisplay"></span></a>
+        <a class="btn btn-ghost-light btn-lg btn-block" id="call2Btn" href="#" hidden>Appeler : <span data-bind="phone2Display"></span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <p>© <span id="year"></span> <span data-bind="shopName">Kamissoko &amp; Frères</span> — Grand Marché de Bamako</p>
+    <p><button class="linklike" id="privacyBtn" type="button">Cookies &amp; confidentialité</button></p>
+  </div>
+</footer>
+
+<a class="wa-float" data-wa href="#" target="_blank" rel="noopener noreferrer" aria-label="Écrire sur WhatsApp">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.300 1.200-1.800 1.200-.5.1-1 .2-3.300-.7-2.800-1.100-4.600-4-4.700-4.200-.1-.2-1.100-1.500-1.100-2.800s.7-2 .9-2.300c.2-.3.5-.3.700-.3h.5c.2 0 .4 0 .6.500l.9 2.100c.1.200.1.400 0 .6l-.4.600-.4.400c-.1.100-.3.300-.1.600.2.300.8 1.300 1.700 2.100 1.100 1 2.100 1.300 2.400 1.500.3.100.5.100.6-.1l.9-1.100c.2-.3.400-.2.700-.1l1.900.9c.3.100.5.200.6.300.1.200.1.700-.1 1.300z"/></svg>
+</a>
+
+<!-- Fiche produit -->
+<dialog id="productDlg" aria-labelledby="pTitle">
+  <div class="dlg-head"><h2 id="pTitle" class="dlg-title"></h2><button class="icon-btn" type="button" data-close aria-label="Fermer">✕</button></div>
+  <div class="dlg-body pdlg">
+    <img id="pImg" class="pimg" alt="" width="480" height="480">
+    <form id="pForm" class="pinfo" novalidate>
+      <p id="pDesc" class="muted"></p>
+      <div class="ptable" id="pPrices"></div>
+      <fieldset class="fs" id="pSizes"><legend>Taille</legend><div class="chips"></div></fieldset>
+      <fieldset class="fs" id="pColors"><legend>Couleur</legend><div class="chips"></div></fieldset>
+      <div class="qty-row">
+        <span class="lbl" id="qLbl">Quantité</span>
+        <div class="stepper" role="group" aria-labelledby="qLbl">
+          <button type="button" class="icon-btn" data-step="-1" aria-label="Diminuer">−</button>
+          <input id="pQty" class="input qty" type="number" inputmode="numeric" min="1" max="5000" value="1" aria-label="Quantité">
+          <button type="button" class="icon-btn" data-step="1" aria-label="Augmenter">+</button>
+        </div>
+      </div>
+      <p id="pNudge" class="nudge" aria-live="polite"></p>
+      <p id="pTotal" class="ptotal" aria-live="polite"></p>
+      <p id="pErr" class="err" role="alert"></p>
+      <div class="pbtns">
+        <button class="btn" type="submit" id="pAdd">Ajouter au panier</button>
+        <a class="btn btn-wa" id="pWa" target="_blank" rel="noopener noreferrer" href="#">Demander sur WhatsApp</a>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Panier -->
+<dialog id="cartDlg" class="drawer" aria-labelledby="cTitle">
+  <div class="dlg-head"><h2 id="cTitle" class="dlg-title">Votre panier</h2><button class="icon-btn" type="button" data-close aria-label="Fermer le panier">✕</button></div>
+  <div class="dlg-body">
+    <div id="cartEmpty" class="empty" hidden><p>Votre panier est vide.</p><button class="btn" type="button" data-close>Voir le catalogue</button></div>
+    <div id="cartFull" hidden>
+      <ul id="cartLines" class="lines"></ul>
+      <div class="sum"><div><span>Total</span><strong id="cartTotal"></strong></div><p id="cartSave" class="save" hidden></p></div>
+      <form id="orderForm" novalidate>
+        <h3>Vos coordonnées</h3>
+        <div class="field"><label for="oName">Nom et prénom</label><input id="oName" class="input" name="name" autocomplete="name" required maxlength="60"></div>
+        <div class="field"><label for="oPhone">Téléphone (WhatsApp de préférence)</label><input id="oPhone" class="input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="76 00 00 00" required maxlength="22"></div>
+        <div class="field"><label for="oCity">Ville / quartier <small>(facultatif)</small></label><input id="oCity" class="input" name="city" autocomplete="address-level2" maxlength="60"></div>
+        <div class="field"><label for="oNote">Remarque <small>(facultatif)</small></label><textarea id="oNote" class="input" name="note" maxlength="300" rows="2"></textarea></div>
+        <div class="hp" aria-hidden="true"><label>Site web<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <p id="oErr" class="err" role="alert"></p>
+        <button class="btn btn-wa btn-block btn-lg" id="oSend" type="submit">Commander sur WhatsApp</button>
+        <p class="fine">Aucun paiement en ligne. Nous confirmons la disponibilité et le total avec vous sur WhatsApp.</p>
+      </form>
+    </div>
+    <div id="cartDone" class="done" hidden>
+      <div class="check" aria-hidden="true">✓</div>
+      <h3>Commande <span id="doneId"></span> prête !</h3>
+      <p>WhatsApp s’ouvre avec votre message. Appuyez sur « Envoyer » pour finaliser.</p>
+      <a id="doneWa" class="btn btn-wa btn-block" target="_blank" rel="noopener noreferrer" href="#">Ouvrir WhatsApp</a>
+      <button class="btn btn-ghost btn-block" type="button" data-close>Continuer mes achats</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Cookies & confidentialité -->
+<dialog id="privacyDlg" aria-labelledby="prTitle">
+  <div class="dlg-head"><h2 id="prTitle" class="dlg-title">Cookies &amp; confidentialité</h2><button class="icon-btn" type="button" data-close aria-label="Fermer">✕</button></div>
+  <div class="dlg-body prose">
+    <p>Nous respectons votre vie privée : <strong>ce site n’utilise ni cookie publicitaire, ni outil de pistage, ni statistiques tierces.</strong></p>
+    <h3>Ce qui est enregistré sur votre appareil</h3>
+    <ul>
+      <li><strong>Indispensable</strong> — votre panier et votre choix « détail / gros », gardés dans le navigateur (stockage local) pour ne pas les perdre. Rien n’est envoyé tant que vous ne commandez pas.</li>
+      <li><strong>Facultatif</strong> — mémoriser votre nom, téléphone et ville pour la prochaine commande. Désactivé par défaut.</li>
+    </ul>
+    <h3>Ce que nous recevons quand vous commandez</h3>
+    <p>Votre nom, téléphone, ville, remarque et le contenu du panier — uniquement pour préparer et confirmer votre commande. Ils ne sont ni vendus ni partagés. Pour effacer vos informations, demandez-le-nous sur WhatsApp.</p>
+    <form id="prefForm" class="prefs">
+      <label class="switch"><input type="checkbox" id="prefRemember"><span><b>Mémoriser mes coordonnées</b><small>Facultatif — sur cet appareil uniquement</small></span></label>
+      <div class="pbtns"><button class="btn" type="submit">Enregistrer mon choix</button><button class="btn btn-ghost" type="button" id="prefClear">Effacer mes données locales</button></div>
+    </form>
+  </div>
+</dialog>
+
+<section id="cookieBar" class="cookie" role="region" aria-label="Cookies" hidden>
+  <p><strong>Vie privée :</strong> ni pistage ni publicité ici. Mémoriser vos coordonnées pour vos prochaines commandes ?</p>
+  <div class="cookie-btns">
+    <button class="btn btn-sm" type="button" id="ckAll">Oui, mémoriser</button>
+    <button class="btn btn-sm btn-ghost-light" type="button" id="ckEss">Non merci</button>
+    <button class="btn btn-sm btn-ghost-light" type="button" id="ckMore">Détails</button>
+  </div>
+</section>
+
+<div id="toasts" role="status" aria-live="polite"></div>
+<script src="/js/app.js" defer></script>
+</body>
+</html>
